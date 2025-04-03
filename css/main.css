@@ -296,7 +296,7 @@ footer ul a {
     margin-left: -50%;
     width: 100%;
   }
-  .portfolio img iframe {
+  .portfolio img {
     float: right;
     max-width: 500px;
   }
