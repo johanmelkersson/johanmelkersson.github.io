@@ -63,7 +63,7 @@ header ul a {
 
 .hero {
   background: #009999;
-  color: black;
+  color: white;
   display: -ms-grid;
   display: grid;
   text-align: center;
@@ -299,6 +299,11 @@ footer ul a {
   .portfolio img {
     float: right;
     max-width: 500px;
+  }
+
+  .portfolio iframe {
+        float: right;
+        max-width: 500px;
   }
   footer {
     padding: 2em 2em 2em 4em;
