@@ -296,15 +296,11 @@ footer ul a {
     margin-left: -50%;
     width: 100%;
   }
-  .portfolio img {
+  .portfolio img iframe {
     float: right;
     max-width: 500px;
   }
 
-  .portfolio iframe {
-        float: right;
-        max-width: 500px;
-  }
   footer {
     padding: 2em 2em 2em 4em;
   }
