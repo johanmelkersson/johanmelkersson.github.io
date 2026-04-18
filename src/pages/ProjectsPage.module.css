@@ -1,0 +1,30 @@
+.pageContainer {
+  /* Använd 1rem (16px) på sidorna istället för fasta stora värden */
+  padding: 2rem 1rem; 
+  width: 100%;
+  box-sizing: border-box; /* Kritisk: ser till att padding inte ökar bredden */
+  overflow-x: hidden; /* Förhindrar horisontell scroll */
+}
+
+.pageContainer::-webkit-scrollbar {
+  display: none; /* Valfritt: döljer scrollbar i Chrome/Safari */
+}
+
+.pageTitle {
+  text-align: center;
+  margin-bottom: 8rem; /* Rejält avstånd till första kortet */
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent-color);
+  text-shadow: 0 0 20px rgba(var(--accent-rgb), 0.3);
+}
+
+.projectsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  width: 100%;
+  max-width: 100%; /* Hindra den från att bli bredare än skärmen */
+}

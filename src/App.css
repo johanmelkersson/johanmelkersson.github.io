@@ -1,0 +1,33 @@
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Denna styr själva innehållet på alla sidor */
+main {
+  width: 100%;
+  max-width: 1400px; /* Justera denna efter smak */
+  margin: 0 auto;    /* Centrerar main-blocket */
+  padding: 2rem;     /* Ger marginaler på sidorna */
+  box-sizing: border-box; /* Ser till att padding inte gör main bredare än 1400px */
+}
+
+.navbar {
+  display: flex;
+  gap: 2rem;
+  padding: 1.5rem 2rem;
+  background: rgba(0, 0, 0, 0.2); /* Subtil mörk bakgrund */
+  justify-content: center; /* Centrerar länkarna i navbaren */
+}
+
+.navbar a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.navbar a:hover {
+  color: var(--accent-color);
+}

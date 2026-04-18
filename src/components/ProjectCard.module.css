@@ -38,12 +38,33 @@
 
 .card {
   position: relative;
+  width: 100%;
+  max-width: 100%; /* Hindrar kortet från att "skjuta ut" åt höger */
+  box-sizing: border-box; /* Viktigt! Räknar in border/padding i bredden */
+  position: relative;
   background: #1a1a1e;
   border: 1px solid #333;
   border-radius: 16px;
   overflow: hidden;
   color: #ececec;
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  margin-bottom: 0; /* Vi använder gap i föräldern istället */
+  /* Lite extra polering för att markera separationen */
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+/* En mjuk animation när sidan laddas */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Subtil bakgrundstoning inspirerad av spelmenyer */
@@ -60,7 +81,8 @@
 .cardContent {
   position: relative;
   z-index: 1;
-  padding: 2rem;
+  padding: 1.2rem;
+  box-sizing: border-box;
 }
 
 /* HUD-liknande spec-box */
@@ -91,17 +113,11 @@
 }
 
 .mediaContainer {
-  /* Detta är containern för antingen video eller bild */
   position: relative;
-  /* En subtil skugga/glöd som sprider sig bakom videon */
+  /* Vi samlar filter och transition här */
   filter: drop-shadow(0 0 15px rgba(var(--accent-rgb), 0.2));
-}
-
-.videoWrapper iframe {
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: filter 0.3s ease;
+  z-index: 2; /* Ser till att glöden ligger rätt */
 }
 
 /* Stiling för när vi har en video */
@@ -109,7 +125,13 @@
   position: relative;
   width: 100%;
   aspect-ratio: 16 / 9;
-  /* Vi tar bort eventuella max-width här för att låta grid-kolumnen styra */
+}
+
+.videoWrapper iframe {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Stiling för när vi BARA har en bild */
@@ -125,13 +147,10 @@
   border-radius: 8px; /* Valfritt: Lite runda hörn */
 }
 
-/* Responsivitet */
-@media (min-width: 1024px) {
-  .mainGrid {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr; /* Video till vänster, info till höger */
-    gap: 2rem;
-  }
+.mainGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .card:hover {
@@ -142,13 +161,6 @@
 /* Om du vill ha en färgstarkare glöd vid hover */
 .card:hover .mediaContainer {
   filter: drop-shadow(0 0 25px rgba(var(--accent-rgb), 0.4));
-}
-
-/* Se till att transition ligger på bas-klassen så det tonar ut snyggt också */
-.mediaContainer {
-  position: relative;
-  filter: drop-shadow(0 0 15px rgba(var(--accent-rgb), 0.2));
-  transition: filter 0.3s ease; /* Flytta hit! */
 }
 
 .keyArtFallback {
@@ -212,4 +224,58 @@
 .awardItem:hover .awardImage {
   transform: scale(1.1) rotate(5deg); /* Lite lekfull animation vid hover */
   filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
+}
+
+/* DESKTOP LAYOUT */
+@media (min-width: 1024px) {
+  .mainGrid {
+    display: grid;
+    /* Här skapar vi "kartan": Video till vänster, Text till höger. 
+       Footern placeras under videon i vänstra kolumnen. */
+    grid-template-areas: 
+      "media details"
+      "footer details";
+    grid-template-columns: 1.5fr 1fr;
+    grid-template-rows: auto 1fr; /* Gör att footern "klättrar upp" */
+    gap: 0 2.5rem; /* 0px gap vertikalt mellan video och footer */
+    align-items: start;
+  }
+
+  .cardContent {
+    padding: 2rem; /* Mer luft på desktop */
+  }
+
+  .mediaContainer {
+    grid-area: media;
+    margin-bottom: 1.5rem; /* Kontrollera avståndet till tech-tags här */
+  }
+
+  .detailsSide {
+    grid-area: details;
+  }
+
+  .footer {
+    grid-area: footer;
+    margin-top: 0;
+    align-self: start;
+  }
+}
+
+/* Städa upp footer för mobil */
+@media (max-width: 1023px) {
+  .footer {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+}
+
+@media (max-width: 480px) {
+  .titleArea h2 {
+    font-size: 1.5rem; /* Krymp titeln så den inte tvingar ut bredden */
+  }
+  
+  .specBox {
+    grid-template-columns: 1fr; /* Stapla specsen vertikalt på super-smala skärmar */
+  }
 }
