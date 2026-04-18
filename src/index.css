@@ -1,0 +1,16 @@
+:root {
+  --bg-color: #0f172a;
+  --card-bg: #1e293b;
+  --text-primary: #f8fafc;
+  /* Den vanliga färgen för borders och text */
+  --accent-color: #38bdf8; 
+  
+  /* Samma färg men i råa RGB-siffror (56, 189, 248) */
+  --accent-rgb: 56, 189, 248;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+}

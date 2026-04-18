@@ -1,0 +1,215 @@
+.header {
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* Detta styr det exakta avståndet mellan Titel-raden och Tagline */
+}
+
+.titleArea {
+  display: flex;
+  align-items: baseline;
+  gap: 15px;
+  margin-bottom: 5px;
+}
+
+.titleArea h2 {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: 1px;
+}
+
+.engineTag {
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: var(--accent-color);
+  opacity: 0.8;
+  text-transform: uppercase;
+}
+
+.tagline {
+  margin: 0;
+  font-style: italic;
+  font-size: 1rem;
+  color: #aaa;
+  line-height: 1.4;
+}
+
+.card {
+  position: relative;
+  background: #1a1a1e;
+  border: 1px solid #333;
+  border-radius: 16px;
+  overflow: hidden;
+  color: #ececec;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Subtil bakgrundstoning inspirerad av spelmenyer */
+.cardBg {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  opacity: 0.1;
+  background-size: cover;
+  background-position: center;
+  filter: blur(20px);
+  z-index: 0;
+}
+
+.cardContent {
+  position: relative;
+  z-index: 1;
+  padding: 2rem;
+}
+
+/* HUD-liknande spec-box */
+.specBox {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 1rem;
+  border-left: 3px solid var(--accent-color);
+  margin-bottom: 1.5rem;
+}
+
+.specItem span {
+  font-size: 0.65rem;
+  color: var(--accent-color);
+  letter-spacing: 2px;
+  display: block;
+}
+
+.roleBox {
+  font-family: 'Courier New', Courier, monospace; /* Ger en "kod"-känsla */
+  font-size: 0.9rem;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.mediaContainer {
+  /* Detta är containern för antingen video eller bild */
+  position: relative;
+  /* En subtil skugga/glöd som sprider sig bakom videon */
+  filter: drop-shadow(0 0 15px rgba(var(--accent-rgb), 0.2));
+}
+
+.videoWrapper iframe {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Stiling för när vi har en video */
+.videoWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  /* Vi tar bort eventuella max-width här för att låta grid-kolumnen styra */
+}
+
+/* Stiling för när vi BARA har en bild */
+.keyArtFallback {
+  width: 100%;
+  /* Sätt en maxhöjd som är rimlig. 
+     När videon är 2fr bred och 16:9, blir höjden ca 400-500px på desktop */
+  height: 450px; 
+  /* Detta är tricket: Bilden fyller containern men beskärs 
+     (precis som ett material med rätt tiling) utan att sträckas ut. */
+  object-fit: cover; 
+  background-position: center;
+  border-radius: 8px; /* Valfritt: Lite runda hörn */
+}
+
+/* Responsivitet */
+@media (min-width: 1024px) {
+  .mainGrid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr; /* Video till vänster, info till höger */
+    gap: 2rem;
+  }
+}
+
+.card:hover {
+  transform: translateY(-5px); /* Enkel feedback vid hover */
+  border-color: var(--accent-color);
+}
+
+/* Om du vill ha en färgstarkare glöd vid hover */
+.card:hover .mediaContainer {
+  filter: drop-shadow(0 0 25px rgba(var(--accent-rgb), 0.4));
+}
+
+/* Se till att transition ligger på bas-klassen så det tonar ut snyggt också */
+.mediaContainer {
+  position: relative;
+  filter: drop-shadow(0 0 15px rgba(var(--accent-rgb), 0.2));
+  transition: filter 0.3s ease; /* Flytta hit! */
+}
+
+.keyArtFallback {
+  width: 100%;
+  height: 450px;
+  object-fit: cover;
+  border-radius: 8px;
+  /* Lägg transition här för mjuk rörelse åt båda hållen */
+  transition: transform 0.5s ease; 
+}
+
+.card:hover .keyArtFallback {
+  transform: scale(1.02);
+}
+
+.techStack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 1rem 0;
+}
+
+.techTag {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.badgeImage {
+  height: 45px; /* Justera storleken så de ser enhetliga ut */
+  transition: transform 0.2s;
+}
+
+.badgeImage:hover {
+  transform: scale(1.05); /* Lite "juice" när man hovrar */
+}
+
+.awardsContainer {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.awardImage {
+  height: 60px; /* Awards brukar vara lite större och rundare än plattforms-badges */
+  width: auto;
+  filter: drop-shadow(0 0 5px rgba(255, 215, 0, 0.3)); /* En svag guld-glöd */
+  transition: transform 0.3s ease;
+}
+
+.awardItem:hover .awardImage {
+  transform: scale(1.1) rotate(5deg); /* Lite lekfull animation vid hover */
+  filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.6));
+}
