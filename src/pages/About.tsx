@@ -2,10 +2,10 @@ import styles from './About.module.css';
 import { SOCIAL_LINKS } from '../data/constants';
 
 const skills = {
-  'Languages': ['C++', 'C#', 'TypeScript' /* TODO: lägg till mer */],
+  'Languages': ['C++', 'C#', 'TypeScript', 'JavaScript'],
   'Game Development': ['Unreal Engine', 'Gameplay Ability System (GAS)', 'Unity', 'AI & State Machines', 'Physics (PhysX)', 'FMOD'],
-  'System Development': ['React', 'HTML & CSS' /* TODO: lägg till mer */],
-  'Tools': ['Git', 'Visual Studio', 'JetBrains Rider' /* TODO: lägg till mer */],
+  'System Development': ['React', 'HTML & CSS', '.NET'],
+  'Tools': ['Git', 'Visual Studio', 'JetBrains Rider', 'Claude', 'GitHub Copilot'],
 };
 
 function About() {
@@ -17,16 +17,23 @@ function About() {
         <div className={styles.introText}>
           <h1>About Me</h1>
           <p>
-            {/* TODO: Skriv din intro här – vem du är, vad du brinner för */}
-            I'm a game programmer who has taken the step into system development.
-            My background is in building gameplay systems, AI, and player controllers —
-            but I'm drawn to any problem that requires careful thinking about how things fit together.
+            I switched careers about seven years ago to pursue what I genuinely love — writing code.
+            Game development was the obvious starting point, and I worked my way from Malmö University
+            through The Game Assembly and into an eight-month industry internship at Playwood Project
+            in Copenhagen, where I worked on <em>Successor</em>, a top-down strategic RPG built in
+            Unreal Engine. I've shipped real games, built systems from scratch in C++, and grown a
+            lot as a programmer along the way.
           </p>
           <p>
-            {/* TODO: Något om din väg, skolan, vad du söker */}
-            I studied game programming at The Game Assembly and am currently expanding my skills
-            in system development. I'm looking for roles where I can combine technical depth
-            with a passion for crafting good experiences.
+            My background is in gameplay programming — controllers, state machines, AI, and systems —
+            but what I really enjoy is the thinking behind how things fit together. I care about writing
+            code that makes sense: systems that are easy to use, well-structured, and don't create
+            problems further down the line.
+          </p>
+          <p>
+            I'm now expanding into system development, studying full-stack at Lexicon while applying
+            the same engineering mindset to web and backend work. I'm looking for roles where I can
+            bring technical depth and a genuine interest in building things well — regardless of the domain.
           </p>
           <div className={styles.socialLinks}>
             {SOCIAL_LINKS.map(({ href, label, Icon }) => (
@@ -58,24 +65,29 @@ function About() {
         <h2 className={styles.sectionTitle}>Background</h2>
         <div className={styles.timeline}>
           <div className={styles.timelineItem}>
-            <span className={styles.timelineYear}>2024 – present</span>
+            <span className={styles.timelineYear}>2026 - present</span>
             <div>
-              <h3>System Development{/* TODO: lägg till skola/program */}</h3>
-              <p>Currently studying system development, broadening from game programming into backend, web, and software architecture.</p>
+              <h3>System Development - Lexicon</h3>
+              <p>Full-stack web development program covering the complete pipeline - from frontend with React, TypeScript, and 
+                Tailwind to backend with C# and ASP.NET Core, along with databases, security, software architecture, and Agile 
+                workflows.</p>
             </div>
           </div>
           <div className={styles.timelineItem}>
-            <span className={styles.timelineYear}>2021 – 2024</span>
+            <span className={styles.timelineYear}>2022 - 2025</span>
             <div>
-              <h3>Game Programming – The Game Assembly</h3>
-              <p>Three-year program focused on gameplay programming, engine development, and shipping games as part of a team. Built 8 games across custom engines, Unity, and Unreal Engine.</p>
+              <h3>Game Programming - The Game Assembly</h3>
+              <p>One of the world's leading game programming programs - intensive and highly demanding. Two years of study 
+                followed by an eight-month internship in the industry. Focused on gameplay programming, engine development, 
+                and shipping games as part of a team. Built 8 games across custom engines, Unity, and Unreal Engine.</p>
             </div>
           </div>
           <div className={styles.timelineItem}>
-            <span className={styles.timelineYear}>2018 – 2021</span>
+            <span className={styles.timelineYear}>2019 - 2022</span>
             <div>
-              <h3>Game Development – Malmö University</h3>
-              <p>{/* TODO: Beskriv vad du läste */}</p>
+              <h3>Game Development - Malmö University</h3>
+              <p>Broad game development education spanning everything from C++ and Unity to 3D modeling in Maya. Gave me a 
+                solid foundation and confirmed that programming was where I wanted to go deeper.</p>
             </div>
           </div>
         </div>

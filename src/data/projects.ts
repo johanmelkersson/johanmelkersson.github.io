@@ -36,7 +36,7 @@ export const PROJECTS_DATA: Project[] = [
         engine: 'Unreal Engine',
         mainContribution: 'Gameplay and UI',
         youtubeId: 'L3CSAbv5Pak',
-        imageUrl: '/images/successor.jpeg',
+        imageUrl: '/images/projects/successor.jpeg',
         platformLinks: [{ type: 'steam', url: 'https://store.steampowered.com/app/1284730/Successor/' }]
     },
     {
@@ -55,7 +55,7 @@ export const PROJECTS_DATA: Project[] = [
         engine: 'Crowsnest',
         mainContribution: 'Player controller and physics',
         youtubeId: '4c_cBM9azbA',
-        imageUrl: '/images/ascend.png',
+        imageUrl: '/images/projects/ascend.png',
         platformLinks: [{ type: 'itch', url: 'https://korp-corp.itch.io/ascend' }]
     },
     {
@@ -76,7 +76,7 @@ export const PROJECTS_DATA: Project[] = [
         engine: 'Crowsnest',
         mainContribution: 'PhysX integration and UI',
         youtubeId: 'QR_Mp2-HQ8g',
-        imageUrl: '/images/cruisin-4a-bruisin.png',        
+        imageUrl: '/images/projects/cruisin-4a-bruisin.png',        
     },
     {
         id: 4,
@@ -94,7 +94,7 @@ export const PROJECTS_DATA: Project[] = [
         genre: 'Action RPG',
         engine: 'Crowsnest',
         mainContribution: 'Enemy AI',
-        imageUrl: '/images/spite.png',        
+        imageUrl: '/images/projects/spite.png',        
     },
     {
         id: 5,
@@ -114,7 +114,7 @@ export const PROJECTS_DATA: Project[] = [
         engine: 'Crowsnest',
         mainContribution: 'Player controller and movement',
         youtubeId: 'QqHZUtIGR4Y',
-        imageUrl: '/images/ussnoir.png',        
+        imageUrl: '/images/projects/ussnoir.png',        
     },
     {
         id: 6,
@@ -133,7 +133,7 @@ export const PROJECTS_DATA: Project[] = [
         engine: 'The Game Engine (TGE)',
         mainContribution: 'Weapon controller',
         youtubeId: 'ZbRc4CS2pBA',
-        imageUrl: '/images/huntress.png',        
+        imageUrl: '/images/projects/huntress.png',        
     },
     {
         id: 7,
@@ -152,7 +152,7 @@ export const PROJECTS_DATA: Project[] = [
         engine: 'The Game Engine (TGE)',
         mainContribution: 'Moving environment, collision/trigger management and level importer',
         youtubeId: 'LXEEHbRcwWg',
-        imageUrl: '/images/novaturient.png',        
+        imageUrl: '/images/projects/novaturient.png',        
     },
     {
         id: 8,
@@ -170,7 +170,7 @@ export const PROJECTS_DATA: Project[] = [
         engine: 'Unity',
         mainContribution: 'Player input and control',
         youtubeId: 'OduINB1GzMQ',
-        imageUrl: '/images/impfiltration.png',
+        imageUrl: '/images/projects/impfiltration.png',
         awards: [
             { name: 'Nominee: Best Mobile Game 2023', imageUrl: '/assets/badges/sga-award.png' }
         ],
@@ -190,7 +190,7 @@ export const PROJECTS_DATA: Project[] = [
         engine: 'Unity',
         mainContribution: 'Player controller and movement',
         youtubeId: 'whfLbvExxHE',
-        imageUrl: '/images/sootling-saga.png',     
+        imageUrl: '/images/projects/sootling-saga.png',     
     },
     {
         id: 10,
@@ -204,7 +204,7 @@ export const PROJECTS_DATA: Project[] = [
         genre: 'Platformer',
         engine: 'Unity',
         mainContribution: 'AI companion and parallax background',
-        imageUrl: '/images/flip.png',     
+        imageUrl: '/images/projects/flip.png',     
     },
     {
         id: 11,
@@ -218,7 +218,7 @@ export const PROJECTS_DATA: Project[] = [
         engine: 'Unity',
         mainContribution: 'Player controller and weapon system',
         youtubeId: 'bWgBfRIO5WY',
-        imageUrl: '/images/office-demons.png',     
+        imageUrl: '/images/projects/office-demons.png',     
     },
         {
         id: 12,
@@ -234,7 +234,7 @@ export const PROJECTS_DATA: Project[] = [
         genre: 'Comedic space exploration',
         engine: 'Unity',
         mainContribution: 'Everything',
-        imageUrl: '/images/space-game.gif',     
+        imageUrl: '/images/projects/space-game.gif',     
     },
 
 ];
