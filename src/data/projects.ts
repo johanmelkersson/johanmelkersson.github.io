@@ -79,7 +79,7 @@ export const PROJECTS_DATA: Project[] = [
         imageUrl: '/images/cruisin-4a-bruisin.png',        
     },
     {
-        id: 3,
+        id: 4,
         title: "Spite - Ragnareld",
         tagline: "As Fireborn, you are immune to the frost curse that has taken hold of the northern mountain. Slash, dash and burn "
         + "your way through the corrupted masses to find and defeat the evil from the ancient past of giants.",
@@ -97,7 +97,7 @@ export const PROJECTS_DATA: Project[] = [
         imageUrl: '/images/spite.png',        
     },
     {
-        id: 4,
+        id: 5,
         title: "USSnoíR",
         tagline: "Good job, you've infiltrated the enemy lab! Now scour the place for clues by inspecting the equipment -decode the "
         + "hidden message and deliver it before they catch up!",
@@ -110,14 +110,14 @@ export const PROJECTS_DATA: Project[] = [
         + "all the rotations to work, mainly due to the fact that the engine at this stage was in a pretty basic state. Also, lerping "
         + "and matching up the camera rotation before entering the animation phase of the movement took some tweaking to get right.",
         technologies: ['C++', 'Crowsnest', 'FMOD'],
-        genre: 'Action RPG',
+        genre: 'Puzzle',
         engine: 'Crowsnest',
         mainContribution: 'Player controller and movement',
         youtubeId: 'QqHZUtIGR4Y',
         imageUrl: '/images/ussnoir.png',        
     },
     {
-        id: 5,
+        id: 6,
         title: "Huntress",
         tagline: "Don your monster slaying gear and brandish the silvered blades of your ancestors as you root out and destroy the "
         + "horrors spreading their evil from an ancient castle",
@@ -136,7 +136,7 @@ export const PROJECTS_DATA: Project[] = [
         imageUrl: '/images/huntress.png',        
     },
     {
-        id: 6,
+        id: 7,
         title: "Novaturient",
         tagline: "Sent from her dying home to find a new one, biologist Nova find herself lost on a forign planet. Jump glide, break rocks "
         + "and learn the story of this strange place",
@@ -155,7 +155,7 @@ export const PROJECTS_DATA: Project[] = [
         imageUrl: '/images/novaturient.png',        
     },
     {
-        id: 7,
+        id: 8,
         title: "Impfiltration",
         tagline: "Guide the undercover imp, manipulate the environmet, burn stuff with their candle and collect artifacts to save their "
         + "rabbit",
@@ -176,7 +176,7 @@ export const PROJECTS_DATA: Project[] = [
         ],
     },
     {
-        id: 8,
+        id: 9,
         title: "Sootling Saga",
         tagline: "Be the flame that lights the way towards the celebration. But don't let the flame go out",
         description: "An 'infinite' run sidescroller where you play as a sootling tasked to be the spark that lights the big bonfire on "
@@ -193,7 +193,7 @@ export const PROJECTS_DATA: Project[] = [
         imageUrl: '/images/sootling-saga.png',     
     },
     {
-        id: 9,
+        id: 10,
         title: "Fl!p",
         description: "A small platformer where the player can use power-ups to flip the gravity, which is necessary in order to "
         + "traverse the level.",
@@ -207,7 +207,7 @@ export const PROJECTS_DATA: Project[] = [
         imageUrl: '/images/flip.png',     
     },
     {
-        id: 10,
+        id: 11,
         title: "Office demons",
         description: "A couch co-op limited-time turn-based mayhem of a game where you play as middle management demons who have to "
         + "leave their desks and travel to Earth to collect souls.",
@@ -221,7 +221,7 @@ export const PROJECTS_DATA: Project[] = [
         imageUrl: '/images/office-demons.png',     
     },
         {
-        id: 11,
+        id: 12,
         title: "Space game",
         description: "This is a personal project I worked on during my spare time a couple of years ago. Developed in Unity, it's far "
         + "from being a complete game, but it holds sentimental value to me as I've crafted everything myself, including the models and "

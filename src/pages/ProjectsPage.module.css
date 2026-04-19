@@ -6,10 +6,6 @@
   overflow-x: hidden; /* Förhindrar horisontell scroll */
 }
 
-.pageContainer::-webkit-scrollbar {
-  display: none; /* Valfritt: döljer scrollbar i Chrome/Safari */
-}
-
 .pageTitle {
   text-align: center;
   margin-bottom: 8rem; /* Rejält avstånd till första kortet */
@@ -21,10 +17,18 @@
   text-shadow: 0 0 20px rgba(var(--accent-rgb), 0.3);
 }
 
+.sectionLabel {
+  font-size: 0.8rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.35);
+  margin: 0 0 3rem;
+  font-weight: 500;
+}
+
 .projectsGrid {
   display: flex;
   flex-direction: column;
   gap: 4rem;
   width: 100%;
-  max-width: 100%; /* Hindra den från att bli bredare än skärmen */
 }

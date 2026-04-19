@@ -1,0 +1,159 @@
+.page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 4rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
+}
+
+/* ── Intro ── */
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.introText h1 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin: 0 0 1.5rem;
+}
+
+.introText p {
+  color: rgba(248, 250, 252, 0.65);
+  line-height: 1.85;
+  font-size: 1.05rem;
+  margin: 0 0 1rem;
+}
+
+.socialLinks {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.socialLinks a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: var(--text-primary);
+  opacity: 0.7;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: opacity 0.2s, color 0.2s;
+}
+
+.socialLinks a:hover {
+  color: var(--accent-color);
+  opacity: 1;
+}
+
+/* ── Section ── */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent-color);
+  margin: 0;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+/* ── Skills ── */
+.skillsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+
+@media (max-width: 700px) {
+  .skillsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.skillGroup h3 {
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.45);
+  margin: 0 0 0.75rem;
+}
+
+.skillGroup ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.skillGroup li {
+  font-size: 0.95rem;
+  color: rgba(248, 250, 252, 0.8);
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* ── Timeline ── */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.timelineItem {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.timelineYear {
+  font-size: 0.8rem;
+  letter-spacing: 1px;
+  color: var(--accent-color);
+  opacity: 0.8;
+  padding-top: 0.35rem;
+  font-family: 'Courier New', monospace;
+}
+
+.timelineItem h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.4rem;
+}
+
+.timelineItem p {
+  font-size: 0.95rem;
+  color: rgba(248, 250, 252, 0.55);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ── Mobile ── */
+@media (max-width: 600px) {
+  .page {
+    padding: 2rem 0;
+    gap: 3.5rem;
+  }
+
+  .timelineItem {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .timelineYear {
+    padding-top: 0;
+  }
+}

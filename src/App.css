@@ -4,30 +4,135 @@
   flex-direction: column;
 }
 
-/* Denna styr själva innehållet på alla sidor */
 main {
   width: 100%;
-  max-width: 1400px; /* Justera denna efter smak */
-  margin: 0 auto;    /* Centrerar main-blocket */
-  padding: 2rem;     /* Ger marginaler på sidorna */
-  box-sizing: border-box; /* Ser till att padding inte gör main bredare än 1400px */
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* ── Navbar ── */
+header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .navbar {
   display: flex;
-  gap: 2rem;
-  padding: 1.5rem 2rem;
-  background: rgba(0, 0, 0, 0.2); /* Subtil mörk bakgrund */
-  justify-content: center; /* Centrerar länkarna i navbaren */
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 2rem;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.navbar a {
+.nav-logo {
   text-decoration: none;
-  color: #fff;
-  font-weight: 500;
-  transition: color 0.3s;
+  color: var(--text-primary);
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: 0.3px;
+  transition: color 0.2s;
 }
 
-.navbar a:hover {
+.nav-logo:hover {
   color: var(--accent-color);
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--text-primary);
+  font-weight: 500;
+  opacity: 0.65;
+  transition: opacity 0.2s, color 0.2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--accent-color);
+  opacity: 1;
+}
+
+.nav-social {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.nav-social a {
+  color: var(--text-primary);
+  opacity: 0.55;
+  display: flex;
+  align-items: center;
+  transition: opacity 0.2s, color 0.2s;
+}
+
+.nav-social a:hover {
+  color: var(--accent-color);
+  opacity: 1;
+}
+
+/* ── Footer ── */
+.site-footer {
+  margin-top: auto;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 2rem;
+}
+
+.footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.footer-name {
+  font-size: 0.85rem;
+  color: rgba(248, 250, 252, 0.3);
+  letter-spacing: 0.3px;
+}
+
+.footer-social {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.footer-social a {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+  font-size: 0.85rem;
+  color: rgba(248, 250, 252, 0.4);
+  transition: color 0.2s;
+}
+
+.footer-social a:hover {
+  color: var(--accent-color);
+}
+
+/* ── Mobile nav ── */
+@media (max-width: 600px) {
+  .navbar {
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .nav-links {
+    gap: 1.2rem;
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
 }
