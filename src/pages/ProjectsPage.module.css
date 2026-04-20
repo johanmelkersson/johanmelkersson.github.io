@@ -9,6 +9,11 @@
   .pageContainer {
     padding: 1rem 0;
   }
+
+  .pageTitle {
+    font-size: clamp(1.8rem, 8vw, 3rem);
+    letter-spacing: 0.1em;
+  }
 }
 
 .pageTitle {
