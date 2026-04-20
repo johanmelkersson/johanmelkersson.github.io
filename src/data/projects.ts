@@ -222,7 +222,7 @@ export const PROJECTS_DATA: Project[] = [
     },
         {
         id: 12,
-        title: "Space game",
+        title: "Orbital Warden",
         description: "This is a personal project I worked on during my spare time a couple of years ago. Developed in Unity, it's far "
         + "from being a complete game, but it holds sentimental value to me as I've crafted everything myself, including the models and "
         + "animations.",

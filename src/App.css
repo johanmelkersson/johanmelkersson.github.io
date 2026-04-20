@@ -121,7 +121,13 @@ header {
   color: var(--accent-color);
 }
 
-/* ── Mobile nav ── */
+/* ── Mobile layout ── */
+@media (max-width: 768px) {
+  main {
+    padding: 1rem 0.5rem;
+  }
+}
+
 @media (max-width: 600px) {
   .navbar {
     flex-wrap: wrap;

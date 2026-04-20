@@ -1,9 +1,14 @@
 .pageContainer {
-  /* Använd 1rem (16px) på sidorna istället för fasta stora värden */
-  padding: 2rem 1rem; 
+  padding: 2rem 1rem;
   width: 100%;
-  box-sizing: border-box; /* Kritisk: ser till att padding inte ökar bredden */
-  overflow-x: hidden; /* Förhindrar horisontell scroll */
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+  .pageContainer {
+    padding: 1rem 0;
+  }
 }
 
 .pageTitle {
