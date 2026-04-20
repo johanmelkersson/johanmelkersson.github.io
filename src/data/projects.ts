@@ -8,6 +8,8 @@ export interface Project {
     genre: string;
     engine: string;    
     mainContribution: string;
+    releaseDate?: string;
+    releaseDateLabel?: string;
     youtubeId?: string;
     imageUrl: string;      // Key art bilden
     platformLinks?: {      // För knappar som Itch/Google Play
@@ -35,6 +37,8 @@ export const PROJECTS_DATA: Project[] = [
         genre: 'Strategic RPG',
         engine: 'Unreal Engine',
         mainContribution: 'Gameplay and UI',
+        releaseDate: 'Released · Oct 2025',
+        releaseDateLabel: 'STATUS',
         youtubeId: 'L3CSAbv5Pak',
         imageUrl: '/images/projects/successor.jpeg',
         platformLinks: [{ type: 'steam', url: 'https://store.steampowered.com/app/1284730/Successor/' }]
@@ -54,6 +58,7 @@ export const PROJECTS_DATA: Project[] = [
         genre: 'Third-person adventure',
         engine: 'Crowsnest',
         mainContribution: 'Player controller and physics',
+        releaseDate: 'Spring 2024',
         youtubeId: '4c_cBM9azbA',
         imageUrl: '/images/projects/ascend.png',
         platformLinks: [{ type: 'itch', url: 'https://korp-corp.itch.io/ascend' }]
@@ -75,6 +80,7 @@ export const PROJECTS_DATA: Project[] = [
         genre: 'Third-person action/bullet hell',
         engine: 'Crowsnest',
         mainContribution: 'PhysX integration and UI',
+        releaseDate: 'Spring 2024',
         youtubeId: 'QR_Mp2-HQ8g',
         imageUrl: '/images/projects/cruisin-4a-bruisin.png',        
     },
@@ -94,6 +100,7 @@ export const PROJECTS_DATA: Project[] = [
         genre: 'Action RPG',
         engine: 'Crowsnest',
         mainContribution: 'Enemy AI',
+        releaseDate: 'Spring 2024',
         imageUrl: '/images/projects/spite.png',        
     },
     {
@@ -113,6 +120,7 @@ export const PROJECTS_DATA: Project[] = [
         genre: 'Puzzle',
         engine: 'Crowsnest',
         mainContribution: 'Player controller and movement',
+        releaseDate: 'Spring 2024',
         youtubeId: 'QqHZUtIGR4Y',
         imageUrl: '/images/projects/ussnoir.png',        
     },
@@ -132,6 +140,7 @@ export const PROJECTS_DATA: Project[] = [
         genre: 'Action/Adventure',
         engine: 'The Game Engine (TGE)',
         mainContribution: 'Weapon controller',
+        releaseDate: 'Fall 2023',
         youtubeId: 'ZbRc4CS2pBA',
         imageUrl: '/images/projects/huntress.png',        
     },
@@ -151,6 +160,7 @@ export const PROJECTS_DATA: Project[] = [
         genre: '2D Platformer',
         engine: 'The Game Engine (TGE)',
         mainContribution: 'Moving environment, collision/trigger management and level importer',
+        releaseDate: 'Fall 2023',
         youtubeId: 'LXEEHbRcwWg',
         imageUrl: '/images/projects/novaturient.png',        
     },
@@ -169,6 +179,7 @@ export const PROJECTS_DATA: Project[] = [
         genre: 'Puzzle',
         engine: 'Unity',
         mainContribution: 'Player input and control',
+        releaseDate: 'Spring 2023',
         youtubeId: 'OduINB1GzMQ',
         imageUrl: '/images/projects/impfiltration.png',
         awards: [
@@ -189,12 +200,14 @@ export const PROJECTS_DATA: Project[] = [
         genre: 'Endless Runner',
         engine: 'Unity',
         mainContribution: 'Player controller and movement',
+        releaseDate: 'Fall 2022',
         youtubeId: 'whfLbvExxHE',
         imageUrl: '/images/projects/sootling-saga.png',     
     },
     {
         id: 10,
         title: "Fl!p",
+        tagline: "The right way through might be the wrong way up.",
         description: "A small platformer where the player can use power-ups to flip the gravity, which is necessary in order to "
         + "traverse the level.",
         roleDescription: "Developed in Unity during my time at Malmö University, my main contribution to the game was the parallax "
@@ -204,11 +217,13 @@ export const PROJECTS_DATA: Project[] = [
         genre: 'Platformer',
         engine: 'Unity',
         mainContribution: 'AI companion and parallax background',
+        releaseDate: 'Spring 2021',
         imageUrl: '/images/projects/flip.png',     
     },
     {
         id: 11,
         title: "Office demons",
+        tagline: "Middle management is hell. Luckily, so are you.",
         description: "A couch co-op limited-time turn-based mayhem of a game where you play as middle management demons who have to "
         + "leave their desks and travel to Earth to collect souls.",
         roleDescription: "Developed in Unity during my time at Malmö University, my main contribution to the game was the player "
@@ -217,12 +232,14 @@ export const PROJECTS_DATA: Project[] = [
         genre: 'Couch co-op semi-tactical bullet hell',
         engine: 'Unity',
         mainContribution: 'Player controller and weapon system',
+        releaseDate: 'Spring 2022',
         youtubeId: 'bWgBfRIO5WY',
         imageUrl: '/images/projects/office-demons.png',     
     },
         {
         id: 12,
         title: "Orbital Warden",
+        tagline: "Out here, gravity doesn't pull you down. It pulls you everywhere.",
         description: "This is a personal project I worked on during my spare time a couple of years ago. Developed in Unity, it's far "
         + "from being a complete game, but it holds sentimental value to me as I've crafted everything myself, including the models and "
         + "animations.",
@@ -234,6 +251,8 @@ export const PROJECTS_DATA: Project[] = [
         genre: 'Space exploration',
         engine: 'Unity',
         mainContribution: 'Everything',
+        releaseDate: 'Unfinished',
+        releaseDateLabel: 'STATUS',
         imageUrl: '/images/projects/space-game.gif',     
     },
 

@@ -46,6 +46,12 @@ function ProjectCard(project: Project) {
                 <span>CONTRIBUTION</span>
                 <p>{project.mainContribution}</p>
               </div>
+              {project.releaseDate && (
+                <div className={styles.specItem}>
+                  <span>{project.releaseDateLabel ?? 'PERIOD'}</span>
+                  <p>{project.releaseDate}</p>
+                </div>
+              )}
             </div>
 
             <div className={styles.descriptionArea}>

@@ -5,26 +5,21 @@
   overflow-x: hidden;
 }
 
+.pageTitle {
+  text-align: center;
+  margin-bottom: 8rem;
+  font-size: clamp(1.8rem, 8vw, 3rem);
+  font-weight: 800;
+  letter-spacing: clamp(0.05em, 1vw, 0.2em);
+  text-transform: uppercase;
+  color: var(--accent-color);
+  text-shadow: 0 0 20px rgba(var(--accent-rgb), 0.3);
+}
+
 @media (max-width: 768px) {
   .pageContainer {
     padding: 1rem 0;
   }
-
-  .pageTitle {
-    font-size: clamp(1.8rem, 8vw, 3rem);
-    letter-spacing: 0.1em;
-  }
-}
-
-.pageTitle {
-  text-align: center;
-  margin-bottom: 8rem; /* Rejält avstånd till första kortet */
-  font-size: 3rem;
-  font-weight: 800;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--accent-color);
-  text-shadow: 0 0 20px rgba(var(--accent-rgb), 0.3);
 }
 
 .sectionLabel {
