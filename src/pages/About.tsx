@@ -3,7 +3,7 @@ import { SOCIAL_LINKS } from '../data/constants';
 
 const skills = {
   'Languages': ['C++', 'C#', 'TypeScript', 'JavaScript'],
-  'Game Development': ['Unreal Engine', 'Gameplay Ability System (GAS)', 'Unity', 'AI & State Machines', 'Physics (PhysX)', 'FMOD'],
+  'Game Development': ['Unreal Engine', 'Gameplay Ability System (GAS)', 'Unity', 'AI & State Machines', 'Physics (PhysX)'],
   'System Development': ['React', 'HTML & CSS', '.NET'],
   'Tools': ['Git', 'Visual Studio', 'JetBrains Rider', 'Claude', 'GitHub Copilot'],
 };

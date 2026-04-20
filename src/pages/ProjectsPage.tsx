@@ -1,6 +1,6 @@
 import ProjectCard from "../components/ProjectCard";
 import { PROJECTS_DATA } from "../data/projects";
-import styles from "./ProjectsPage.module.css"; // Importera modulen!
+import styles from "./ProjectsPage.module.css";
 
 function ProjectsPage() {
   return (

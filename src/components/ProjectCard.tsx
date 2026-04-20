@@ -54,7 +54,7 @@ function ProjectCard(project: Project) {
               )}
             </div>
 
-            <div className={styles.descriptionArea}>
+            <div>
               <p>{project.description}</p>
               <div className={styles.roleBox}>
                 <strong>DEV_LOG:</strong> {project.roleDescription}
@@ -79,7 +79,7 @@ function ProjectCard(project: Project) {
                 <span key={tech} className={styles.techTag}>{tech}</span>
               ))}
             </div>
-            <div className={styles.links}>
+            <div>
               <div className={styles.buttonGroup}>
                 {project.platformLinks?.map((link) => (
                   <a key={link.type} href={link.url} target="_blank" rel="noopener noreferrer">
