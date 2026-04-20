@@ -9,9 +9,9 @@ function Home() {
         <h1 className={styles.name}>Johan Melkersson</h1>
         <h2 className={styles.title}>Game Programmer & System Developer</h2>
         <p className={styles.bio}>
-          I build games and the systems behind them. Trained as a game programmer
-          and currently expanding into system development — always looking for
-          interesting problems to solve.
+          I'm a game programmer with a background in gameplay systems, AI, and custom engines —
+          now expanding into full-stack development. I care about writing code that's
+          well-structured and makes sense to work with.
         </p>
         <div className={styles.ctas}>
           <Link to="/projects" className={styles.ctaPrimary}>View Projects</Link>

@@ -231,7 +231,7 @@ export const PROJECTS_DATA: Project[] = [
         + "system I developed during the project, where the player is affected by multiple gravitational pulls from all the asteroids in "
         + "the vicinity, taking mass and distance into account.",
         technologies: ['C#', 'Unity'],
-        genre: 'Comedic space exploration',
+        genre: 'Space exploration',
         engine: 'Unity',
         mainContribution: 'Everything',
         imageUrl: '/images/projects/space-game.gif',     
