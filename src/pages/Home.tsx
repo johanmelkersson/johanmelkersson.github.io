@@ -9,7 +9,7 @@ function Home() {
         <h1 className={styles.name}>Johan Melkersson</h1>
         <h2 className={styles.title}>Game Programmer & System Developer</h2>
         <p className={styles.bio}>
-          I'm a game programmer with a background in gameplay systems, AI, and custom engines —
+          I'm a game programmer with a background in gameplay systems, AI, and custom engines,
           now expanding into full-stack development. I care about writing code that's
           well-structured and makes sense to work with.
         </p>

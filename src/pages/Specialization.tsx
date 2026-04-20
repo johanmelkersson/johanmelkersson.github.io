@@ -16,14 +16,14 @@ function Specialization() {
         <p className={styles.intro}>
           For my specialization at The Game Assembly, I chose to focus on AI and behavior.
           I developed an AI that makes decisions and performs actions using a set of personal
-          stats that determine how well it performs each action — represented as classic gaming
+          stats that determine how well it performs each action, represented as classic gaming
           stats such as endurance, awareness, charisma, and so on, each affecting actions tied
           to that specific stat.
         </p>
         <p className={styles.intro}>
           The system supports an arbitrary number of AI actors with randomized or manually
           tweaked stats, producing very different performance levels. I also had an initial
-          plan to explore fuzzy logic — something I had no prior experience with — but ultimately
+          plan to explore fuzzy logic, something I had no prior experience with, but ultimately
           scrapped it mid-project due to time constraints and the fact that the desired results
           were achievable without it.
         </p>
@@ -44,15 +44,15 @@ function Specialization() {
             <p>
               I chose to do my specialization in <em>Sad Dad Motors</em>, a game engine my friend
               and I had developed during our time at TGA. I naively made this decision solely
-              based on the fact that I wanted to — even though I was fully aware this would mean
+              based on the fact that I wanted to, even though I was fully aware this would mean
               significant additional work to get the engine ready.
             </p>
             <p>
               This meant spending a significant amount of time implementing things necessary for
               the AI actor, most notably the ability to create and navigate a navmesh.
               With the engine prep done, I began structuring the AI. I wanted to use a state machine
-              — I had substantial experience with it and new ideas to try — and add a behavior tree
-              to each state. Combining these two methods was something I had never done before.
+              and add a behavior tree to each state, since I had substantial experience with state
+              machines and new ideas to try. Combining these two methods was something I had never done before.
             </p>
           </div>
           <SectionImage src="/images/specialization/getting-started.jpeg" alt="Getting started -navmesh setup" />
@@ -86,7 +86,7 @@ function Specialization() {
         <h2 className={styles.sectionTitle}>AI Actor Stats & State</h2>
         <p>
           I needed stats connected to detection and movement. I deviated slightly from classic
-          game stats by implementing separate vision and hearing stats — letting me explore how
+          game stats by implementing separate vision and hearing stats, which let me explore how
           a nearly blind or deaf actor changes gameplay. Each stat can be freely tweaked by the
           user to alter the actor's overall performance. Additionally, some internal variables
           represent the actor's physical and mental state during the game, and are modified by
@@ -120,14 +120,14 @@ function Specialization() {
           <div className={styles.text}>
             <p>
               After some iterations, I landed on a structure where each state machine can hold
-              an arbitrary number of actors. This was important to me — both because I hadn't
-              done it this way before, and because I wanted the state machine to own the world
+              an arbitrary number of actors. This was important to me for two reasons: I hadn't
+              done it this way before, and I wanted the state machine to own the world
               parameters for its connected actors: max movement speed, acceleration, sight range,
               hearing range, and so on.
             </p>
             <p>
               Some variables were set as constants, others were state-specific. All variables
-              were exposed to allow multiple state machines with different world parameters —
+              were exposed to allow multiple state machines with different world parameters,
               meaning actors connected to a different machine play by different rules, such as
               elite actors. This also made runtime tweaking easy for testing.
               Each state was then built using a behavior tree for updates and a blackboard to
@@ -167,8 +167,8 @@ function Specialization() {
         <div className={styles.sectionContent}>
           <div className={styles.text}>
             <p>
-              The actor itself does very little. It holds a struct with all actor stats —
-              with corresponding getters and setters used by the state machine — an enum
+              The actor itself does very little. It holds a struct with all actor stats,
+              with corresponding getters and setters used by the state machine, an enum
               representing the current state, and a struct with kinematic data that is
               updated by the state machine each update loop.
             </p>

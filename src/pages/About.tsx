@@ -17,23 +17,24 @@ function About() {
         <div className={styles.introText}>
           <h1>About Me</h1>
           <p>
-            I switched careers about seven years ago to pursue what I genuinely love — writing code.
+            I switched careers about seven years ago to pursue what I genuinely love: writing code.
             Game development was the obvious starting point, and I worked my way from Malmö University
             through The Game Assembly and into an eight-month industry internship at Playwood Project
             in Copenhagen, where I worked on <em>Successor</em>, a top-down strategic RPG built in
-            Unreal Engine. I've shipped real games, built systems from scratch in C++, and grown a
+            Unreal Engine. I've worked on real games, built systems from scratch in C++, and grown a
             lot as a programmer along the way.
           </p>
           <p>
-            My background is in gameplay programming — controllers, state machines, AI, and systems —
-            but what I really enjoy is the thinking behind how things fit together. I care about writing
-            code that makes sense: systems that are easy to use, well-structured, and don't create
-            problems further down the line.
+            My background is in gameplay programming, working with controllers, state machines, AI,
+            and systems, but what I really enjoy is the thinking behind how things fit together. I care
+            about writing code that makes sense: systems that are easy to use, well-structured, and
+            don't create problems further down the line.
           </p>
           <p>
             I'm now expanding into system development, studying full-stack at Lexicon while applying
             the same engineering mindset to web and backend work. I'm looking for roles where I can
-            bring technical depth and a genuine interest in building things well — regardless of the domain.
+            bring technical depth and a genuine interest in building things well, in whatever domain
+            that turns out to be.
           </p>
           <div className={styles.socialLinks}>
             {SOCIAL_LINKS.map(({ href, label, Icon }) => (
