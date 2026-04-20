@@ -27,10 +27,17 @@
   margin: 0 0 1rem;
 }
 
+.introActions {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
 .socialLinks {
   display: flex;
   gap: 1.5rem;
-  margin-top: 1rem;
 }
 
 .socialLinks a {
@@ -48,6 +55,22 @@
 .socialLinks a:hover {
   color: var(--accent-color);
   opacity: 1;
+}
+
+.cvButton {
+  text-decoration: none;
+  border: 1px solid rgba(248, 250, 252, 0.2);
+  color: var(--text-primary);
+  padding: 0.45rem 1.2rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+.cvButton:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
 }
 
 /* ── Section ── */

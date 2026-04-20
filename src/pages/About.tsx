@@ -36,12 +36,15 @@ function About() {
             bring technical depth and a genuine interest in building things well, in whatever domain
             that turns out to be.
           </p>
-          <div className={styles.socialLinks}>
-            {SOCIAL_LINKS.map(({ href, label, Icon }) => (
-              <a key={label} href={href} target="_blank" rel="noopener noreferrer">
-                <Icon /> {label}
-              </a>
-            ))}
+          <div className={styles.introActions}>
+            <div className={styles.socialLinks}>
+              {SOCIAL_LINKS.map(({ href, label, Icon }) => (
+                <a key={label} href={href} target="_blank" rel="noopener noreferrer">
+                  <Icon /> {label}
+                </a>
+              ))}
+            </div>
+            <a href="/johan-melkersson-cv.pdf" download className={styles.cvButton}>Download CV</a>
           </div>
         </div>
       </section>
