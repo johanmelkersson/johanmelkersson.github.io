@@ -1,25 +1,52 @@
-import ProjectCard from "../components/ProjectCard";
-import { PROJECTS_DATA } from "../data/projects";
+import { useState } from "react";
+import GameProjectCard from "../components/GameProjectCard";
+import SystemProjectCard from "../components/SystemProjectCard";
+import { PROJECTS_DATA, SYSTEM_PROJECTS_DATA } from "../data/projects";
 import styles from "./ProjectsPage.module.css";
 
+type Tab = 'games' | 'system';
+
 function ProjectsPage() {
+  const [activeTab, setActiveTab] = useState<Tab>('games');
+
   return (
     <div className={styles.pageContainer}>
       <h2 className={styles.pageTitle}>Projects</h2>
 
-      <section>
-        <h3 className={styles.sectionLabel}>Game Projects</h3>
-        <div className={styles.projectsGrid}>
-          {PROJECTS_DATA.map((project) => (
-            <ProjectCard
-              key={project.id}
-              {...project}
-            />
-          ))}
-        </div>
-      </section>
+      <div className={styles.tabBar}>
+        <button
+          className={`${styles.tabButton} ${activeTab === 'games' ? styles.tabButtonActive : ''}`}
+          onClick={() => setActiveTab('games')}
+        >
+          Game Projects
+        </button>
+        <button
+          className={`${styles.tabButton} ${activeTab === 'system' ? styles.tabButtonActive : ''}`}
+          onClick={() => setActiveTab('system')}
+        >
+          System Development
+        </button>
+      </div>
 
-      {/* System Development-projekt läggs till här när de finns */}
+      {activeTab === 'games' && (
+        <section>
+          <div className={styles.projectsGrid}>
+            {PROJECTS_DATA.map((project) => (
+              <GameProjectCard key={project.id} {...project} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {activeTab === 'system' && (
+        <section>
+          <div className={styles.projectsGrid}>
+            {SYSTEM_PROJECTS_DATA.map((project) => (
+              <SystemProjectCard key={project.id} {...project} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

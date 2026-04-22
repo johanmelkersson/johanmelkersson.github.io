@@ -1,5 +1,5 @@
-import type { Project } from '../data/projects';
-import styles from './ProjectCard.module.css';
+import type { GameProject } from '../data/projects';
+import styles from './GameProjectCard.module.css';
 
 const platformBadges: Record<string, string> = {
   itch: '/assets/badges/itch-badge.png',
@@ -7,7 +7,7 @@ const platformBadges: Record<string, string> = {
   steam: '/assets/badges/steam-badge.png'
 };
 
-function ProjectCard(project: Project) {
+function GameProjectCard(project: GameProject) {
   return (
     <div className={styles.card}>
       <div className={styles.cardBg} style={{ backgroundImage: `url(${project.imageUrl})` }} />
@@ -72,7 +72,7 @@ function ProjectCard(project: Project) {
             )}
           </div>
 
-          {/* 3. Footer (Nu inuti mainGrid för bättre kontroll) */}
+          {/* 3. Footer */}
           <div className={styles.footer}>
             <div className={styles.techStack}>
               {project.technologies.map(tech => (
@@ -89,10 +89,10 @@ function ProjectCard(project: Project) {
               </div>
             </div>
           </div>
-        </div> {/* Slut på mainGrid */}
+        </div>
       </div>
     </div>
   );
 }
 
-export default ProjectCard;
+export default GameProjectCard;

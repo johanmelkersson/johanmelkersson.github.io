@@ -217,9 +217,9 @@
 @media (min-width: 1024px) {
   .mainGrid {
     display: grid;
-    /* Här skapar vi "kartan": Video till vänster, Text till höger. 
+    /* Här skapar vi "kartan": Video till vänster, Text till höger.
        Footern placeras under videon i vänstra kolumnen. */
-    grid-template-areas: 
+    grid-template-areas:
       "media details"
       "footer details";
     grid-template-columns: 1.5fr 1fr;
@@ -261,7 +261,7 @@
   .titleArea h2 {
     font-size: 1.5rem; /* Krymp titeln så den inte tvingar ut bredden */
   }
-  
+
   .specBox {
     grid-template-columns: 1fr; /* Stapla specsen vertikalt på super-smala skärmar */
   }

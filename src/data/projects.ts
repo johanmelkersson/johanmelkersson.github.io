@@ -1,4 +1,4 @@
-export interface Project {
+export interface GameProject {
     id: number;
     title: string;
     tagline?: string;      // Det där citatet under titeln
@@ -22,7 +22,7 @@ export interface Project {
     }[];
 }
 
-export const PROJECTS_DATA: Project[] = [
+export const PROJECTS_DATA: GameProject[] = [
     {
         id: 1,
         title: "Successor",
@@ -258,3 +258,40 @@ export const PROJECTS_DATA: Project[] = [
 
 ];
 
+export interface SystemProject {
+    id: number;
+    title: string;
+    description: string;
+    roleDescription: string;
+    technologies: string[];
+    type: string;
+    mainContribution: string;
+    releaseDate?: string;
+    imageUrl: string;
+    features: string[];
+    demoUrl?: string;
+    githubUrl?: string;
+}
+
+export const SYSTEM_PROJECTS_DATA: SystemProject[] = [
+    {
+        id: 1,
+        title: "Weather Dashboard",
+        description: "A responsive weather application that provides real-time weather data and forecasts for cities around the world.",
+        roleDescription: "Built as a personal project to explore working with external APIs and responsive web design. The app fetches live data from OpenWeatherMap API and presents it in a clean, user-friendly interface. Features both a dark and a light mode, and is fully responsive across devices.",
+        technologies: ['TypeScript', 'JavaScript', 'HTML', 'CSS', 'OpenWeatherMap API'],
+        type: 'Web Application',
+        mainContribution: 'Everything',
+        releaseDate: 'Spring 2026',
+        imageUrl: '/images/projects/weather-dashboard.png',
+        features: [
+            'Live väderdata via OpenWeatherMap API',
+            'Stadsökning',
+            'Aktuell temperatur med känslotemperatur, vind och luftfuktighet',
+            '5-dagarsprognos',
+            'Dark/Light mode toggle',
+        ],
+        demoUrl: 'https://johanmelkersson.github.io/WeatherDashboard/',
+        githubUrl: 'https://github.com/johanmelkersson/WeatherDashboard',
+    },
+];
