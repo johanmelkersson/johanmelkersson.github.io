@@ -194,4 +194,8 @@
   .statsGrid {
     grid-template-columns: 1fr;
   }
+
+  .imageRow {
+    grid-template-columns: 1fr;
+  }
 }

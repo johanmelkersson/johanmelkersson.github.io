@@ -104,6 +104,12 @@
   }
 }
 
+@media (max-width: 360px) {
+  .skillsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .skillGroup h3 {
   font-size: 0.8rem;
   letter-spacing: 2px;

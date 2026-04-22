@@ -35,8 +35,8 @@
   border: none;
   border-bottom: 2px solid transparent;
   padding: 0.6rem 1.2rem;
-  font-size: 0.8rem;
-  letter-spacing: 2px;
+  font-size: clamp(0.6rem, 2.5vw, 0.8rem);
+  letter-spacing: clamp(0.5px, 0.5vw, 2px);
   text-transform: uppercase;
   color: rgba(248, 250, 252, 0.4);
   cursor: pointer;
