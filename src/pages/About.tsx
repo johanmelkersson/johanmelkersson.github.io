@@ -82,7 +82,7 @@ function About() {
             <div>
               <h3>Game programmer - Playwood project</h3>
               <p>Small Copenhagen-based studio where I joined as an intern through TGA and was retained as a temporary employee 
-                to help reach key milestones. Here IWorked on Successor, a top-down strategic RPG developed in Unreal Engine for 
+                to help reach key milestones. Here I Worked on Successor, a top-down strategic RPG developed in Unreal Engine for 
                 PC and Meta Quest, using C++ and Blueprints. My Primarily responsible for gameplay and UI, contributing across the 
                 codebase wherever needed,
               </p>
