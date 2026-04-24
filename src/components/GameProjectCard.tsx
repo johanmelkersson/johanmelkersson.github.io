@@ -1,5 +1,12 @@
-import type { GameProject } from '../data/projects';
+import type { GameProject, ProjectStatus } from '../data/projects';
 import styles from './GameProjectCard.module.css';
+
+const STATUS_LABEL: Record<ProjectStatus, string> = {
+  'in-development': 'In Development',
+  'released':       'Released',
+  'finished':       'Finished',
+  'archived':       'Archived',
+};
 
 const platformBadges: Record<string, string> = {
   itch: '/assets/badges/itch-badge.png',
@@ -15,9 +22,15 @@ function GameProjectCard(project: GameProject) {
       <div className={styles.cardContent}>
         {/* 1. Header */}
         <div className={styles.header}>
-          <div className={styles.titleArea}>
-            <h2>{project.title}</h2>
-            <span className={styles.engineTag}>{project.engine}</span>
+          <div className={styles.titleRow}>
+            <div className={styles.titleArea}>
+              <h2>{project.title}</h2>
+              <span className={styles.engineTag}>{project.engine}</span>
+            </div>
+            <span className={`${styles.statusBadge} ${styles[`status-${project.status}`]}`}>
+              <span>{STATUS_LABEL[project.status]}</span>
+              {project.releaseDate && <span className={styles.statusDate}>{project.releaseDate}</span>}
+            </span>
           </div>
           {project.tagline && <p className={styles.tagline}>{project.tagline}</p>}
         </div>
@@ -46,12 +59,6 @@ function GameProjectCard(project: GameProject) {
                 <span>CONTRIBUTION</span>
                 <p>{project.mainContribution}</p>
               </div>
-              {project.releaseDate && (
-                <div className={styles.specItem}>
-                  <span>{project.releaseDateLabel ?? 'PERIOD'}</span>
-                  <p>{project.releaseDate}</p>
-                </div>
-              )}
             </div>
 
             <div>

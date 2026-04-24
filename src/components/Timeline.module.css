@@ -1,9 +1,7 @@
 /* Category colours */
-.university   { --cat: #a78bfa; }
-.school       { --cat: #38bdf8; }
+.educational  { --cat: #38bdf8; }
 .professional { --cat: #34d399; }
 .hobby        { --cat: #f0c060; }
-.system       { --cat: #fb923c; }
 
 .container {
   width: 100%;
@@ -116,14 +114,45 @@
   border-color: rgba(240, 192, 96, 0.6);
 }
 
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 4px;
+}
+
 .period {
-  margin: 0 0 4px 0;
+  margin: 0;
   font-family: 'Courier New', monospace;
   font-size: 0.7rem;
   letter-spacing: 1.5px;
   color: rgba(248, 250, 252, 0.35);
   text-transform: uppercase;
 }
+
+.statusBadge {
+  font-family: 'Courier New', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid rgba(248, 250, 252, 0.2);
+  color: rgba(248, 250, 252, 0.35);
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover .statusBadge {
+  box-shadow: 0 0 8px var(--status-glow, rgba(248, 250, 252, 0.15));
+}
+
+.status-in-development { --status-glow: rgba(240, 192, 96,  0.6); }
+.status-released        { --status-glow: rgba(52,  211, 153, 0.5); }
+.status-finished        { --status-glow: rgba(52,  211, 153, 0.35); }
+.status-archived        { --status-glow: rgba(248, 250, 252, 0.12); }
 
 .title {
   margin: 0 0 4px 0;
@@ -132,14 +161,36 @@
   letter-spacing: 0.3px;
 }
 
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
 .engine {
-  display: inline-block;
   font-family: 'Courier New', monospace;
   font-size: 0.7rem;
   color: var(--accent-color);
   opacity: 0.7;
   text-transform: uppercase;
-  margin-bottom: 6px;
+}
+
+.typeTag {
+  font-family: 'Courier New', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.3);
+  border: 1px solid rgba(248, 250, 252, 0.12);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+.badgeRow {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .contribution {

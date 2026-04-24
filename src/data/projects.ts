@@ -1,3 +1,5 @@
+export type ProjectStatus = 'in-development' | 'released' | 'finished' | 'archived';
+
 export interface GameProject {
     id: number;
     title: string;
@@ -6,8 +8,9 @@ export interface GameProject {
     roleDescription: string; // Texten om vad DU gjorde
     technologies: string[];
     genre: string;
-    engine: string;    
+    engine: string;
     mainContribution: string;
+    status: ProjectStatus;
     releaseDate?: string;
     releaseDateLabel?: string;
     youtubeId?: string;
@@ -32,6 +35,7 @@ export interface FeaturedProject {
     genre: string;
     engine: string;
     mainContribution: string;
+    status: ProjectStatus;
     startDate: string;
     teamSize: string;
     technicalSystems: {
@@ -59,7 +63,8 @@ export const FEATURED_PROJECT: FeaturedProject = {
     genre: "Squad Tactical / RPG",
     engine: "Unreal Engine 5.7",
     mainContribution: "Encounters, AI, GAS, Weapons, Animation, Save/Load, UI",
-    startDate: "September 2024",
+    status: 'in-development',
+    startDate: "2024 →",
     teamSize: "2 developers",
     motivation:
         "This game has grown from every decision we made along the way, some decisions were made because it's what we'd " +
@@ -124,8 +129,8 @@ export const PROJECTS_DATA: GameProject[] = [
         genre: 'Strategic RPG',
         engine: 'Unreal Engine',
         mainContribution: 'Gameplay and UI',
-        releaseDate: 'Released · Oct 2025',
-        releaseDateLabel: 'STATUS',
+        status: 'released',
+        releaseDate: 'Oct 2025',
         youtubeId: 'L3CSAbv5Pak',
         imageUrl: '/images/projects/successor.jpeg',
         platformLinks: [{ type: 'steam', url: 'https://store.steampowered.com/app/1284730/Successor/' }]
@@ -145,6 +150,7 @@ export const PROJECTS_DATA: GameProject[] = [
         genre: 'Third-person adventure',
         engine: 'Crowsnest',
         mainContribution: 'Player controller and physics',
+        status: 'released',
         releaseDate: 'Spring 2024',
         youtubeId: '4c_cBM9azbA',
         imageUrl: '/images/projects/ascend.png',
@@ -167,6 +173,7 @@ export const PROJECTS_DATA: GameProject[] = [
         genre: 'Third-person action/bullet hell',
         engine: 'Crowsnest',
         mainContribution: 'PhysX integration and UI',
+        status: 'finished',
         releaseDate: 'Spring 2024',
         youtubeId: 'QR_Mp2-HQ8g',
         imageUrl: '/images/projects/cruisin-4a-bruisin.png',        
@@ -187,6 +194,7 @@ export const PROJECTS_DATA: GameProject[] = [
         genre: 'Action RPG',
         engine: 'Crowsnest',
         mainContribution: 'Enemy AI',
+        status: 'finished',
         releaseDate: 'Spring 2024',
         imageUrl: '/images/projects/spite.png',        
     },
@@ -207,6 +215,7 @@ export const PROJECTS_DATA: GameProject[] = [
         genre: 'Puzzle',
         engine: 'Crowsnest',
         mainContribution: 'Player controller and movement',
+        status: 'finished',
         releaseDate: 'Spring 2024',
         youtubeId: 'QqHZUtIGR4Y',
         imageUrl: '/images/projects/ussnoir.png',        
@@ -227,6 +236,7 @@ export const PROJECTS_DATA: GameProject[] = [
         genre: 'Action/Adventure',
         engine: 'The Game Engine (TGE)',
         mainContribution: 'Weapon controller',
+        status: 'finished',
         releaseDate: 'Fall 2023',
         youtubeId: 'ZbRc4CS2pBA',
         imageUrl: '/images/projects/huntress.png',        
@@ -247,12 +257,31 @@ export const PROJECTS_DATA: GameProject[] = [
         genre: '2D Platformer',
         engine: 'The Game Engine (TGE)',
         mainContribution: 'Moving environment, collision/trigger management and level importer',
+        status: 'finished',
         releaseDate: 'Fall 2023',
         youtubeId: 'LXEEHbRcwWg',
         imageUrl: '/images/projects/novaturient.png',        
     },
     {
         id: 8,
+        title: "SadDadMotors",
+        tagline: "A custom C++ game engine built from the ground up.",
+        description: "SadDadMotors is a hobby game engine developed together with Filip Orrling. The project started as an exploration "
+        + "of low-level engine architecture and grew into a fairly capable system with navmesh, a custom scene graph, and core engine "
+        + "systems. The engine was eventually archived as both developers shifted focus to other projects.",
+        roleDescription: "Co-developer alongside Filip Orrling. My contributions spanned the full engine: C++ architecture, navmesh "
+        + "integration, component systems, and general engine infrastructure. Building this gave me a much deeper understanding of what "
+        + "happens under the hood of engines.",
+        technologies: ['C++'],
+        genre: 'Game Engine',
+        engine: 'C++',
+        mainContribution: 'Co-developer',
+        status: 'archived',
+        releaseDate: '2024',
+        imageUrl: '/images/projects/saddadmotors.png',
+    },
+    {
+        id: 9,
         title: "Impfiltration",
         tagline: "Guide the undercover imp, manipulate the environmet, burn stuff with their candle and collect artifacts to save their "
         + "rabbit",
@@ -266,6 +295,7 @@ export const PROJECTS_DATA: GameProject[] = [
         genre: 'Puzzle',
         engine: 'Unity',
         mainContribution: 'Player input and control',
+        status: 'finished',
         releaseDate: 'Spring 2023',
         youtubeId: 'OduINB1GzMQ',
         imageUrl: '/images/projects/impfiltration.png',
@@ -274,7 +304,7 @@ export const PROJECTS_DATA: GameProject[] = [
         ],
     },
     {
-        id: 9,
+        id: 10,
         title: "Sootling Saga",
         tagline: "Be the flame that lights the way towards the celebration. But don't let the flame go out",
         description: "An 'infinite' run sidescroller where you play as a sootling tasked to be the spark that lights the big bonfire on "
@@ -287,25 +317,10 @@ export const PROJECTS_DATA: GameProject[] = [
         genre: 'Endless Runner',
         engine: 'Unity',
         mainContribution: 'Player controller and movement',
+        status: 'finished',
         releaseDate: 'Fall 2022',
         youtubeId: 'whfLbvExxHE',
         imageUrl: '/images/projects/sootling-saga.png',     
-    },
-    {
-        id: 10,
-        title: "Fl!p",
-        tagline: "The right way through might be the wrong way up.",
-        description: "A small platformer where the player can use power-ups to flip the gravity, which is necessary in order to "
-        + "traverse the level.",
-        roleDescription: "Developed in Unity during my time at Malmö University, my main contribution to the game was the parallax "
-        + "background and the companion AI. The companion can, in addition to following the player around, be ordered to specific "
-        + "locations to help the player solve puzzles.",
-        technologies: ['C#', 'Unity'],
-        genre: 'Platformer',
-        engine: 'Unity',
-        mainContribution: 'AI companion and parallax background',
-        releaseDate: 'Spring 2021',
-        imageUrl: '/images/projects/flip.png',     
     },
     {
         id: 11,
@@ -319,12 +334,31 @@ export const PROJECTS_DATA: GameProject[] = [
         genre: 'Couch co-op semi-tactical bullet hell',
         engine: 'Unity',
         mainContribution: 'Player controller and weapon system',
+        status: 'finished',
         releaseDate: 'Spring 2022',
         youtubeId: 'bWgBfRIO5WY',
-        imageUrl: '/images/projects/office-demons.png',     
+        imageUrl: '/images/projects/office-demons.png', 
+          
+    },
+    {
+        id: 12,
+         title: "Fl!p",
+        tagline: "The right way through might be the wrong way up.",
+        description: "A small platformer where the player can use power-ups to flip the gravity, which is necessary in order to "
+        + "traverse the level.",
+        roleDescription: "Developed in Unity during my time at Malmö University, my main contribution to the game was the parallax "
+        + "background and the companion AI. The companion can, in addition to following the player around, be ordered to specific "
+        + "locations to help the player solve puzzles.",
+        technologies: ['C#', 'Unity'],
+        genre: 'Platformer',
+        engine: 'Unity',
+        mainContribution: 'AI companion and parallax background',
+        status: 'finished',
+        releaseDate: 'Spring 2021',
+        imageUrl: '/images/projects/flip.png',       
     },
         {
-        id: 12,
+        id: 13,
         title: "Orbital Warden",
         tagline: "Out here, gravity doesn't pull you down. It pulls you everywhere.",
         description: "This is a personal project I worked on during my spare time a couple of years ago. Developed in Unity, it's far "
@@ -338,10 +372,11 @@ export const PROJECTS_DATA: GameProject[] = [
         genre: 'Space exploration',
         engine: 'Unity',
         mainContribution: 'Everything',
-        releaseDate: 'Unfinished',
-        releaseDateLabel: 'STATUS',
-        imageUrl: '/images/projects/space-game.gif',     
+        status: 'archived',
+        releaseDate: '2022',
+        imageUrl: '/images/projects/space-game.gif',
     },
+    
 
 ];
 
@@ -353,6 +388,7 @@ export interface SystemProject {
     technologies: string[];
     type: string;
     mainContribution: string;
+    status: ProjectStatus;
     releaseDate?: string;
     imageUrl: string;
     features: string[];
@@ -369,6 +405,7 @@ export const SYSTEM_PROJECTS_DATA: SystemProject[] = [
         technologies: ['TypeScript', 'JavaScript', 'HTML', 'CSS', 'OpenWeatherMap API'],
         type: 'Web Application',
         mainContribution: 'Everything',
+        status: 'finished',
         releaseDate: 'Spring 2026',
         imageUrl: '/images/projects/weather-dashboard.png',
         features: [

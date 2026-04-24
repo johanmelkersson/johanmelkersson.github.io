@@ -96,6 +96,24 @@ header {
   gap: 1rem;
 }
 
+.footer-terminal-btn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  color: rgba(248, 250, 252, 0.3);
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  letter-spacing: 1px;
+}
+
+.footer-terminal-btn:hover {
+  color: var(--accent-color);
+  border-color: var(--accent-color);
+}
+
 .footer-name {
   font-size: 0.85rem;
   color: rgba(248, 250, 252, 0.3);

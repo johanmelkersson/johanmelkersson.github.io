@@ -1,11 +1,9 @@
 import { Link } from 'react-router-dom';
-import HexGrid from '../components/HexGrid';
 import styles from './Home.module.css';
 
 function Home() {
   return (
     <div className={styles.hero}>
-      <HexGrid />
       <div className={styles.heroContent}>
         <p className={styles.greeting}>Hi, I'm</p>
         <h1 className={styles.name}>Johan Melkersson</h1>

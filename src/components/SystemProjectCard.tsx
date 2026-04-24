@@ -1,5 +1,12 @@
-import type { SystemProject } from '../data/projects';
+import type { SystemProject, ProjectStatus } from '../data/projects';
 import styles from './SystemProjectCard.module.css';
+
+const STATUS_LABEL: Record<ProjectStatus, string> = {
+  'in-development': 'In Development',
+  'released':       'Released',
+  'finished':       'Finished',
+  'archived':       'Archived',
+};
 
 function SystemProjectCard(project: SystemProject) {
   return (
@@ -9,9 +16,15 @@ function SystemProjectCard(project: SystemProject) {
       <div className={styles.cardContent}>
         {/* 1. Header */}
         <div className={styles.header}>
-          <div className={styles.titleArea}>
-            <h2>{project.title}</h2>
-            <span className={styles.typeTag}>{project.type}</span>
+          <div className={styles.titleRow}>
+            <div className={styles.titleArea}>
+              <h2>{project.title}</h2>
+              <span className={styles.typeTag}>{project.type}</span>
+            </div>
+            <span className={`${styles.statusBadge} ${styles[`status-${project.status}`]}`}>
+              <span>{STATUS_LABEL[project.status]}</span>
+              {project.releaseDate && <span className={styles.statusDate}>{project.releaseDate}</span>}
+            </span>
           </div>
         </div>
 
@@ -33,12 +46,6 @@ function SystemProjectCard(project: SystemProject) {
                 <span>CONTRIBUTION</span>
                 <p>{project.mainContribution}</p>
               </div>
-              {project.releaseDate && (
-                <div className={styles.specItem}>
-                  <span>PERIOD</span>
-                  <p>{project.releaseDate}</p>
-                </div>
-              )}
             </div>
 
             <p>{project.description}</p>

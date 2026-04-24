@@ -1,12 +1,18 @@
-import { TIMELINE_DATA, CATEGORY_LABELS, type ProjectCategory } from '../data/timeline';
+import { TIMELINE_DATA, CATEGORY_LABELS, TYPE_LABELS, type ProjectCategory } from '../data/timeline';
+import type { ProjectStatus } from '../data/projects';
 import styles from './Timeline.module.css';
 
+const STATUS_LABEL: Record<ProjectStatus, string> = {
+  'in-development': 'In Development',
+  'released':       'Released',
+  'finished':       'Finished',
+  'archived':       'Archived',
+};
+
 const CATEGORY_CLASS: Record<ProjectCategory, string> = {
-  university:   'university',
-  school:       'school',
+  educational:  'educational',
   professional: 'professional',
   hobby:        'hobby',
-  system:       'system',
 };
 
 function Timeline() {
@@ -26,18 +32,29 @@ function Timeline() {
 
         {TIMELINE_DATA.map((entry, i) => {
           const side = i % 2 === 0 ? 'left' : 'right';
+          const catClass = CATEGORY_CLASS[entry.category];
           return (
             <div key={`${entry.id}-${i}`} className={`${styles.row} ${styles[side]}`}>
               <div className={`${styles.card} ${entry.ongoing ? styles.ongoingCard : ''}`}>
-                <p className={styles.period}>{entry.period}</p>
+                <div className={styles.cardHeader}>
+                  <p className={styles.period}>{entry.period}</p>
+                  <span className={`${styles.statusBadge} ${styles[`status-${entry.status}`]}`}>
+                    {STATUS_LABEL[entry.status]}
+                  </span>
+                </div>
                 <h3 className={styles.title}>{entry.title}</h3>
-                {entry.engine && <span className={styles.engine}>{entry.engine}</span>}
+                <div className={styles.metaRow}>
+                  {entry.engine && <span className={styles.engine}>{entry.engine}</span>}
+                </div>
                 <p className={styles.contribution}>{entry.contribution}</p>
-                <span className={`${styles.categoryBadge} ${styles[CATEGORY_CLASS[entry.category]]}`}>
-                  {CATEGORY_LABELS[entry.category]}
-                </span>
+                <div className={styles.badgeRow}>
+                  <span className={`${styles.categoryBadge} ${styles[catClass]}`}>
+                    {entry.categoryLabel ?? CATEGORY_LABELS[entry.category]}
+                  </span>
+                  <span className={styles.typeTag}>{TYPE_LABELS[entry.type]}</span>
+                </div>
               </div>
-              <div className={`${styles.dot} ${styles[CATEGORY_CLASS[entry.category]]} ${entry.ongoing ? styles.ongoingDot : ''}`} />
+              <div className={`${styles.dot} ${styles[catClass]} ${entry.ongoing ? styles.ongoingDot : ''}`} />
             </div>
           );
         })}

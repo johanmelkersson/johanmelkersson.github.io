@@ -26,7 +26,7 @@ function ProjectsPage() {
           className={`${styles.tabButton} ${activeTab === 'games' ? styles.tabButtonActive : ''}`}
           onClick={() => setActiveTab('games')}
         >
-          Game Projects
+          Game Development
         </button>
         <button
           className={`${styles.tabButton} ${activeTab === 'system' ? styles.tabButtonActive : ''}`}

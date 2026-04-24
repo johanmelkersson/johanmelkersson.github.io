@@ -1,6 +1,13 @@
 import { useState } from 'react';
-import type { FeaturedProject } from '../data/projects';
+import type { FeaturedProject, ProjectStatus } from '../data/projects';
 import styles from './FeaturedProjectCard.module.css';
+
+const STATUS_LABEL: Record<ProjectStatus, string> = {
+  'in-development': 'In Development',
+  'released':       'Released',
+  'finished':       'Finished',
+  'archived':       'Archived',
+};
 
 function FeaturedProjectCard(project: FeaturedProject) {
   const [systemsExpanded, setSystemsExpanded] = useState(false);
@@ -16,7 +23,10 @@ function FeaturedProjectCard(project: FeaturedProject) {
               <h2>{project.title}</h2>
               <span className={styles.engineTag}>{project.engine}</span>
             </div>
-            <span className={styles.inDevBadge}>IN DEVELOPMENT</span>
+            <span className={`${styles.statusBadge} ${styles[`status-${project.status}`]}`}>
+              <span>{STATUS_LABEL[project.status]}</span>
+              <span className={styles.statusDate}>{project.startDate}</span>
+            </span>
           </div>
           {project.tagline && <p className={styles.tagline}>"{project.tagline}"</p>}
         </div>
@@ -32,10 +42,6 @@ function FeaturedProjectCard(project: FeaturedProject) {
               <div className={styles.specItem}>
                 <span>CONTRIBUTION</span>
                 <p>{project.mainContribution}</p>
-              </div>
-              <div className={styles.specItem}>
-                <span>STARTED</span>
-                <p>{project.startDate}</p>
               </div>
               <div className={styles.specItem}>
                 <span>TEAM</span>
