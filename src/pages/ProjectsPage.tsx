@@ -1,7 +1,8 @@
 import { useSearchParams } from "react-router-dom";
 import GameProjectCard from "../components/GameProjectCard";
 import SystemProjectCard from "../components/SystemProjectCard";
-import { PROJECTS_DATA, SYSTEM_PROJECTS_DATA } from "../data/projects";
+import FeaturedProjectCard from "../components/FeaturedProjectCard";
+import { PROJECTS_DATA, SYSTEM_PROJECTS_DATA, FEATURED_PROJECT } from "../data/projects";
 import styles from "./ProjectsPage.module.css";
 
 type Tab = 'games' | 'system';
@@ -36,6 +37,7 @@ function ProjectsPage() {
       {activeTab === 'games' && (
         <section>
           <div className={styles.projectsGrid}>
+            <FeaturedProjectCard {...FEATURED_PROJECT} />
             {PROJECTS_DATA.map((project) => (
               <GameProjectCard key={project.id} {...project} />
             ))}

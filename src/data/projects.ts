@@ -22,6 +22,82 @@ export interface GameProject {
     }[];
 }
 
+export interface FeaturedProject {
+    id: number;
+    title: string;
+    tagline?: string;
+    description: string;
+    roleDescription: string;
+    technologies: string[];
+    genre: string;
+    engine: string;
+    mainContribution: string;
+    startDate: string;
+    teamSize: string;
+    technicalSystems: {
+        name: string;
+        description: string;
+    }[];
+}
+
+export const FEATURED_PROJECT: FeaturedProject = {
+    id: 0,
+    title: "The Höör Reclamation Project",
+    tagline: "Send them out. Bring something back.",
+    description:
+        "A third-person squad game set in a post-apocalyptic Sweden. You belong to a faction and send squads into the ruined landscape " +
+        "to gather resources for your community. On a procedural hex-grid world map you navigate to encounters — some procedural, " +
+        "others permanent locations that can be revisited. Inside encounters, squad members move freely on a navmesh and face NPCs " +
+        "from rival factions in situations ranging from social interactions to stealth and combat. The world reveals itself gradually " +
+        "as you push further out.",
+    roleDescription:
+        "Responsible for the encounter layer: player characters, AI systems, GAS integration, weapon and ammunition systems, " +
+        "cover system, faction system, and UI. The technical depth of this project — particularly the multi-layer AI perception " +
+        "pipeline and GAS architecture — has been the most demanding and rewarding work I've done.",
+    technologies: ["C++", "Unreal Engine 5.7", "GAS", "StateTree", "DetourCrowd", "Enhanced Input", "EQS"],
+    genre: "Squad Tactical / RPG",
+    engine: "Unreal Engine 5.7",
+    mainContribution: "Encounters, AI, GAS, Weapons, UI",
+    startDate: "September 2024",
+    teamSize: "2 developers",
+    technicalSystems: [
+        {
+            name: "AI Perception Pipeline",
+            description:
+                "Layered awareness system (Neutral → Curious → Alarmed → Alert → Sweep → Combat) driven by sight, hearing, and " +
+                "damage response. States run on StateTree with custom C++ tasks and evaluators. Squad coordination with dynamic " +
+                "clusters, shared last-known-location data, and faction relationships.",
+        },
+        {
+            name: "Hex Grid & Procedural World Map",
+            description:
+                "Voronoi-based terrain generation in chunks with A* pathfinding and cache. Material/render-target tile visualization. " +
+                "Full world serialization (vertices, normals, UVs) for save/load reconstruction.",
+        },
+        {
+            name: "GAS Integration",
+            description:
+                "Custom attribute set with primary, secondary, and vital stats. MMC classes for derived stats, execution calculations " +
+                "for damage with resistance mapping and debuff chance. Full ability pipeline: ranged, melee, grenade, missile, projectile.",
+        },
+        {
+            name: "Cover System",
+            description:
+                "Trace-based cover detection with crouch support, montage sets per stance, and replicated cover variables.",
+        },
+        {
+            name: "TIP + Aim Offset",
+            description:
+                "Shared Turn-In-Place and aim offset base for both player and AI, driven by a View Intent system on the controller.",
+        },
+        {
+            name: "Save / Load",
+            description:
+                "Binary serialization of all SaveGame-marked UPROPERTYs, per-map actor state, and full procedural landscape data.",
+        },
+    ],
+};
+
 export const PROJECTS_DATA: GameProject[] = [
     {
         id: 1,
