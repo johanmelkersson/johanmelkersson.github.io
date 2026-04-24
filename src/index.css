@@ -8,6 +8,11 @@
   --accent-rgb: 56, 189, 248;
 }
 
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+}
+
 body {
   background-color: var(--bg-color);
   color: var(--text-primary);

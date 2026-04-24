@@ -25,7 +25,7 @@
 .tabBar {
   display: flex;
   gap: 8px;
-  margin-bottom: 4rem;
+  margin-bottom: 1.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-bottom: 0;
 }
@@ -52,6 +52,61 @@
 .tabButtonActive {
   color: var(--accent-color);
   border-bottom-color: var(--accent-color);
+}
+
+.timelineSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-bottom: 2rem;
+}
+
+.timelineRow {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  align-items: start;
+  gap: 0.5rem;
+}
+
+.timelineLabel {
+  font-family: 'Courier New', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.25);
+  padding-top: calc(1rem + 10px); /* align with first dot: wrapper padding-top + PAD_TOP */
+  user-select: none;
+}
+
+@media (max-width: 600px) {
+  .timelineRow {
+    grid-template-columns: 5rem 1fr;
+  }
+}
+
+.projectNav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 3rem;
+}
+
+.projectNavLink {
+  font-family: 'Courier New', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: rgba(248, 250, 252, 0.35);
+  border: 1px solid rgba(248, 250, 252, 0.1);
+  padding: 3px 10px;
+  border-radius: 3px;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.projectNavLink:hover {
+  color: var(--accent-color);
+  border-color: var(--accent-color);
 }
 
 .projectsGrid {

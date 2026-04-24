@@ -44,10 +44,24 @@ function ProjectsPage() {
 
       {activeTab === 'games' && (
         <section>
+          <nav className={styles.projectNav}>
+            <a href={`#game-${FEATURED_PROJECT.id}`} className={styles.projectNavLink}>
+              {FEATURED_PROJECT.title}
+            </a>
+            {PROJECTS_DATA.map(p => (
+              <a key={p.id} href={`#game-${p.id}`} className={styles.projectNavLink}>
+                {p.title}
+              </a>
+            ))}
+          </nav>
           <div className={styles.projectsGrid}>
-            <FeaturedProjectCard {...FEATURED_PROJECT} />
+            <div id={`game-${FEATURED_PROJECT.id}`}>
+              <FeaturedProjectCard {...FEATURED_PROJECT} />
+            </div>
             {PROJECTS_DATA.map((project) => (
-              <GameProjectCard key={project.id} {...project} />
+              <div key={project.id} id={`game-${project.id}`}>
+                <GameProjectCard {...project} />
+              </div>
             ))}
           </div>
         </section>
@@ -55,9 +69,18 @@ function ProjectsPage() {
 
       {activeTab === 'system' && (
         <section>
+          <nav className={styles.projectNav}>
+            {SYSTEM_PROJECTS_DATA.map(p => (
+              <a key={p.id} href={`#system-${p.id}`} className={styles.projectNavLink}>
+                {p.title}
+              </a>
+            ))}
+          </nav>
           <div className={styles.projectsGrid}>
             {SYSTEM_PROJECTS_DATA.map((project) => (
-              <SystemProjectCard key={project.id} {...project} />
+              <div key={project.id} id={`system-${project.id}`}>
+                <SystemProjectCard {...project} />
+              </div>
             ))}
           </div>
         </section>

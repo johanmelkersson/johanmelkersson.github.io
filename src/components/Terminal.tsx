@@ -156,54 +156,38 @@ const PROJECT_DETAILS: Record<string, string[]> = {
   ],
 };
 
-const LS_PROJECTS: { tag: string; name: string; engine: string }[] = [
-  { tag: '[IN DEV  ]', name: 'The Höör Reclamation Project', engine: 'Unreal Engine 5.7' },
-  { tag: '[RELEASED]', name: 'Successor',                    engine: 'Unreal Engine'     },
-  { tag: '[RELEASED]', name: 'Ascend',                       engine: 'Crowsnest'         },
-  { tag: '[FINISHED]', name: "Cruisin' 4A Bruisin'",         engine: 'Crowsnest'         },
-  { tag: '[FINISHED]', name: 'Spite — Ragnareld',            engine: 'Crowsnest'         },
-  { tag: '[FINISHED]', name: 'USSnoíR',                      engine: 'Crowsnest'         },
-  { tag: '[FINISHED]', name: 'Huntress',                     engine: 'TGE'               },
-  { tag: '[FINISHED]', name: 'Novaturient',                  engine: 'TGE'               },
-  { tag: '[FINISHED]', name: 'Impfiltration',                engine: 'Unity'             },
-  { tag: '[FINISHED]', name: 'Sootling Saga',                engine: 'Unity'             },
-  { tag: '[FINISHED]', name: 'Office Demons',                engine: 'Unity'             },
-  { tag: '[FINISHED]', name: 'Fl!p',                         engine: 'Unity'             },
-  { tag: '[ARCHIVED]', name: 'Orbital Warden',               engine: 'Unity'             },
-  { tag: '[ARCHIVED]', name: 'SadDadMotors',                 engine: 'C++'               },
-  { tag: '[FINISHED]', name: 'Weather Dashboard',            engine: 'TypeScript'        },
+const LS_PROJECTS: { tag: string; name: string; engine: string; type: string }[] = [
+  { tag: '[IN DEV  ]', name: 'The Höör Reclamation Project', engine: 'Unreal Engine 5.7', type: 'Game Dev'   },
+  { tag: '[RELEASED]', name: 'Successor',                    engine: 'Unreal Engine',     type: 'Game Dev'   },
+  { tag: '[RELEASED]', name: 'Ascend',                       engine: 'Crowsnest',         type: 'Game Dev'   },
+  { tag: '[FINISHED]', name: "Cruisin' 4A Bruisin'",         engine: 'Crowsnest',         type: 'Game Dev'   },
+  { tag: '[FINISHED]', name: 'Spite — Ragnareld',            engine: 'Crowsnest',         type: 'Game Dev'   },
+  { tag: '[FINISHED]', name: 'USSnoíR',                      engine: 'Crowsnest',         type: 'Game Dev'   },
+  { tag: '[FINISHED]', name: 'Huntress',                     engine: 'TGE',               type: 'Game Dev'   },
+  { tag: '[FINISHED]', name: 'Novaturient',                  engine: 'TGE',               type: 'Game Dev'   },
+  { tag: '[FINISHED]', name: 'Impfiltration',                engine: 'Unity',             type: 'Game Dev'   },
+  { tag: '[FINISHED]', name: 'Sootling Saga',                engine: 'Unity',             type: 'Game Dev'   },
+  { tag: '[FINISHED]', name: 'Office Demons',                engine: 'Unity',             type: 'Game Dev'   },
+  { tag: '[FINISHED]', name: 'Fl!p',                         engine: 'Unity',             type: 'Game Dev'   },
+  { tag: '[ARCHIVED]', name: 'Orbital Warden',               engine: 'Unity',             type: 'Game Dev'   },
+  { tag: '[ARCHIVED]', name: 'SadDadMotors',                 engine: 'C++',               type: 'Engine Dev' },
+  { tag: '[FINISHED]', name: 'Weather Dashboard',            engine: 'TypeScript',        type: 'System Dev' },
 ];
 
 const COMMANDS: Record<string, string[]> = {
   help: [
     'Available commands:',
-    '  whoami     — who is this person',
-    '  ls         — list all projects  (click a project for details)',
+    '  about      — who is this person',
+    '  projects   — list all projects  (click a project for details)',
     '  status     — current project status',
     '  clear      — clear terminal',
     '  exit       — close terminal',
   ],
-  whoami: [
+  about: [
     'Johan Melkersson',
     'Game Programmer & System Developer',
     'C++ · Unreal Engine · GAS · AI Systems',
     'Currently: The Höör Reclamation Project + Lexicon',
-  ],
-  status: [
-    'The Höör Reclamation Project',
-    SEP,
-    'Engine:   Unreal Engine 5.7',
-    'Started:  2024',
-    'Team:     Johan Melkersson + Filip Orrling',
-    '',
-    'Systems:',
-    '  [✓] AI Perception Pipeline',
-    '  [✓] GAS Integration',
-    '  [✓] Hex Grid & World Map',
-    '  [✓] Animation Blueprints (ABP)',
-    '  [✓] Save / Load',
-    '  [~] Cover System          (in progress)',
-    '  [ ] Weapon & Ammo expansion',
   ],
 };
 
@@ -271,13 +255,14 @@ function Terminal({ forceOpen, onClose }: TerminalProps) {
   }
 
   function buildLsLines(): Line[] {
-    const pad = (name: string) => name.padEnd(30, ' ');
+    const padName = (name: string) => name.padEnd(32, ' ');
+    const padType = (type: string) => type.padEnd(10, ' ');
     const header: Line = { type: 'output', text: '/projects' };
     const rows: Line[] = LS_PROJECTS.map((p, i) => {
       const prefix = i === LS_PROJECTS.length - 1 ? '└── ' : '├── ';
       return {
         type: 'output' as LineType,
-        text: `${prefix}${p.tag}  ${pad(p.name)}(${p.engine})`,
+        text: `${prefix}${p.tag}  ${padName(p.name)}${padType(p.type)}  (${p.engine})`,
         onClick: () => showProjectDetail(p.name),
       };
     });
@@ -301,12 +286,17 @@ function Terminal({ forceOpen, onClose }: TerminalProps) {
     }
 
     if (cmd === 'clear') {
-      setLines([]);
+      setLines(WELCOME);
       return;
     }
 
-    if (cmd === 'ls') {
+    if (cmd === 'projects') {
       addLines(buildLsLines());
+      return;
+    }
+
+    if (cmd === 'status') {
+      addLines(PROJECT_DETAILS['The Höör Reclamation Project'].map(t => ({ type: 'output' as LineType, text: t })));
       return;
     }
 

@@ -149,9 +149,9 @@
   box-shadow: 0 0 8px var(--status-glow, rgba(248, 250, 252, 0.15));
 }
 
-.status-in-development { --status-glow: rgba(240, 192, 96,  0.6); }
-.status-released        { --status-glow: rgba(52,  211, 153, 0.5); }
-.status-finished        { --status-glow: rgba(52,  211, 153, 0.35); }
+.status-in-development { --status-glow: rgba(167, 139, 250, 0.6); }
+.status-released        { --status-glow: rgba(251, 146,  60, 0.5); }
+.status-finished        { --status-glow: rgba(148, 163, 184, 0.4); }
 .status-archived        { --status-glow: rgba(248, 250, 252, 0.12); }
 
 .title {
