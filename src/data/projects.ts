@@ -38,6 +38,7 @@ export interface FeaturedProject {
         name: string;
         description: string;
     }[];
+    motivation?: string;
 }
 
 export const FEATURED_PROJECT: FeaturedProject = {
@@ -60,6 +61,10 @@ export const FEATURED_PROJECT: FeaturedProject = {
     mainContribution: "Encounters, AI, GAS, Weapons, Animation, Save/Load, UI",
     startDate: "September 2024",
     teamSize: "2 developers",
+    motivation:
+        "This game has grown from every decision we made along the way, some decisions were made because it's what we'd " +
+        "want to play ourselves, some out of nostalgia, and some just because I wanted to deep dive into a specific system. " +
+        "It's a patchwork of all those choices. There's no single answer to why, and it's hard to say exactly where it'll end up.",
     technicalSystems: [
         {
             name: "AI Perception Pipeline",

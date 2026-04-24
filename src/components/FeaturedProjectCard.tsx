@@ -48,6 +48,12 @@ function FeaturedProjectCard(project: FeaturedProject) {
             <div className={styles.roleBox}>
               <strong>DEV_LOG:</strong> {project.roleDescription}
             </div>
+
+            {project.motivation && (
+              <blockquote className={styles.motivationBox}>
+                {project.motivation}
+              </blockquote>
+            )}
           </div>
         </div>
 
