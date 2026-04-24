@@ -57,7 +57,7 @@ export const FEATURED_PROJECT: FeaturedProject = {
     technologies: ["C++", "Unreal Engine 5.7", "GAS", "StateTree", "DetourCrowd", "Enhanced Input", "EQS"],
     genre: "Squad Tactical / RPG",
     engine: "Unreal Engine 5.7",
-    mainContribution: "Encounters, AI, GAS, Weapons, UI",
+    mainContribution: "Encounters, AI, GAS, Weapons, Animation, Save/Load, UI",
     startDate: "September 2024",
     teamSize: "2 developers",
     technicalSystems: [
@@ -94,6 +94,12 @@ export const FEATURED_PROJECT: FeaturedProject = {
             name: "Save / Load",
             description:
                 "Binary serialization of all SaveGame-marked UPROPERTYs, per-map actor state, and full procedural landscape data.",
+        },
+        {
+            name: "Animation Blueprints (ABP)",
+            description:
+                "Full ABP setup for player characters and AI — state machines, blend spaces, and animation montage integration " +
+                "for locomotion, combat stances, cover transitions, and hit reactions.",
         },
     ],
 };
