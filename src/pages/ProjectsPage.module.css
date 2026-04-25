@@ -74,7 +74,7 @@
   letter-spacing: 1.5px;
   text-transform: uppercase;
   color: rgba(248, 250, 252, 0.25);
-  padding-top: calc(1rem + 10px); /* align with first dot: wrapper padding-top + PAD_TOP */
+  padding-top: calc(0.25rem + 10px);
   user-select: none;
 }
 
@@ -89,6 +89,7 @@
   flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 3rem;
+  margin-top: 0;
 }
 
 .projectNavLink {
@@ -104,12 +105,205 @@
   transition: color 0.2s, border-color 0.2s;
 }
 
-.projectNavLink:hover {
-  color: var(--accent-color);
-  border-color: var(--accent-color);
+@media (hover: hover) {
+  .projectNavLink:hover {
+    color: var(--type-color);
+    border-color: var(--type-color);
+  }
+}
+
+.projectNavLinkActive {
+  color: var(--type-color);
+  border-color: var(--type-color);
 }
 
 .projectsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 4rem;
+  width: 100%;
+}
+
+/* ── Filter toggles ── */
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.filterRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+@media (min-width: 768px) {
+  .filters {
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .filterRow + .filterRow {
+    padding-left: 16px;
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+  }
+}
+
+.sortButton {
+  background: none;
+  border: 1px solid rgba(248, 250, 252, 0.12);
+  border-radius: 4px;
+  padding: 0.4rem 1rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.5);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+@media (hover: hover) {
+  .sortButton:hover {
+    color: rgba(248, 250, 252, 0.85);
+    border-color: rgba(248, 250, 252, 0.3);
+  }
+}
+
+.typeFilter {
+  background: none;
+  border: 1px solid rgba(248, 250, 252, 0.12);
+  border-radius: 4px;
+  padding: 0.4rem 1rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.3);
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s, background 0.2s;
+}
+
+@media (hover: hover) {
+  .typeFilter:hover {
+    color: var(--type-color);
+    border-color: var(--type-color);
+  }
+}
+
+.typeFilterActive {
+  color: var(--type-color);
+  border-color: var(--type-color);
+  background: color-mix(in srgb, var(--type-color) 8%, transparent);
+}
+
+.typeFilterNeutralActive {
+  color: rgba(248, 250, 252, 0.75);
+  border-color: rgba(248, 250, 252, 0.35);
+  background: rgba(248, 250, 252, 0.05);
+}
+
+/* ── Nav tooltip ── */
+.navTooltip {
+  position: fixed;
+  width: 220px;
+  background: #1a1a1e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.75rem 0.9rem;
+  pointer-events: none;
+  z-index: 200;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  animation: navTipFadeUp 0.15s ease;
+}
+
+@keyframes navTipFadeUp {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.tipTitle {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(248, 250, 252, 0.9);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.tipMeta {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.statusBadge {
+  font-family: 'Courier New', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid currentColor;
+  opacity: 0.85;
+}
+
+.status-in-development { color: #a78bfa; }
+.status-released        { color: #fb923c; }
+.status-finished        { color: #94a3b8; }
+.status-archived        { color: rgba(248, 250, 252, 0.25); }
+
+.typeBadge {
+  font-family: 'Courier New', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid rgba(248, 250, 252, 0.15);
+  color: rgba(248, 250, 252, 0.3);
+}
+
+.tipPeriod {
+  font-family: 'Courier New', monospace;
+  font-size: 0.65rem;
+  color: rgba(248, 250, 252, 0.35);
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.tipEngine {
+  font-family: 'Courier New', monospace;
+  font-size: 0.65rem;
+  color: rgba(248, 250, 252, 0.5);
+  margin-bottom: 4px;
+}
+
+.tipContribution {
+  font-size: 0.72rem;
+  color: rgba(248, 250, 252, 0.5);
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.tipCategory {
+  display: inline-block;
+  font-size: 0.6rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: 3px;
+  opacity: 0.8;
+}
+
+.professional { color: #34d399; border: 1px solid #34d399; }
+.educational  { color: #38bdf8; border: 1px solid #38bdf8; }
+.hobby        { color: #f0c060; border: 1px solid #f0c060; }
+
+/* ── Project feed ── */
+.projectFeed {
   display: flex;
   flex-direction: column;
   gap: 4rem;

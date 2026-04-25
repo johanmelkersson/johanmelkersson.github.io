@@ -9,7 +9,7 @@ const STATUS_LABEL: Record<ProjectStatus, string> = {
   'archived':       'Archived',
 };
 
-function FeaturedProjectCard(project: FeaturedProject) {
+function FeaturedProjectCard(project: FeaturedProject & { context?: string }) {
   const [systemsExpanded, setSystemsExpanded] = useState(false);
 
   return (
@@ -23,10 +23,13 @@ function FeaturedProjectCard(project: FeaturedProject) {
               <h2>{project.title}</h2>
               <span className={styles.engineTag}>{project.engine}</span>
             </div>
-            <span className={`${styles.statusBadge} ${styles[`status-${project.status}`]}`}>
-              <span>{STATUS_LABEL[project.status]}</span>
-              <span className={styles.statusDate}>{project.startDate}</span>
-            </span>
+            <div className={styles.badgeGroup}>
+              <span className={`${styles.statusBadge} ${styles[`status-${project.status}`]}`}>
+                <span>{STATUS_LABEL[project.status]}</span>
+                <span className={styles.statusDate}>{project.startDate}</span>
+              </span>
+              {project.context && <span className={styles.contextTag}>{project.context}</span>}
+            </div>
           </div>
           {project.tagline && <p className={styles.tagline}>"{project.tagline}"</p>}
         </div>

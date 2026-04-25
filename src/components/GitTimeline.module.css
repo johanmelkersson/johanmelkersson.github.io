@@ -6,16 +6,13 @@
 .wrapper {
   position: relative;
   width: 100%;
-  padding-top: 1rem;
+  padding-top: 0.25rem;
   padding-bottom: 0;
 }
 
 .scroll {
-  overflow-x: auto;
-  overflow-y: visible;
-  scrollbar-width: none;
+  overflow: visible;
 }
-.scroll::-webkit-scrollbar { display: none; }
 
 .svg {
   display: block;

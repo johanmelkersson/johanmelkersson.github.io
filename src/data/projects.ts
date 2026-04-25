@@ -21,8 +21,9 @@ export interface GameProject {
     }[];
     awards?: {
         name: string;
-        imageUrl: string; // Sökväg till loggan
+        imageUrl: string;
     }[];
+    githubUrl?: string;
 }
 
 export interface FeaturedProject {
@@ -180,7 +181,7 @@ export const PROJECTS_DATA: GameProject[] = [
     },
     {
         id: 4,
-        title: "Spite - Ragnareld",
+        title: "Spite — Ragnareld",
         tagline: "As Fireborn, you are immune to the frost curse that has taken hold of the northern mountain. Slash, dash and burn "
         + "your way through the corrupted masses to find and defeat the evil from the ancient past of giants.",
         description: "A top-down, point-and-click action RPG where the goal is to rid the land of the lurking evil by killing zombies, "
@@ -324,7 +325,7 @@ export const PROJECTS_DATA: GameProject[] = [
     },
     {
         id: 11,
-        title: "Office demons",
+        title: "Office Demons",
         tagline: "Middle management is hell. Luckily, so are you.",
         description: "A couch co-op limited-time turn-based mayhem of a game where you play as middle management demons who have to "
         + "leave their desks and travel to Earth to collect souls.",
@@ -337,8 +338,8 @@ export const PROJECTS_DATA: GameProject[] = [
         status: 'finished',
         releaseDate: 'Spring 2022',
         youtubeId: 'bWgBfRIO5WY',
-        imageUrl: '/images/projects/office-demons.png', 
-          
+        imageUrl: '/images/projects/office-demons.png',
+        githubUrl: 'https://github.com/johanmelkersson/officedemons',
     },
     {
         id: 12,
@@ -355,7 +356,8 @@ export const PROJECTS_DATA: GameProject[] = [
         mainContribution: 'AI companion and parallax background',
         status: 'finished',
         releaseDate: 'Spring 2021',
-        imageUrl: '/images/projects/flip.png',       
+        imageUrl: '/images/projects/flip.png',
+        githubUrl: 'https://github.com/johanmelkersson/Flip',
     },
         {
         id: 13,
@@ -375,6 +377,7 @@ export const PROJECTS_DATA: GameProject[] = [
         status: 'archived',
         releaseDate: '2022',
         imageUrl: '/images/projects/space-game.gif',
+        githubUrl: 'https://github.com/johanmelkersson/OrbitalWarden',
     },
     
 
@@ -397,6 +400,26 @@ export interface SystemProject {
 }
 
 export const SYSTEM_PROJECTS_DATA: SystemProject[] = [
+    {
+        id: 2,
+        title: "Developer Portfolio",
+        description: "A developer portfolio built as a school project at Lexicon, designed to grow beyond a basic assignment into a genuine interactive showcase of game and system development work.",
+        roleDescription: "Built solo in React, TypeScript, and Vite with CSS Modules throughout. The most technically involved part is the git-style timeline — a hand-rolled SVG system with greedy lane assignment, fork/merge curves, per-segment hover tooltips with 500ms delay, and a ResizeObserver-driven responsive layout. The project feed supports type and category filtering, sort order toggling, and cross-component highlight sync between nav links and timeline segments.",
+        technologies: ['React', 'TypeScript', 'Vite', 'CSS Modules'],
+        type: 'Web Application',
+        mainContribution: 'Everything',
+        status: 'in-development',
+        releaseDate: '2026 →',
+        imageUrl: '/images/projects/portfolio.png',
+        features: [
+            'Custom SVG git-timeline with greedy lane assignment and fork/merge paths',
+            'Project feed with type/category filters and sort toggle',
+            'Tooltip cards on timeline segments and nav links',
+            'Cross-component highlight sync between nav links and timeline',
+            'Integrated terminal with project lookup commands',
+        ],
+        githubUrl: 'https://github.com/johanmelkersson/johanmelkersson.github.io',
+    },
     {
         id: 1,
         title: "Weather Dashboard",

@@ -33,7 +33,7 @@ const PROJECT_DETAILS: Record<string, string[]> = {
     SEP,
     'Engine:   Unreal Engine',
     'Status:   Released · Oct 2025',
-    'Context:  Playwood (Copenhagen)',
+    'Context:  Playwood Project (Copenhagen)',
     'Role:     Gameplay & UI',
     'Tech:     C++, Unreal Engine, Meta Quest',
   ],

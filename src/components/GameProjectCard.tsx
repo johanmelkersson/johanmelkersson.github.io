@@ -14,7 +14,7 @@ const platformBadges: Record<string, string> = {
   steam: '/assets/badges/steam-badge.png'
 };
 
-function GameProjectCard(project: GameProject) {
+function GameProjectCard(project: GameProject & { context?: string }) {
   return (
     <div className={styles.card}>
       <div className={styles.cardBg} style={{ backgroundImage: `url(${project.imageUrl})` }} />
@@ -27,10 +27,13 @@ function GameProjectCard(project: GameProject) {
               <h2>{project.title}</h2>
               <span className={styles.engineTag}>{project.engine}</span>
             </div>
-            <span className={`${styles.statusBadge} ${styles[`status-${project.status}`]}`}>
-              <span>{STATUS_LABEL[project.status]}</span>
-              {project.releaseDate && <span className={styles.statusDate}>{project.releaseDate}</span>}
-            </span>
+            <div className={styles.badgeGroup}>
+              <span className={`${styles.statusBadge} ${styles[`status-${project.status}`]}`}>
+                <span>{STATUS_LABEL[project.status]}</span>
+                {project.releaseDate && <span className={styles.statusDate}>{project.releaseDate}</span>}
+              </span>
+              {project.context && <span className={styles.contextTag}>{project.context}</span>}
+            </div>
           </div>
           {project.tagline && <p className={styles.tagline}>{project.tagline}</p>}
         </div>
@@ -93,6 +96,11 @@ function GameProjectCard(project: GameProject) {
                     <img src={platformBadges[link.type]} alt={link.type} className={styles.badgeImage} />
                   </a>
                 ))}
+                {project.githubUrl && (
+                  <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className={styles.githubLink}>
+                    GitHub
+                  </a>
+                )}
               </div>
             </div>
           </div>

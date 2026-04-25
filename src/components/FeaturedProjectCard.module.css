@@ -2,14 +2,12 @@
   width: 100%;
   box-sizing: border-box;
   background: #1a1a1e;
-  border: 1px solid rgba(var(--accent-rgb), 0.4);
-  border-left: 4px solid var(--accent-color);
+  border: 1px solid #333;
   border-radius: 16px;
   overflow: hidden;
   color: #ececec;
   transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   animation: fadeInUp 0.8s ease-out forwards;
-  box-shadow: 0 0 40px rgba(var(--accent-rgb), 0.06);
 }
 
 @keyframes fadeInUp {
@@ -23,10 +21,11 @@
   }
 }
 
-.card:hover {
-  transform: translateY(-4px);
-  border-color: var(--accent-color);
-  box-shadow: 0 0 50px rgba(var(--accent-rgb), 0.14);
+@media (hover: hover) {
+  .card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-color);
+  }
 }
 
 .cardContent {
@@ -70,6 +69,22 @@
   color: var(--accent-color);
   opacity: 0.8;
   text-transform: uppercase;
+}
+
+.badgeGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.contextTag {
+  font-family: 'Courier New', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.3);
 }
 
 .statusBadge {
@@ -189,8 +204,10 @@
   width: 100%;
 }
 
-.systemsToggle:hover {
-  opacity: 0.7;
+@media (hover: hover) {
+  .systemsToggle:hover {
+    opacity: 0.7;
+  }
 }
 
 .chevron {

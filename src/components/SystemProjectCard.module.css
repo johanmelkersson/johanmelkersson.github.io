@@ -83,19 +83,15 @@
   gap: 1.5rem;
 }
 
-.card:hover {
-  transform: translateY(-5px);
-  border-color: var(--accent-color);
-}
+@media (hover: hover) {
+  .card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent-color);
+  }
 
-.mediaContainer {
-  filter: drop-shadow(0 0 15px rgba(var(--accent-rgb), 0.2));
-  transition: filter 0.3s ease;
-}
-
-.card:hover .mediaContainer {
-  filter: drop-shadow(0 0 25px rgba(var(--accent-rgb), 0.4));
-}
+  .card:hover .mediaContainer {
+    filter: drop-shadow(0 0 25px rgba(var(--accent-rgb), 0.4));
+  }
 
 .screenshot {
   width: 100%;
@@ -107,8 +103,14 @@
   transition: transform 0.5s ease;
 }
 
-.card:hover .screenshot {
-  transform: scale(1.02);
+  .card:hover .screenshot {
+    transform: scale(1.02);
+  }
+}
+
+.mediaContainer {
+  filter: drop-shadow(0 0 15px rgba(var(--accent-rgb), 0.2));
+  transition: filter 0.3s ease;
 }
 
 .specBox {
@@ -126,6 +128,22 @@
   color: var(--accent-color);
   letter-spacing: 2px;
   display: block;
+}
+
+.badgeGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.contextTag {
+  font-family: 'Courier New', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.3);
 }
 
 .statusBadge {
@@ -226,19 +244,21 @@
   transition: opacity 0.2s, transform 0.2s;
 }
 
-.linkButton:hover {
-  opacity: 0.85;
-  transform: translateY(-2px);
+@media (hover: hover) {
+  .linkButton:hover {
+    opacity: 0.85;
+    transform: translateY(-2px);
+  }
+
+  .linkButtonOutline:hover {
+    background: rgba(var(--accent-rgb), 0.1);
+  }
 }
 
 .linkButtonOutline {
   background: transparent;
   color: var(--accent-color);
   border: 1px solid var(--accent-color);
-}
-
-.linkButtonOutline:hover {
-  background: rgba(var(--accent-rgb), 0.1);
 }
 
 /* DESKTOP LAYOUT */
