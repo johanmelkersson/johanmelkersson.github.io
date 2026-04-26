@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+import { TIMELINE_DATA, TYPE_LABELS, CATEGORY_LABELS } from '../data/timeline';
+import type { TimelineEntry } from '../data/timeline';
+import type { ProjectStatus } from '../data/projects';
 import styles from './Terminal.module.css';
 
 type LineType = 'input' | 'output' | 'error';
@@ -11,168 +14,104 @@ interface Line {
 
 const SEP = '─────────────────────────────────────';
 
-const PROJECT_DETAILS: Record<string, string[]> = {
-  'The Höör Reclamation Project': [
-    'The Höör Reclamation Project',
-    SEP,
-    'Engine:   Unreal Engine 5.7',
-    'Status:   In Development · 2024 →',
-    'Team:     Johan Melkersson + Filip Orrling',
-    '',
-    'Systems:',
-    '  [✓] AI Perception Pipeline',
-    '  [✓] GAS Integration',
-    '  [✓] Hex Grid & World Map',
-    '  [✓] Animation Blueprints (ABP)',
-    '  [✓] Save / Load',
-    '  [~] Cover System          (in progress)',
-    '  [ ] Weapon & Ammo expansion',
-  ],
-  'Successor': [
-    'Successor',
-    SEP,
-    'Engine:   Unreal Engine',
-    'Status:   Released · Oct 2025',
-    'Context:  Playwood Project (Copenhagen)',
-    'Role:     Gameplay & UI',
-    'Tech:     C++, Unreal Engine, Meta Quest',
-  ],
-  'Ascend': [
-    'Ascend',
-    SEP,
-    'Engine:   Crowsnest',
-    'Status:   Released · Spring 2024',
-    'Context:  The Game Assembly',
-    'Role:     Player controller & physics',
-    'Tech:     C++, Crowsnest, FMOD, PhysX',
-  ],
-  "Cruisin' 4A Bruisin'": [
-    "Cruisin' 4A Bruisin'",
-    SEP,
-    'Engine:   Crowsnest',
-    'Status:   Finished · Spring 2024',
-    'Context:  The Game Assembly',
-    'Role:     PhysX integration & UI',
-    'Tech:     C++, Crowsnest, PhysX',
-  ],
-  'Spite — Ragnareld': [
-    'Spite — Ragnareld',
-    SEP,
-    'Engine:   Crowsnest',
-    'Status:   Finished · Fall 2023 – Spring 2024',
-    'Context:  The Game Assembly',
-    'Role:     Enemy AI',
-    'Tech:     C++, Crowsnest',
-  ],
-  'USSnoíR': [
-    'USSnoíR',
-    SEP,
-    'Engine:   Crowsnest',
-    'Status:   Finished · Fall 2023',
-    'Context:  The Game Assembly',
-    'Role:     Player controller & movement',
-    'Tech:     C++, Crowsnest',
-  ],
-  'Huntress': [
-    'Huntress',
-    SEP,
-    'Engine:   TGE',
-    'Status:   Finished · Fall 2023',
-    'Context:  The Game Assembly',
-    'Role:     Weapon controller',
-    'Tech:     C++, TGE',
-  ],
-  'Novaturient': [
-    'Novaturient',
-    SEP,
-    'Engine:   TGE',
-    'Status:   Finished · Fall 2023',
-    'Context:  The Game Assembly',
-    'Role:     Environment, collisions & importer',
-    'Tech:     C++, TGE',
-  ],
-  'Impfiltration': [
-    'Impfiltration',
-    SEP,
-    'Engine:   Unity',
-    'Status:   Finished · Spring 2023',
-    'Context:  The Game Assembly',
-    'Role:     Player input & control',
-    'Tech:     C#, Unity',
-  ],
-  'Sootling Saga': [
-    'Sootling Saga',
-    SEP,
-    'Engine:   Unity',
-    'Status:   Finished · Fall 2022',
-    'Context:  The Game Assembly',
-    'Role:     Player controller & movement',
-    'Tech:     C#, Unity',
-  ],
-  'Office Demons': [
-    'Office Demons',
-    SEP,
-    'Engine:   Unity',
-    'Status:   Finished · Fall 2021 – Spring 2022',
-    'Context:  Malmö University',
-    'Role:     Player controller & weapons',
-    'Tech:     C#, Unity',
-  ],
-  'Fl!p': [
-    'Fl!p',
-    SEP,
-    'Engine:   Unity',
-    'Status:   Finished · Spring 2021',
-    'Context:  Malmö University',
-    'Role:     AI companion & parallax',
-    'Tech:     C#, Unity',
-  ],
-  'Orbital Warden': [
-    'Orbital Warden',
-    SEP,
-    'Engine:   Unity',
-    'Status:   Archived · 2022',
-    'Context:  Hobby',
-    'Role:     Everything · personal project',
-    'Tech:     C#, Unity',
-  ],
-  'SadDadMotors': [
-    'SadDadMotors',
-    SEP,
-    'Engine:   C++',
-    'Status:   Archived · 2023 – 2024',
-    'Context:  Hobby · w/ Filip Orrling',
-    'Role:     Co-developer · navmesh, engine systems',
-    'Tech:     C++',
-  ],
-  'Weather Dashboard': [
-    'Weather Dashboard',
-    SEP,
-    'Engine:   —',
-    'Status:   Finished · Spring 2026',
-    'Context:  Lexicon',
-    'Role:     Everything',
-    'Tech:     TypeScript, React, Vite',
-  ],
+// ── Terminal-specific extras (tech stack, systems checklist, team) ────────────
+// Everything else is derived from TIMELINE_DATA automatically.
+
+interface TerminalExtra {
+  tech?: string;
+  team?: string;
+  contextSuffix?: string;
+  systems?: string[];
+}
+
+const EXTRAS: Record<string, TerminalExtra> = {
+  'The Höör Reclamation Project': {
+    tech: 'C++ · Blueprints · GAS · EQS · Behavior Trees',
+    team: 'Johan Melkersson + Filip Orrling',
+    systems: [
+      '[✓] AI Perception Pipeline',
+      '[✓] GAS Integration',
+      '[✓] Hex Grid & World Map',
+      '[✓] Animation Blueprints (ABP)',
+      '[✓] Save / Load',
+      '[~] Cover System          (in progress)',
+      '[ ] Weapon & Ammo expansion',
+    ],
+  },
+  'Successor':              { tech: 'C++, Unreal Engine, Meta Quest' },
+  'Ascend':                 { tech: 'C++, Crowsnest, FMOD, PhysX' },
+  "Cruisin' 4A Bruisin'":  { tech: 'C++, Crowsnest, PhysX' },
+  'Spite — Ragnareld':      { tech: 'C++, Crowsnest' },
+  'USSnoíR':                { tech: 'C++, Crowsnest' },
+  'Huntress':               { tech: 'C++, TGE' },
+  'Novaturient':            { tech: 'C++, TGE' },
+  'Impfiltration':          { tech: 'C#, Unity' },
+  'Sootling Saga':          { tech: 'C#, Unity' },
+  'Office Demons':          { tech: 'C#, Unity' },
+  'Fl!p':                   { tech: 'C#, Unity' },
+  'Orbital Warden':         { tech: 'C#, Unity' },
+  'SadDadMotors':           { tech: 'C++', contextSuffix: ' · w/ Filip Orrling' },
+  'Weather Dashboard':      { tech: 'TypeScript, React, Vite' },
+  'Developer Portfolio':    { tech: 'TypeScript, React, Vite' },
 };
 
-const LS_PROJECTS: { tag: string; name: string; engine: string; type: string }[] = [
-  { tag: '[IN DEV  ]', name: 'The Höör Reclamation Project', engine: 'Unreal Engine 5.7', type: 'Game Dev'   },
-  { tag: '[RELEASED]', name: 'Successor',                    engine: 'Unreal Engine',     type: 'Game Dev'   },
-  { tag: '[RELEASED]', name: 'Ascend',                       engine: 'Crowsnest',         type: 'Game Dev'   },
-  { tag: '[FINISHED]', name: "Cruisin' 4A Bruisin'",         engine: 'Crowsnest',         type: 'Game Dev'   },
-  { tag: '[FINISHED]', name: 'Spite — Ragnareld',            engine: 'Crowsnest',         type: 'Game Dev'   },
-  { tag: '[FINISHED]', name: 'USSnoíR',                      engine: 'Crowsnest',         type: 'Game Dev'   },
-  { tag: '[FINISHED]', name: 'Huntress',                     engine: 'TGE',               type: 'Game Dev'   },
-  { tag: '[FINISHED]', name: 'Novaturient',                  engine: 'TGE',               type: 'Game Dev'   },
-  { tag: '[FINISHED]', name: 'Impfiltration',                engine: 'Unity',             type: 'Game Dev'   },
-  { tag: '[FINISHED]', name: 'Sootling Saga',                engine: 'Unity',             type: 'Game Dev'   },
-  { tag: '[FINISHED]', name: 'Office Demons',                engine: 'Unity',             type: 'Game Dev'   },
-  { tag: '[FINISHED]', name: 'Fl!p',                         engine: 'Unity',             type: 'Game Dev'   },
-  { tag: '[ARCHIVED]', name: 'Orbital Warden',               engine: 'Unity',             type: 'Game Dev'   },
-  { tag: '[ARCHIVED]', name: 'SadDadMotors',                 engine: 'C++',               type: 'Engine Dev' },
-  { tag: '[FINISHED]', name: 'Weather Dashboard',            engine: 'TypeScript',        type: 'System Dev' },
-];
+// ── Derived data ──────────────────────────────────────────────────────────────
+
+const STATUS_TAG: Record<ProjectStatus, string> = {
+  'in-development': '[IN DEV  ]',
+  'released':       '[RELEASED]',
+  'finished':       '[FINISHED]',
+  'archived':       '[ARCHIVED]',
+};
+
+const STATUS_LABEL: Record<ProjectStatus, string> = {
+  'in-development': 'In Development',
+  'released':       'Released',
+  'finished':       'Finished',
+  'archived':       'Archived',
+};
+
+function getContext(e: TimelineEntry): string {
+  const base = e.categoryLabel ?? (e.category === 'hobby' ? 'InHouse' : CATEGORY_LABELS[e.category]);
+  return base + (EXTRAS[e.title]?.contextSuffix ?? '');
+}
+
+function getEngineLabel(e: TimelineEntry): string {
+  if (e.engine) return e.engine;
+  const tech = EXTRAS[e.title]?.tech;
+  return tech ? tech.split(',')[0].trim() : '—';
+}
+
+function buildDetails(e: TimelineEntry): string[] {
+  const extra = EXTRAS[e.title];
+  const lines: string[] = [
+    e.title,
+    SEP,
+    `Engine:   ${e.engine ?? '—'}`,
+    `Status:   ${STATUS_LABEL[e.status]} · ${e.period}`,
+    `Context:  ${getContext(e)}`,
+    `Role:     ${e.contribution}`,
+  ];
+  if (extra?.team)   lines.push(`Team:     ${extra.team}`);
+  if (extra?.tech)   lines.push(`Tech:     ${extra.tech}`);
+  if (extra?.systems) {
+    lines.push('');
+    lines.push('Systems:');
+    extra.systems.forEach(s => lines.push(`  ${s}`));
+  }
+  return lines;
+}
+
+const LS_PROJECTS = [...TIMELINE_DATA].sort((a, b) => {
+  const aArchived = a.status === 'archived' ? 1 : 0;
+  const bArchived = b.status === 'archived' ? 1 : 0;
+  if (aArchived !== bArchived) return aArchived - bArchived;
+  const aEnd = a.endDate ?? '9999-99';
+  const bEnd = b.endDate ?? '9999-99';
+  return bEnd.localeCompare(aEnd) || b.startDate.localeCompare(a.startDate);
+});
+
+// ── Static commands ───────────────────────────────────────────────────────────
 
 const COMMANDS: Record<string, string[]> = {
   help: [
@@ -194,6 +133,8 @@ const COMMANDS: Record<string, string[]> = {
 const WELCOME: Line[] = [
   { type: 'output', text: 'johan@portfolio:~$ — type "help" for commands' },
 ];
+
+// ── Component ─────────────────────────────────────────────────────────────────
 
 interface TerminalProps {
   forceOpen?: boolean;
@@ -247,23 +188,21 @@ function Terminal({ forceOpen, onClose }: TerminalProps) {
     });
   }
 
-  function showProjectDetail(name: string) {
-    const details = PROJECT_DETAILS[name];
-    if (!details) return;
-    setLines(prev => [...prev, { type: 'input', text: name }]);
-    addLines(details.map(t => ({ type: 'output' as LineType, text: t })));
+  function showProjectDetail(entry: TimelineEntry) {
+    setLines(prev => [...prev, { type: 'input', text: entry.title }]);
+    addLines(buildDetails(entry).map(t => ({ type: 'output' as LineType, text: t })));
   }
 
   function buildLsLines(): Line[] {
     const padName = (name: string) => name.padEnd(32, ' ');
     const padType = (type: string) => type.padEnd(10, ' ');
     const header: Line = { type: 'output', text: '/projects' };
-    const rows: Line[] = LS_PROJECTS.map((p, i) => {
+    const rows: Line[] = LS_PROJECTS.map((e, i) => {
       const prefix = i === LS_PROJECTS.length - 1 ? '└── ' : '├── ';
       return {
         type: 'output' as LineType,
-        text: `${prefix}${p.tag}  ${padName(p.name)}${padType(p.type)}  (${p.engine})`,
-        onClick: () => showProjectDetail(p.name),
+        text: `${prefix}${STATUS_TAG[e.status]}  ${padName(e.title)}${padType(TYPE_LABELS[e.type])}  (${getEngineLabel(e)})`,
+        onClick: () => showProjectDetail(e),
       };
     });
     return [header, ...rows];
@@ -296,7 +235,8 @@ function Terminal({ forceOpen, onClose }: TerminalProps) {
     }
 
     if (cmd === 'status') {
-      addLines(PROJECT_DETAILS['The Höör Reclamation Project'].map(t => ({ type: 'output' as LineType, text: t })));
+      const current = LS_PROJECTS.find(e => e.ongoing) ?? LS_PROJECTS[0];
+      addLines(buildDetails(current).map(t => ({ type: 'output' as LineType, text: t })));
       return;
     }
 
