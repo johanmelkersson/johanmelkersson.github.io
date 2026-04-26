@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState, useCallback, useEffect } from "react";
+import { useTheme } from "../context/ThemeContext";
 import type { ProjectStatus } from "../data/projects";
 import GameProjectCard from "../components/GameProjectCard";
 import SystemProjectCard from "../components/SystemProjectCard";
@@ -24,14 +25,6 @@ const STATUS_GROUP_LABEL: Record<StatusGroup, string> = {
 };
 import styles from "./ProjectsPage.module.css";
 
-const STATUS_LABEL: Record<ProjectStatus, string> = {
-  'in-development': 'In Development',
-  'released':       'Released',
-  'finished':       'Finished',
-  'archived':       'Archived',
-};
-
-
 const gameByTitle   = new Map(PROJECTS_DATA.map(p => [p.title.toLowerCase(), p]));
 const systemByTitle = new Map(SYSTEM_PROJECTS_DATA.map(p => [p.title.toLowerCase(), p]));
 
@@ -46,17 +39,12 @@ const TYPE_LABEL: Record<ProjectType, string> = {
   system: 'System Dev',
 };
 
-const TYPE_COLOR: Record<ProjectType, string> = {
-  game:   '#38bdf8',
-  engine: '#f0c060',
-  system: '#4ade80',
-};
-
-const TYPE_RGB: Record<ProjectType, string> = {
-  game:   '56, 189, 248',
-  engine: '240, 192, 96',
-  system: '74, 222, 128',
-};
+function buildTypeColor(c: { typeGame: string; typeEngine: string; typeSystem: string }): Record<ProjectType, string> {
+  return { game: c.typeGame, engine: c.typeEngine, system: c.typeSystem };
+}
+function buildTypeRgb(c: { typeGameRgb: string; typeEngineRgb: string; typeSystemRgb: string }): Record<ProjectType, string> {
+  return { game: c.typeGameRgb, engine: c.typeEngineRgb, system: c.typeSystemRgb };
+}
 
 const CATEGORY_LABEL: Record<ProjectCategory, string> = {
   professional: 'Professional',
@@ -86,8 +74,12 @@ function renderCard(entry: TimelineEntry) {
 }
 
 function ProjectsPage() {
+  const { theme } = useTheme();
+  const TYPE_COLOR = useMemo(() => buildTypeColor(theme.colors), [theme]);
+  const TYPE_RGB   = useMemo(() => buildTypeRgb(theme.colors),   [theme]);
+
   const [hoveredProjectId, setHoveredProjectId] = useState<number | null>(null);
-  const [navTooltip, setNavTooltip] = useState<{ entry: TimelineEntry; x: number; y: number } | null>(null);
+  const [navHoverId, setNavHoverId] = useState<number | null>(null);
   const navTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
@@ -107,18 +99,14 @@ function ProjectsPage() {
 
   function handleNavEnter(e: React.PointerEvent<HTMLButtonElement>, entry: TimelineEntry) {
     if (e.pointerType === 'touch') return;
-    const rect = e.currentTarget.getBoundingClientRect();
     setHoveredProjectId(entry.id);
-    navTimerRef.current = setTimeout(() => {
-      const x = Math.min(Math.max(rect.left + rect.width / 2, 118), window.innerWidth - 118);
-      setNavTooltip({ entry, x, y: rect.top });
-    }, 500);
+    navTimerRef.current = setTimeout(() => setNavHoverId(entry.id), 500);
   }
 
   function handleNavLeave() {
     if (navTimerRef.current) clearTimeout(navTimerRef.current);
     setHoveredProjectId(null);
-    setNavTooltip(null);
+    setNavHoverId(null);
   }
 
   const handleTimelineHover = useCallback((id: number | null) => {
@@ -185,13 +173,13 @@ function ProjectsPage() {
   const selectedIndex = sorted.findIndex(e => e.id === selectedId);
 
   function goNext() {
-    if (sorted.length === 0) return;
+    if (sorted.length <= 1) return;
     setSlideDir('next');
     const idx = selectedIndex < 0 ? 0 : (selectedIndex + 1) % sorted.length;
     setSelectedId(sorted[idx].id);
   }
   function goPrev() {
-    if (sorted.length === 0) return;
+    if (sorted.length <= 1) return;
     setSlideDir('prev');
     const idx = selectedIndex <= 0 ? sorted.length - 1 : selectedIndex - 1;
     setSelectedId(sorted[idx].id);
@@ -225,43 +213,7 @@ function ProjectsPage() {
 
   return (
     <div className={styles.pageContainer}>
-      {navTooltip && (
-        <div
-          className={styles.navTooltip}
-          style={{ left: navTooltip.x - 110, bottom: window.innerHeight - navTooltip.y + 10 }}
-        >
-          <div className={styles.tipTitle}>{navTooltip.entry.title}</div>
-          <div className={styles.tipMeta}>
-            <span className={`${styles.statusBadge} ${styles[`status-${navTooltip.entry.status}`]}`}>
-              {STATUS_LABEL[navTooltip.entry.status]}
-            </span>
-            <span className={styles.typeBadge}>{TYPE_LABEL[navTooltip.entry.type]}</span>
-          </div>
-          <div className={styles.tipPeriod}>{navTooltip.entry.period}</div>
-          {navTooltip.entry.engine && <div className={styles.tipEngine}>{navTooltip.entry.engine}</div>}
-          <div className={styles.tipContribution}>{navTooltip.entry.contribution}</div>
-          <div className={`${styles.tipCategory} ${styles[navTooltip.entry.category]}`}>
-            {navTooltip.entry.categoryLabel ?? (navTooltip.entry.category === 'hobby' ? 'InHouse' : navTooltip.entry.category)}
-          </div>
-        </div>
-      )}
-
       <h2 className={styles.pageTitle}>Projects</h2>
-
-      <div className={styles.timelineSection}>
-        <div className={styles.timelineRow}>
-          <span className={styles.timelineLabel}>Professional</span>
-          <GitTimeline category="professional" highlightId={hoveredProjectId ?? undefined} onHoverChange={handleTimelineHover} activeIds={activeIds} />
-        </div>
-        <div className={styles.timelineRow}>
-          <span className={styles.timelineLabel}>Educational</span>
-          <GitTimeline category="educational" highlightId={hoveredProjectId ?? undefined} onHoverChange={handleTimelineHover} activeIds={activeIds} />
-        </div>
-        <div className={styles.timelineRow}>
-          <span className={styles.timelineLabel}>InHouse</span>
-          <GitTimeline category="hobby" showAxis highlightId={hoveredProjectId ?? undefined} onHoverChange={handleTimelineHover} activeIds={activeIds} />
-        </div>
-      </div>
 
       <div className={styles.filters}>
         <div className={styles.filterRow}>
@@ -305,6 +257,12 @@ function ProjectsPage() {
               {STATUS_GROUP_LABEL[s]}
             </button>
           ))}
+        </div>
+      </div>
+
+      <div className={styles.timelineSection}>
+        <div className={`${styles.timelineRow} ${styles.timelineRowFull}`}>
+          <GitTimeline showAxis highlightId={hoveredProjectId ?? undefined} selectedId={selectedId ?? undefined} forcedTooltipId={navHoverId ?? undefined} onHoverChange={handleTimelineHover} onSelect={id => { const e = sorted.find(x => x.id === id); if (e) selectTab(e); }} activeIds={activeIds} />
         </div>
       </div>
 

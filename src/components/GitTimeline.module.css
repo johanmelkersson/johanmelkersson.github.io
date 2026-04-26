@@ -1,8 +1,3 @@
-/* Category colours (used by tipCategory badge) */
-.educational  { --cat: #38bdf8; }
-.professional { --cat: #34d399; }
-.hobby        { --cat: #f0c060; }
-
 .wrapper {
   position: relative;
   width: 100%;
@@ -45,12 +40,12 @@
 
 .tooltip {
   position: absolute;
-  bottom: calc(100% - 0.5rem); /* floats above wrapper */
-  width: 220px;
-  background: #1a1a1e;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 0.75rem 0.9rem;
+  bottom: calc(100% - 0.5rem);
+  width: 280px;
+  background: var(--bg-card);
+  border: 1px solid var(--tip-color);
+  border-radius: 10px;
+  overflow: hidden;
   pointer-events: none;
   z-index: 50;
   animation: fadeUp 0.15s ease;
@@ -64,7 +59,7 @@
   height: 0;
   border: 5px solid transparent;
   border-bottom: none;
-  border-top-color: rgba(255, 255, 255, 0.1);
+  border-top-color: var(--tip-color);
 }
 
 @keyframes fadeUp {
@@ -72,24 +67,51 @@
   to   { opacity: 1; transform: translateY(0); }
 }
 
-.tipTitle {
-  font-size: 0.82rem;
-  font-weight: 600;
-  color: rgba(248, 250, 252, 0.9);
-  margin-bottom: 6px;
-  line-height: 1.3;
+.tipHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0.85rem 0.6rem;
 }
 
-.tipMeta {
+.tipLeft {
   display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 6px;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.tipRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  flex-shrink: 0;
+}
+
+.tipTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(248, 250, 252, 0.9);
+  line-height: 1.2;
+}
+
+.tipContext {
+  font-family: 'Courier New', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--tip-color);
+  opacity: 0.75;
+}
+
+.tipEngine {
+  opacity: 0.6;
 }
 
 .statusBadge {
   font-family: 'Courier New', monospace;
-  font-size: 0.55rem;
+  font-size: 0.52rem;
   letter-spacing: 1px;
   text-transform: uppercase;
   padding: 1px 5px;
@@ -98,53 +120,43 @@
   opacity: 0.85;
 }
 
-.status-in-development { color: #a78bfa; }
+.status-in-development { color: var(--status-in-dev); }
 .status-released        { color: #fb923c; }
 .status-finished        { color: #94a3b8; }
 .status-archived        { color: rgba(248, 250, 252, 0.25); }
 
 .typeBadge {
   font-family: 'Courier New', monospace;
-  font-size: 0.55rem;
+  font-size: 0.52rem;
   letter-spacing: 1px;
   text-transform: uppercase;
   padding: 1px 5px;
   border-radius: 3px;
-  border: 1px solid rgba(248, 250, 252, 0.15);
-  color: rgba(248, 250, 252, 0.3);
+  border: 1px solid var(--tip-color);
+  color: var(--tip-color);
+  opacity: 0.7;
+}
+
+.tipCategoryLabel {
+  font-family: 'Courier New', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.45);
 }
 
 .tipPeriod {
   font-family: 'Courier New', monospace;
-  font-size: 0.65rem;
-  color: rgba(248, 250, 252, 0.35);
+  font-size: 0.58rem;
+  color: rgba(248, 250, 252, 0.3);
   letter-spacing: 0.5px;
-  margin-bottom: 4px;
 }
 
-.tipEngine {
-  font-family: 'Courier New', monospace;
-  font-size: 0.65rem;
-  color: var(--accent-color);
-  opacity: 0.7;
-  margin-bottom: 4px;
-}
-
-.tipContribution {
-  font-size: 0.72rem;
+.tipFooter {
+  font-size: 0.7rem;
   color: rgba(248, 250, 252, 0.5);
-  line-height: 1.4;
-  margin-bottom: 8px;
-}
-
-.tipCategory {
-  display: inline-block;
-  font-size: 0.6rem;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: var(--cat);
-  border: 1px solid var(--cat);
-  padding: 1px 6px;
-  border-radius: 3px;
-  opacity: 0.8;
+  line-height: 1.5;
+  padding: 0.5rem 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  background: color-mix(in srgb, var(--tip-color) 4%, transparent);
 }

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
+import { useTheme } from '../context/ThemeContext';
 import { TIMELINE_DATA, CATEGORY_LABELS, TYPE_LABELS } from '../data/timeline';
 import type { ProjectCategory, ProjectType, TimelineEntry } from '../data/timeline';
 import type { ProjectStatus } from '../data/projects';
@@ -6,7 +7,8 @@ import styles from './GitTimeline.module.css';
 
 // ─── Date → numeric value (month precision) ──────────────────────────────────
 
-const ONGOING_END = 2027.0;
+const _now = new Date();
+const ONGOING_END = _now.getFullYear() + _now.getMonth() / 12 + 1 / 12; // today + 1 month
 
 function dateToVal(yyyymm: string): number {
   const [y, m] = yyyymm.split('-').map(Number);
@@ -47,8 +49,11 @@ function assignLanes(data: TimelineEntry[]): PositionedEntry[] {
 
 // ─── Layout constants ────────────────────────────────────────────────────────
 
-const TIME_MIN  = 2021.0;   // Jan 2021
-const TIME_MAX  = 2026.75;  // Oct 2026
+const _starts = TIMELINE_DATA.map(e => dateToVal(e.startDate));
+const _ends   = TIMELINE_DATA.map(e => e.endDate ? dateToVal(e.endDate) + 1 / 12 : ONGOING_END);
+const TIME_MIN = Math.min(..._starts) - 1 / 12;
+const TIME_MAX = Math.max(..._ends)   + 1 / 12;
+
 const PAD_X     = 24;
 const PAD_TOP   = 10;
 const LANE_H    = 14;
@@ -56,11 +61,8 @@ const DOT_R     = 5;        // kept for pulse ring on ongoing projects
 const PAD_BOT   = 24;       // year labels
 const SEG_GAP   = 4;        // = border strokeWidth/2, matches outer rounded cap radius
 
-const TYPE_COLOR: Record<ProjectType, string> = {
-  game:   '#38bdf8',
-  engine: '#f0c060',
-  system: '#fb923c',
-};
+// TYPE_COLOR is built per-render from the active theme (see GitTimeline component)
+type TypeColorMap = Record<ProjectType, string>;
 
 function tX(val: number, w: number) {
   return PAD_X + ((val - TIME_MIN) / (TIME_MAX - TIME_MIN)) * (w - 2 * PAD_X);
@@ -70,64 +72,6 @@ function lY(lane: number) {
 }
 
 
-// ─── Build SVG paths ─────────────────────────────────────────────────────────
-
-interface SvgPath {
-  d: string;
-  color: string;
-  dashed?: boolean;
-  opacity?: number;
-}
-
-function buildPaths(entries: PositionedEntry[], w: number): SvgPath[] {
-  const byLane = new Map<number, PositionedEntry[]>();
-  entries.forEach(e => {
-    if (!byLane.has(e.lane)) byLane.set(e.lane, []);
-    byLane.get(e.lane)!.push(e);
-  });
-  byLane.forEach(arr => arr.sort((a, b) => a.startVal - b.startVal));
-
-  const paths: SvgPath[] = [];
-  const TRUNK = 'rgba(255,255,255,0.1)';
-
-  byLane.forEach((laneEntries, lane) => {
-    const y     = lY(lane);
-    const yMain = lY(0);
-    const first = laneEntries[0];
-    const last  = laneEntries[laneEntries.length - 1];
-    const color = lane === 0 ? TRUNK : TYPE_COLOR[first.type];
-
-    // Segments between consecutive dots on this lane
-    for (let i = 1; i < laneEntries.length; i++) {
-      const x1 = tX(laneEntries[i - 1].startVal, w);
-      const x2 = tX(laneEntries[i].startVal, w);
-      paths.push({ d: `M ${x1},${y} L ${x2},${y}`, color, opacity: lane === 0 ? 1 : 0.6 });
-    }
-
-    if (lane > 0) {
-      const xLast = tX(last.startVal, w);
-
-      if (last.ongoing) {
-        paths.push({ d: `M ${xLast},${y} L ${w - PAD_X},${y}`, color, dashed: true, opacity: 0.5 });
-      } else {
-        const xEnd = Math.min(tX(last.endVal, w), w - PAD_X);
-        if (xEnd > xLast + 4) {
-          paths.push({ d: `M ${xLast},${y} L ${xEnd},${y}`, color, opacity: 0.4 });
-        }
-      }
-    } else {
-      // Extend trunk past last dot if ongoing branches remain
-      if (!last.ongoing) {
-        const hasOngoing = entries.some(e => e.ongoing);
-        if (hasOngoing) {
-          paths.push({ d: `M ${tX(last.startVal, w)},${yMain} L ${w - PAD_X},${yMain}`, color: TRUNK, dashed: true, opacity: 0.4 });
-        }
-      }
-    }
-  });
-
-  return paths;
-}
 
 // ─── Label & status maps ─────────────────────────────────────────────────────
 
@@ -146,21 +90,31 @@ const CATEGORY_CLASS: Record<ProjectCategory, string> = {
 
 // ─── Component ───────────────────────────────────────────────────────────────
 
-const TOOLTIP_W = 220;
+const TOOLTIP_W = 280;
 
 interface GitTimelineProps {
   category?: ProjectCategory;
   showAxis?: boolean;
   highlightId?: number;
+  selectedId?: number;
   forcedTooltipId?: number;
   onHoverChange?: (id: number | null) => void;
+  onSelect?: (id: number) => void;
   activeIds?: Set<number>;
   singleLane?: boolean;
 }
 
 const HOVER_DELAY = 500;
 
-function GitTimeline({ category, showAxis = false, highlightId, forcedTooltipId, onHoverChange, activeIds, singleLane = false }: GitTimelineProps) {
+function GitTimeline({ category, showAxis = false, highlightId, selectedId, forcedTooltipId, onHoverChange, onSelect, activeIds, singleLane = false }: GitTimelineProps) {
+  const { theme } = useTheme();
+  const TYPE_COLOR = useMemo<TypeColorMap>(() => ({
+    game:   theme.colors.typeGame,
+    engine: theme.colors.typeEngine,
+    system: theme.colors.typeSystem,
+  }), [theme]);
+  const bgPage = theme.swatchBg;
+
   const wrapperRef    = useRef<HTMLDivElement>(null);
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [svgW, setSvgW] = useState(900);
@@ -185,7 +139,6 @@ function GitTimeline({ category, showAxis = false, highlightId, forcedTooltipId,
     return e;
   }, [data, singleLane]);
   const maxLane  = useMemo(() => Math.max(...entries.map(e => e.lane)), [entries]);
-  const paths    = useMemo(() => buildPaths(entries, svgW), [entries, svgW]);
   const svgH     = PAD_TOP + maxLane * LANE_H + DOT_R + (showAxis ? PAD_BOT : 8);
 
   useEffect(() => {
@@ -199,25 +152,32 @@ function GitTimeline({ category, showAxis = false, highlightId, forcedTooltipId,
 
   const displayTooltip = forcedTooltip ?? tooltip;
 
-  const YEARS = svgW < 480
-    ? [2021, 2023, 2025, 2027]
-    : [2021, 2022, 2023, 2024, 2025, 2026, 2027];
+  const YEARS = (() => {
+    const first = Math.ceil(TIME_MIN);
+    const last  = Math.floor(TIME_MAX);
+    const step  = svgW < 480 ? 2 : 1;
+    const years = [];
+    for (let y = first; y <= last; y += step) years.push(y);
+    return years;
+  })();
 
-  function handleEnter(e: React.MouseEvent<SVGLineElement>, entry: PositionedEntry) {
+  function handleEnter(e: React.PointerEvent<SVGLineElement>, entry: PositionedEntry) {
+    if (e.pointerType === 'touch') return;
     const wrapperRect = wrapperRef.current!.getBoundingClientRect();
     const x = e.clientX - wrapperRect.left;
     onHoverChange?.(entry.id);
     hoverTimerRef.current = setTimeout(() => setTooltip({ entry, x }), HOVER_DELAY);
   }
 
-  function handleLeave() {
+  function handleLeave(e: React.PointerEvent<SVGLineElement>) {
+    if (e.pointerType === 'touch') return;
     if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
     setTooltip(null);
     onHoverChange?.(null);
   }
 
-  function handleMove(e: React.MouseEvent<SVGLineElement>) {
-    if (!tooltip) return;
+  function handleMove(e: React.PointerEvent<SVGLineElement>) {
+    if (e.pointerType === 'touch' || !tooltip) return;
     const wrapperRect = wrapperRef.current!.getBoundingClientRect();
     setTooltip(t => t ? { ...t, x: e.clientX - wrapperRect.left } : null);
   }
@@ -234,39 +194,34 @@ function GitTimeline({ category, showAxis = false, highlightId, forcedTooltipId,
     <div ref={wrapperRef} className={styles.wrapper}>
       {/* Tooltip rendered outside scroll container */}
       {displayTooltip && (
-        <div className={styles.tooltip} style={{ left: tipLeft(displayTooltip.x) }}>
+        <div
+          className={styles.tooltip}
+          style={{ left: tipLeft(displayTooltip.x), '--tip-color': TYPE_COLOR[displayTooltip.entry.type] } as React.CSSProperties}
+        >
           <div className={styles.arrow} style={{ left: arrowLeft(displayTooltip.x) }} />
-          <div className={styles.tipTitle}>{displayTooltip.entry.title}</div>
-          <div className={styles.tipMeta}>
-            <span className={`${styles.statusBadge} ${styles[`status-${displayTooltip.entry.status}`]}`}>
-              {STATUS_LABEL[displayTooltip.entry.status]}
-            </span>
-            <span className={styles.typeBadge}>{TYPE_LABELS[displayTooltip.entry.type]}</span>
+          <div className={styles.tipHeader}>
+            <div className={styles.tipLeft}>
+              <div className={styles.tipTitle}>{displayTooltip.entry.title}</div>
+              <div className={styles.tipContext}>
+                {displayTooltip.entry.engine ?? TYPE_LABELS[displayTooltip.entry.type]}
+              </div>
+            </div>
+            <div className={styles.tipRight}>
+              <span className={`${styles.statusBadge} ${styles[`status-${displayTooltip.entry.status}`]}`}>
+                {STATUS_LABEL[displayTooltip.entry.status]}
+              </span>
+              <span className={styles.tipCategoryLabel}>
+                {displayTooltip.entry.categoryLabel ?? (displayTooltip.entry.category === 'hobby' ? 'InHouse' : CATEGORY_LABELS[displayTooltip.entry.category])}
+              </span>
+              <span className={styles.tipPeriod}>{displayTooltip.entry.period}</span>
+            </div>
           </div>
-          <div className={styles.tipPeriod}>{displayTooltip.entry.period}</div>
-          {displayTooltip.entry.engine && <div className={styles.tipEngine}>{displayTooltip.entry.engine}</div>}
-          <div className={styles.tipContribution}>{displayTooltip.entry.contribution}</div>
-          <div className={`${styles.tipCategory} ${styles[CATEGORY_CLASS[displayTooltip.entry.category]]}`}>
-            {displayTooltip.entry.categoryLabel ?? CATEGORY_LABELS[displayTooltip.entry.category]}
-          </div>
+          <div className={styles.tipFooter}>{displayTooltip.entry.contribution}</div>
         </div>
       )}
 
       <div className={styles.scroll}>
-        <svg width="100%" height={svgH} viewBox={`0 0 ${svgW} ${svgH}`} preserveAspectRatio="none" className={styles.svg}>
-          {/* Lines */}
-          {paths.map((p, i) => (
-            <path
-              key={i}
-              d={p.d}
-              stroke={p.color}
-              strokeWidth={1.5}
-              strokeLinecap="round"
-              strokeDasharray={p.dashed ? '4 4' : undefined}
-              fill="none"
-              opacity={p.opacity ?? 1}
-            />
-          ))}
+        <svg width="100%" height={svgH} viewBox={`0 0 ${svgW} ${svgH}`} preserveAspectRatio="none" overflow="visible" className={styles.svg}>
 
           {/* Per-project segments — always visible, glow on hover */}
           {entries.map(entry => {
@@ -276,7 +231,7 @@ function GitTimeline({ category, showAxis = false, highlightId, forcedTooltipId,
             const visX2   = Math.max(visX1 + 2, rawX2 - SEG_GAP); // at least 2px wide
             const cy      = lY(entry.lane);
             const color    = TYPE_COLOR[entry.type];
-            const hovered  = displayTooltip?.entry.id === entry.id || highlightId === entry.id;
+            const hovered  = displayTooltip?.entry.id === entry.id || highlightId === entry.id || selectedId === entry.id;
             const isActive = !activeIds || activeIds.has(entry.id);
             return (
               <g key={`seg-${entry.id}`} style={{ transition: 'opacity 0.25s' }} opacity={isActive ? 1 : 0.22}>
@@ -287,7 +242,7 @@ function GitTimeline({ category, showAxis = false, highlightId, forcedTooltipId,
                 {/* Border layer — background colour creates clean rim + separation */}
                 <line
                   x1={visX1} y1={cy} x2={visX2} y2={cy}
-                  stroke="#0f172a"
+                  stroke={bgPage}
                   strokeWidth={hovered ? 10 : 8}
                   strokeLinecap="round"
                   opacity={1}
@@ -311,9 +266,10 @@ function GitTimeline({ category, showAxis = false, highlightId, forcedTooltipId,
                   x1={rawX1} y1={cy} x2={rawX2} y2={cy}
                   stroke="transparent" strokeWidth={16} strokeLinecap="butt"
                   style={{ cursor: 'pointer' }}
-                  onMouseEnter={e => handleEnter(e, entry)}
-                  onMouseMove={handleMove}
-                  onMouseLeave={handleLeave}
+                  onPointerEnter={e => handleEnter(e, entry)}
+                  onPointerMove={handleMove}
+                  onPointerLeave={handleLeave}
+                  onClick={() => onSelect?.(entry.id)}
                 />
               </g>
             );

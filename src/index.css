@@ -1,13 +1,160 @@
+/* ── Default theme: Portfolio Dark ── */
 :root {
   --bg-color: #0f172a;
+  --bg-card:  #1a1a1e;
+  --bg-sunken: #0d1117;
+  --bg-bar:   #161b22;
+  --bg-nav:   rgba(15, 23, 42, 0.85);
+  --border-card: #333;
+
   --text-primary: #f8fafc;
-  /* Den vanliga färgen för borders och text */
-  --accent-color: #38bdf8; 
-  
-  /* Samma färg men i råa RGB-siffror (56, 189, 248) */
-  --accent-rgb: 56, 189, 248;
+
+  --accent-color: #38bdf8;
+  --accent-rgb:   56, 189, 248;
+
+  --type-game:        #a78bfa;
+  --type-game-rgb:    167, 139, 250;
+  --type-engine:      #f0c060;
+  --type-engine-rgb:  240, 192, 96;
+  --type-system:      #4ade80;
+  --type-system-rgb:  74, 222, 128;
+
+  --status-in-dev:   #38bdf8;
+  --status-released: #fb923c;
+  --status-finished: #94a3b8;
+  --status-archived: rgba(248, 250, 252, 0.25);
+
+  --cat-professional: #34d399;
+  --cat-educational:  #38bdf8;
+  --cat-hobby:        #f0c060;
 }
 
+/* ── VS Code Dark+ ── */
+[data-theme="vscode"] {
+  --bg-color: #1e1e1e;
+  --bg-card:  #252526;
+  --bg-sunken: #1e1e1e;
+  --bg-bar:   #3c3c3c;
+  --bg-nav:   rgba(30, 30, 30, 0.9);
+  --border-card: #3c3c3c;
+
+  --accent-color: #569cd6;
+  --accent-rgb:   86, 156, 214;
+
+  --type-game:        #c586c0;
+  --type-game-rgb:    197, 134, 192;
+  --type-engine:      #dcdcaa;
+  --type-engine-rgb:  220, 220, 170;
+  --type-system:      #4ec9b0;
+  --type-system-rgb:  78, 201, 176;
+
+  --status-in-dev:   #569cd6;
+  --cat-professional: #4ec9b0;
+  --cat-educational:  #569cd6;
+  --cat-hobby:        #dcdcaa;
+}
+
+/* ── Dracula ── */
+[data-theme="dracula"] {
+  --bg-color: #282a36;
+  --bg-card:  #1e1f29;
+  --bg-sunken: #191a24;
+  --bg-bar:   #44475a;
+  --bg-nav:   rgba(40, 42, 54, 0.9);
+  --border-card: #44475a;
+
+  --accent-color: #bd93f9;
+  --accent-rgb:   189, 147, 249;
+
+  --type-game:        #ff79c6;
+  --type-game-rgb:    255, 121, 198;
+  --type-engine:      #f1fa8c;
+  --type-engine-rgb:  241, 250, 140;
+  --type-system:      #50fa7b;
+  --type-system-rgb:  80, 250, 123;
+
+  --status-in-dev:   #8be9fd;
+  --cat-professional: #50fa7b;
+  --cat-educational:  #8be9fd;
+  --cat-hobby:        #f1fa8c;
+}
+
+/* ── Nord ── */
+[data-theme="nord"] {
+  --bg-color: #2e3440;
+  --bg-card:  #3b4252;
+  --bg-sunken: #242933;
+  --bg-bar:   #434c5e;
+  --bg-nav:   rgba(46, 52, 64, 0.9);
+  --border-card: #4c566a;
+
+  --accent-color: #88c0d0;
+  --accent-rgb:   136, 192, 208;
+
+  --type-game:        #b48ead;
+  --type-game-rgb:    180, 142, 173;
+  --type-engine:      #ebcb8b;
+  --type-engine-rgb:  235, 203, 139;
+  --type-system:      #a3be8c;
+  --type-system-rgb:  163, 190, 140;
+
+  --status-in-dev:   #88c0d0;
+  --cat-professional: #a3be8c;
+  --cat-educational:  #88c0d0;
+  --cat-hobby:        #ebcb8b;
+}
+
+/* ── Gruvbox Dark ── */
+[data-theme="gruvbox"] {
+  --bg-color: #282828;
+  --bg-card:  #3c3836;
+  --bg-sunken: #1d2021;
+  --bg-bar:   #504945;
+  --bg-nav:   rgba(40, 40, 40, 0.9);
+  --border-card: #504945;
+
+  --accent-color: #d79921;
+  --accent-rgb:   215, 153, 33;
+
+  --type-game:        #d3869b;
+  --type-game-rgb:    211, 134, 155;
+  --type-engine:      #8ec07c;
+  --type-engine-rgb:  142, 192, 124;
+  --type-system:      #b8bb26;
+  --type-system-rgb:  184, 187, 38;
+
+  --status-in-dev:   #83a598;
+  --cat-professional: #b8bb26;
+  --cat-educational:  #83a598;
+  --cat-hobby:        #d79921;
+}
+
+/* ── Catppuccin Mocha ── */
+[data-theme="catppuccin"] {
+  --bg-color: #1e1e2e;
+  --bg-card:  #181825;
+  --bg-sunken: #11111b;
+  --bg-bar:   #313244;
+  --bg-nav:   rgba(30, 30, 46, 0.9);
+  --border-card: #313244;
+
+  --accent-color: #cba6f7;
+  --accent-rgb:   203, 166, 247;
+
+  --type-game:        #f38ba8;
+  --type-game-rgb:    243, 139, 168;
+  --type-engine:      #fab387;
+  --type-engine-rgb:  250, 179, 135;
+  --type-system:      #a6e3a1;
+  --type-system-rgb:  166, 227, 161;
+
+  --status-in-dev:   #89dceb;
+  --cat-professional: #a6e3a1;
+  --cat-educational:  #89dceb;
+  --cat-hobby:        #fab387;
+}
+
+/* ── Base styles ── */
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 5rem;

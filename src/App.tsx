@@ -6,6 +6,8 @@ import Specialization from './pages/Specialization';
 import About from './pages/About';
 import ScrollToTop from './components/ScrollToTop';
 import Terminal from './components/Terminal';
+import ThemePicker from './components/ThemePicker';
+import { ThemeProvider } from './context/ThemeContext';
 import { SOCIAL_LINKS } from './data/constants';
 import './App.css';
 
@@ -13,6 +15,7 @@ function App() {
   const [terminalOpen, setTerminalOpen] = useState(false);
 
   return (
+    <ThemeProvider>
     <Router>
       <div className="app-container">
         <ScrollToTop />
@@ -31,6 +34,7 @@ function App() {
                   <Icon />
                 </a>
               ))}
+              <ThemePicker />
             </div>
           </nav>
         </header>
@@ -61,6 +65,7 @@ function App() {
         </footer>
       </div>
     </Router>
+    </ThemeProvider>
   );
 }
 

@@ -17,7 +17,7 @@
 .window {
   width: min(760px, 92vw);
   height: min(480px, 75vh);
-  background: #0d1117;
+  background: var(--bg-sunken);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   display: flex;
@@ -38,7 +38,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 0 0 0 1rem;
-  background: #161b22;
+  background: var(--bg-bar);
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   flex-shrink: 0;
   height: 36px;

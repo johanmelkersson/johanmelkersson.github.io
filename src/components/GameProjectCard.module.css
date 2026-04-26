@@ -88,7 +88,7 @@
   text-transform: none;
 }
 
-.status-in-development { color: #a78bfa; }
+.status-in-development { color: var(--status-in-dev); }
 .status-released        { color: #fb923c; }
 .status-finished        { color: #94a3b8; }
 .status-archived        { color: rgba(248, 250, 252, 0.25); }
@@ -107,16 +107,12 @@
   width: 100%;
   max-width: 100%; /* Hindrar kortet från att "skjuta ut" åt höger */
   box-sizing: border-box; /* Viktigt! Räknar in border/padding i bredden */
-  background: #1a1a1e;
-  border: 1px solid #333;
+  background: var(--bg-card);
+  border: 1px solid var(--accent-color);
   border-radius: 16px;
   overflow: hidden;
   color: #ececec;
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  margin-bottom: 0; /* Vi använder gap i föräldern istället */
-  /* Lite extra polering för att markera separationen */
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* Subtil bakgrundstoning inspirerad av spelmenyer */
@@ -166,10 +162,8 @@
 
 .mediaContainer {
   position: relative;
-  /* Vi samlar filter och transition här */
-  filter: drop-shadow(0 0 15px rgba(var(--accent-rgb), 0.2));
-  transition: filter 0.3s ease;
-  z-index: 2; /* Ser till att glöden ligger rätt */
+  filter: drop-shadow(0 0 18px rgba(var(--accent-rgb), 0.25));
+  z-index: 2;
 }
 
 /* Stiling för när vi har en video */
@@ -202,20 +196,6 @@
   transition: transform 0.5s ease;
 }
 
-@media (hover: hover) {
-  .card:hover {
-    transform: translateY(-5px);
-    border-color: var(--accent-color);
-  }
-
-  .card:hover .mediaContainer {
-    filter: drop-shadow(0 0 25px rgba(var(--accent-rgb), 0.4));
-  }
-
-  .card:hover .keyArtFallback {
-    transform: scale(1.02);
-  }
-}
 
 .techStack {
   display: flex;

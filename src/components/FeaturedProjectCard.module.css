@@ -1,20 +1,13 @@
 .card {
   width: 100%;
   box-sizing: border-box;
-  background: #1a1a1e;
-  border: 1px solid #333;
+  background: var(--bg-card);
+  border: 1px solid var(--accent-color);
   border-radius: 16px;
   overflow: hidden;
   color: #ececec;
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-@media (hover: hover) {
-  .card:hover {
-    transform: translateY(-5px);
-    border-color: var(--accent-color);
-  }
-}
 
 .cardContent {
   padding: 1.5rem;
@@ -109,7 +102,7 @@
   text-transform: none;
 }
 
-.status-in-development { color: #a78bfa; }
+.status-in-development { color: var(--status-in-dev); }
 .status-released        { color: #fb923c; }
 .status-finished        { color: #94a3b8; }
 .status-archived        { color: rgba(248, 250, 252, 0.25); }

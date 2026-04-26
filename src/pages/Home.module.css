@@ -51,7 +51,7 @@
 .ctaPrimary {
   text-decoration: none;
   background: var(--accent-color);
-  color: #0f172a;
+  color: var(--bg-color);
   padding: 0.8rem 2.2rem;
   border-radius: 6px;
   font-weight: 700;
