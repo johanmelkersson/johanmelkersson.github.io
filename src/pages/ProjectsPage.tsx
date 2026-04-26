@@ -332,13 +332,23 @@ function ProjectsPage() {
         if (!card) return null;
         return (
           <div
-            className={styles.folderPane}
+            className={styles.cardWrapper}
             style={{ '--accent-color': TYPE_COLOR[entry.type], '--accent-rgb': TYPE_RGB[entry.type] } as React.CSSProperties}
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
           >
-            <div key={entry.id} className={slideDir === 'next' ? styles.slideNext : styles.slidePrev}>
-              {card}
+            {sorted.length > 1 && (
+              <>
+                <button className={`${styles.sideNavBtn} ${styles.sideNavBtnLeft}`} onClick={goPrev} tabIndex={-1}>‹</button>
+                <button className={`${styles.sideNavBtn} ${styles.sideNavBtnRight}`} onClick={goNext} tabIndex={-1}>›</button>
+              </>
+            )}
+            <div
+              className={styles.folderPane}
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
+              <div key={entry.id} className={slideDir === 'next' ? styles.slideNext : styles.slidePrev}>
+                {card}
+              </div>
             </div>
           </div>
         );

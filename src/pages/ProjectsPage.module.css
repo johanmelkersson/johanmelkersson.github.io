@@ -262,7 +262,6 @@
 .folderPane {
   border-radius: 16px;
   overflow: hidden;
-  margin-bottom: 4rem;
 }
 
 .slideNext {
@@ -378,4 +377,45 @@
   flex-direction: column;
   gap: 4rem;
   width: 100%;
+}
+
+/* ── Card wrapper + side nav ── */
+.cardWrapper {
+  position: relative;
+  margin-bottom: 4rem;
+}
+
+.sideNavBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 24px;
+  height: 80px;
+  background: none;
+  border: none;
+  color: rgba(var(--accent-rgb), 0.3);
+  font-size: 2.2rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, color 0.15s;
+}
+
+.sideNavBtnLeft  { left: 0; }
+.sideNavBtnRight { right: 0; }
+
+@media (hover: hover) and (pointer: fine) {
+  .cardWrapper:hover .sideNavBtn {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .sideNavBtn:hover {
+    color: var(--accent-color);
+  }
 }
