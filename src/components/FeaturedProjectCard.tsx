@@ -28,6 +28,7 @@ function FeaturedProjectCard(project: FeaturedProject & { context?: string; peri
                 <span>{STATUS_LABEL[project.status]}</span>
                 </span>
               {project.context && <span className={styles.contextTag}>{project.context}</span>}
+              {project.period && <span className={styles.periodTag}>{project.period}</span>}
             </div>
           </div>
           {project.tagline && <p className={styles.tagline}>"{project.tagline}"</p>}
