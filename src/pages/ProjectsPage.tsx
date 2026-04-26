@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState, useCallback } from "react";
+import { useMemo, useRef, useState, useCallback, useEffect } from "react";
 import type { ProjectStatus } from "../data/projects";
 import GameProjectCard from "../components/GameProjectCard";
 import SystemProjectCard from "../components/SystemProjectCard";
@@ -89,8 +89,23 @@ function ProjectsPage() {
   const [hoveredProjectId, setHoveredProjectId] = useState<number | null>(null);
   const [navTooltip, setNavTooltip] = useState<{ entry: TimelineEntry; x: number; y: number } | null>(null);
   const navTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  function handleNavEnter(e: React.PointerEvent<HTMLAnchorElement>, entry: TimelineEntry) {
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    function onClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node))
+        setDropdownOpen(false);
+    }
+    document.addEventListener('mousedown', onClickOutside);
+    return () => document.removeEventListener('mousedown', onClickOutside);
+  }, [dropdownOpen]);
+
+  function handleNavEnter(e: React.PointerEvent<HTMLButtonElement>, entry: TimelineEntry) {
     if (e.pointerType === 'touch') return;
     const rect = e.currentTarget.getBoundingClientRect();
     setHoveredProjectId(entry.id);
@@ -161,6 +176,52 @@ function ProjectsPage() {
   }, [activeTypes, activeCategories, activeStatuses, newestFirst]);
 
   const activeIds = useMemo(() => new Set(sorted.map(e => e.id)), [sorted]);
+
+  useEffect(() => {
+    if (sorted.length === 0) { setSelectedId(null); return; }
+    setSelectedId(prev => sorted.some(e => e.id === prev) ? prev : sorted[0].id);
+  }, [sorted]);
+
+  const selectedIndex = sorted.findIndex(e => e.id === selectedId);
+
+  function goNext() {
+    if (sorted.length === 0) return;
+    setSlideDir('next');
+    const idx = selectedIndex < 0 ? 0 : (selectedIndex + 1) % sorted.length;
+    setSelectedId(sorted[idx].id);
+  }
+  function goPrev() {
+    if (sorted.length === 0) return;
+    setSlideDir('prev');
+    const idx = selectedIndex <= 0 ? sorted.length - 1 : selectedIndex - 1;
+    setSelectedId(sorted[idx].id);
+  }
+  function selectTab(entry: TimelineEntry) {
+    const newIdx = sorted.findIndex(e => e.id === entry.id);
+    setSlideDir(newIdx >= selectedIndex ? 'next' : 'prev');
+    setSelectedId(entry.id);
+  }
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'ArrowRight') goNext();
+      if (e.key === 'ArrowLeft')  goPrev();
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedIndex, sorted]);
+
+  function handleTouchStart(e: React.TouchEvent) {
+    touchStartX.current = e.touches[0].clientX;
+  }
+  function handleTouchEnd(e: React.TouchEvent) {
+    if (touchStartX.current === null) return;
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+    touchStartX.current = null;
+    if (Math.abs(delta) < 50) return;
+    if (delta < 0) goNext(); else goPrev();
+  }
 
   return (
     <div className={styles.pageContainer}>
@@ -247,36 +308,83 @@ function ProjectsPage() {
         </div>
       </div>
 
-      <nav className={styles.projectNav}>
-        {sorted.map(entry => (
-          <a
-            key={entry.id}
-            href={`#project-${entry.id}`}
-            className={`${styles.projectNavLink} ${hoveredProjectId === entry.id ? styles.projectNavLinkActive : ''}`}
-            style={{ '--type-color': TYPE_COLOR[entry.type] } as React.CSSProperties}
-            onPointerEnter={e => handleNavEnter(e, entry)}
-            onPointerLeave={handleNavLeave}
-          >
-            {entry.title}
-          </a>
-        ))}
-      </nav>
-
-      <div className={styles.projectFeed}>
-        {sorted.map(entry => {
-          const card = renderCard(entry);
-          if (!card) return null;
-          return (
-            <div
+      <div className={styles.tabRow}>
+        {/* Desktop: tab buttons */}
+        <nav className={styles.projectNav}>
+          {sorted.map(entry => (
+            <button
               key={entry.id}
-              id={`project-${entry.id}`}
-              style={{ '--accent-color': TYPE_COLOR[entry.type], '--accent-rgb': TYPE_RGB[entry.type] } as React.CSSProperties}
+              className={`${styles.projectNavLink} ${(selectedId === entry.id || hoveredProjectId === entry.id) ? styles.projectNavLinkActive : ''}`}
+              style={{ '--type-color': TYPE_COLOR[entry.type] } as React.CSSProperties}
+              onPointerEnter={e => handleNavEnter(e, entry)}
+              onPointerLeave={handleNavLeave}
+              onClick={() => selectTab(entry)}
             >
-              {card}
+              {entry.title}
+            </button>
+          ))}
+        </nav>
+
+        {/* Mobile: dropdown */}
+        {(() => {
+          const selectedEntry = sorted.find(e => e.id === selectedId) ?? sorted[0] ?? null;
+          return (
+            <div ref={dropdownRef} className={styles.mobileDropdown}>
+              <button
+                className={styles.dropdownTrigger}
+                style={selectedEntry ? { '--type-color': TYPE_COLOR[selectedEntry.type] } as React.CSSProperties : undefined}
+                onClick={() => setDropdownOpen(p => !p)}
+              >
+                <span>{selectedEntry?.title ?? '—'}</span>
+                <span className={styles.dropdownArrow}>{dropdownOpen ? '▴' : '▾'}</span>
+              </button>
+              {dropdownOpen && (
+                <div className={styles.dropdownList}>
+                  {sorted.map(entry => (
+                    <button
+                      key={entry.id}
+                      className={`${styles.dropdownItem} ${entry.id === selectedId ? styles.dropdownItemActive : ''}`}
+                      style={{ '--type-color': TYPE_COLOR[entry.type] } as React.CSSProperties}
+                      onClick={() => { selectTab(entry); setDropdownOpen(false); }}
+                    >
+                      {entry.title}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
           );
-        })}
+        })()}
+
+        {sorted.length > 0 && (
+          <div className={styles.folderNav}>
+            <button className={styles.folderNavBtn} onClick={goPrev}>‹</button>
+            <span className={styles.folderNavCount}>
+              {selectedIndex + 1} / {sorted.length}
+            </span>
+            <button className={styles.folderNavBtn} onClick={goNext}>›</button>
+          </div>
+        )}
       </div>
+
+      {(() => {
+        const entry = sorted.find(e => e.id === selectedId) ?? sorted[0] ?? null;
+        if (!entry) return null;
+        const card = renderCard(entry);
+        if (!card) return null;
+        return (
+          <div
+            className={styles.folderPane}
+            style={{ '--accent-color': TYPE_COLOR[entry.type], '--accent-rgb': TYPE_RGB[entry.type] } as React.CSSProperties}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+          >
+            <div key={entry.id} className={slideDir === 'next' ? styles.slideNext : styles.slidePrev}>
+              {card}
+            </div>
+          </div>
+        );
+      })()}
     </div>
   );
 }

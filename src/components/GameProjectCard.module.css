@@ -113,19 +113,6 @@
   /* Lite extra polering för att markera separationen */
   padding-bottom: 1rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-  animation: fadeInUp 0.8s ease-out forwards;
-}
-
-/* En mjuk animation när sidan laddas */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 /* Subtil bakgrundstoning inspirerad av spelmenyer */
