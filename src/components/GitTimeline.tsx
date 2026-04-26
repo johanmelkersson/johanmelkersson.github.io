@@ -82,12 +82,6 @@ const STATUS_LABEL: Record<ProjectStatus, string> = {
   'archived':       'Archived',
 };
 
-const CATEGORY_CLASS: Record<ProjectCategory, string> = {
-  educational:  'educational',
-  professional: 'professional',
-  hobby:        'hobby',
-};
-
 // ─── Component ───────────────────────────────────────────────────────────────
 
 const TOOLTIP_W = 280;
