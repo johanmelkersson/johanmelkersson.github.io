@@ -49,13 +49,13 @@ const TYPE_LABEL: Record<ProjectType, string> = {
 const TYPE_COLOR: Record<ProjectType, string> = {
   game:   '#38bdf8',
   engine: '#f0c060',
-  system: '#fb923c',
+  system: '#4ade80',
 };
 
 const TYPE_RGB: Record<ProjectType, string> = {
   game:   '56, 189, 248',
   engine: '240, 192, 96',
-  system: '251, 146, 60',
+  system: '74, 222, 128',
 };
 
 const CATEGORY_LABEL: Record<ProjectCategory, string> = {
