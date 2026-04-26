@@ -6,7 +6,6 @@ import FeaturedProjectCard from "../components/FeaturedProjectCard";
 import { PROJECTS_DATA, SYSTEM_PROJECTS_DATA, FEATURED_PROJECT } from "../data/projects";
 import GitTimeline from "../components/GitTimeline";
 import { TIMELINE_DATA } from "../data/timeline";
-import { CATEGORY_LABELS, TYPE_LABELS } from "../data/timeline";
 import type { TimelineEntry, ProjectType, ProjectCategory } from "../data/timeline";
 
 type StatusGroup = 'active' | 'finished' | 'archived';
@@ -65,11 +64,6 @@ const CATEGORY_LABEL: Record<ProjectCategory, string> = {
   hobby:        'InHouse',
 };
 
-const CATEGORY_COLOR: Record<ProjectCategory, string> = {
-  professional: '#34d399',
-  educational:  '#38bdf8',
-  hobby:        '#f0c060',
-};
 
 function getContext(entry: TimelineEntry): string {
   return entry.categoryLabel ?? (entry.category === 'hobby' ? 'InHouse' : entry.category);
