@@ -69,17 +69,6 @@ function lY(lane: number) {
   return PAD_TOP + lane * LANE_H;
 }
 
-// ─── SVG path helpers ────────────────────────────────────────────────────────
-
-function vcurve(x: number, y1: number, y2: number) {
-  const mid = (y1 + y2) / 2;
-  return `M ${x},${y1} C ${x},${mid} ${x},${mid} ${x},${y2}`;
-}
-function hcurve(x1: number, x2: number, y1: number, y2: number) {
-  const midX = (x1 + x2) / 2;
-  const midY = (y1 + y2) / 2;
-  return `M ${x1},${y1} C ${x1},${midY} ${x2},${midY} ${x2},${y2}`;
-}
 
 // ─── Build SVG paths ─────────────────────────────────────────────────────────
 
