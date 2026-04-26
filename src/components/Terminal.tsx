@@ -315,12 +315,12 @@ function Terminal({ forceOpen, onClose }: TerminalProps) {
       <div className={styles.window} onClick={e => e.stopPropagation()}>
 
         <div className={styles.titleBar}>
-          <div className={styles.dots}>
-            <button className={styles.dotRed}   onClick={() => setIsOpen(false)} />
-            <span className={styles.dotYellow} />
-            <span className={styles.dotGreen}  />
-          </div>
           <span className={styles.titleText}>johan@portfolio:~</span>
+          <div className={styles.winControls}>
+            <button className={styles.winBtn}>─</button>
+            <button className={styles.winBtn}>□</button>
+            <button className={`${styles.winBtn} ${styles.winClose}`} onClick={() => setIsOpen(false)}>✕</button>
+          </div>
         </div>
 
         <div className={styles.body}>

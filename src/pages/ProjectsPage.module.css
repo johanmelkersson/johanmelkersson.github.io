@@ -165,7 +165,7 @@
   transition: color 0.2s, border-color 0.2s;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .sortButton:hover {
     color: rgba(248, 250, 252, 0.85);
     border-color: rgba(248, 250, 252, 0.3);
@@ -186,7 +186,7 @@
   transition: color 0.2s, border-color 0.2s, background 0.2s;
 }
 
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .typeFilter:hover {
     color: var(--type-color);
     border-color: var(--type-color);

@@ -19,7 +19,7 @@
   height: min(480px, 75vh);
   background: #0d1117;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -36,42 +36,50 @@
 .titleBar {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.6rem 1rem;
+  justify-content: space-between;
+  padding: 0 0 0 1rem;
   background: #161b22;
   border-bottom: 1px solid rgba(255, 255, 255, 0.07);
   flex-shrink: 0;
+  height: 36px;
 }
-
-.dots {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-}
-
-.dotRed, .dotYellow, .dotGreen {
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
-.dotRed    { background: #ff5f57; }
-.dotYellow { background: #febc2e; }
-.dotGreen  { background: #28c840; }
-
-.dotRed:hover { filter: brightness(1.2); }
 
 .titleText {
   font-family: 'Courier New', monospace;
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.35);
   letter-spacing: 1px;
-  flex: 1;
-  text-align: center;
-  margin-right: 54px; /* offset for dots width */
+}
+
+.winControls {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+}
+
+.winBtn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.75rem;
+  width: 46px;
+  height: 100%;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.winBtn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.winClose:hover {
+  background: #c42b1c;
+  color: #fff;
 }
 
 /* Body */
