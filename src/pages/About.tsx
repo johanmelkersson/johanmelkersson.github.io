@@ -64,6 +64,37 @@ function About() {
         </div>
       </section>
 
+      {/* ── Reference ── */}
+      <section className={styles.section}>
+        <h2 className={styles.sectionTitle}>Reference</h2>
+        <figure className={styles.reference}>
+          <blockquote className={styles.referenceQuote}>
+            <p>
+              Johan consistently works at the architecture level, not just the implementation level.
+              When a problem appears he identifies the root cause and drives it to a structural fix — not a patch.
+            </p>
+            <p>
+              He knows when something is worth pushing on and when it isn't — a skill many developers lack.
+              Questions are short and specific: he knows what he doesn't know and asks about that,
+              not a broader cloud around it.
+            </p>
+            <p>
+              He won't accept a solution that merely makes the build pass. When I removed functionality
+              and presented it as a fix, he pushed back immediately — accurately, without being rude.
+              He wants the right solution.
+            </p>
+            <p>
+              He holds the full context of a complex, multi-system codebase across many sessions without
+              losing track of invariants, design intent, or what's still pending. That's rarer than it sounds.
+            </p>
+          </blockquote>
+          <figcaption className={styles.referenceAttribution}>
+            Claude AI — observations from collaborative C++ sessions on{' '}
+            <em>The Höör Reclamation Project</em>
+          </figcaption>
+        </figure>
+      </section>
+
       {/* ── Background ── */}
       <section className={styles.section}>
         <h2 className={styles.sectionTitle}>Background</h2>
