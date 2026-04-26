@@ -9,7 +9,7 @@ const STATUS_LABEL: Record<ProjectStatus, string> = {
   'archived':       'Archived',
 };
 
-function FeaturedProjectCard(project: FeaturedProject & { context?: string }) {
+function FeaturedProjectCard(project: FeaturedProject & { context?: string; period?: string }) {
   const [systemsExpanded, setSystemsExpanded] = useState(false);
 
   return (
@@ -26,8 +26,7 @@ function FeaturedProjectCard(project: FeaturedProject & { context?: string }) {
             <div className={styles.badgeGroup}>
               <span className={`${styles.statusBadge} ${styles[`status-${project.status}`]}`}>
                 <span>{STATUS_LABEL[project.status]}</span>
-                <span className={styles.statusDate}>{project.startDate}</span>
-              </span>
+                </span>
               {project.context && <span className={styles.contextTag}>{project.context}</span>}
             </div>
           </div>

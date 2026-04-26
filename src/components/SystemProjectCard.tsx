@@ -8,7 +8,7 @@ const STATUS_LABEL: Record<ProjectStatus, string> = {
   'archived':       'Archived',
 };
 
-function SystemProjectCard(project: SystemProject & { context?: string }) {
+function SystemProjectCard(project: SystemProject & { context?: string; period?: string }) {
   return (
     <div className={styles.card}>
       <div className={styles.cardBg} style={{ backgroundImage: `url(${project.imageUrl})` }} />
@@ -24,9 +24,9 @@ function SystemProjectCard(project: SystemProject & { context?: string }) {
             <div className={styles.badgeGroup}>
               <span className={`${styles.statusBadge} ${styles[`status-${project.status}`]}`}>
                 <span>{STATUS_LABEL[project.status]}</span>
-                {project.releaseDate && <span className={styles.statusDate}>{project.releaseDate}</span>}
               </span>
               {project.context && <span className={styles.contextTag}>{project.context}</span>}
+              {project.period && <span className={styles.periodTag}>{project.period}</span>}
             </div>
           </div>
         </div>

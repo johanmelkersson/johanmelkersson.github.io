@@ -14,7 +14,7 @@ const platformBadges: Record<string, string> = {
   steam: '/assets/badges/steam-badge.png'
 };
 
-function GameProjectCard(project: GameProject & { context?: string }) {
+function GameProjectCard(project: GameProject & { context?: string; period?: string }) {
   return (
     <div className={styles.card}>
       <div className={styles.cardBg} style={{ backgroundImage: `url(${project.imageUrl})` }} />
@@ -30,9 +30,9 @@ function GameProjectCard(project: GameProject & { context?: string }) {
             <div className={styles.badgeGroup}>
               <span className={`${styles.statusBadge} ${styles[`status-${project.status}`]}`}>
                 <span>{STATUS_LABEL[project.status]}</span>
-                {project.releaseDate && <span className={styles.statusDate}>{project.releaseDate}</span>}
               </span>
               {project.context && <span className={styles.contextTag}>{project.context}</span>}
+              {project.period && <span className={styles.periodTag}>{project.period}</span>}
             </div>
           </div>
           {project.tagline && <p className={styles.tagline}>{project.tagline}</p>}

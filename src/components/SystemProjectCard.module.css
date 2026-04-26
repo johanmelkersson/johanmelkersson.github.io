@@ -146,6 +146,13 @@
   color: rgba(248, 250, 252, 0.3);
 }
 
+.periodTag {
+  font-family: 'Courier New', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.5px;
+  color: rgba(248, 250, 252, 0.2);
+}
+
 .statusBadge {
   font-family: 'Courier New', monospace;
   font-size: 0.65rem;

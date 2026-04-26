@@ -74,13 +74,13 @@ function renderCard(entry: TimelineEntry) {
   const context = getContext(entry);
 
   if (entry.title === FEATURED_PROJECT.title)
-    return <FeaturedProjectCard {...FEATURED_PROJECT} context={context} />;
+    return <FeaturedProjectCard {...FEATURED_PROJECT} context={context} period={entry.period} />;
 
   const sys = systemByTitle.get(key);
-  if (sys) return <SystemProjectCard {...sys} context={context} />;
+  if (sys) return <SystemProjectCard {...sys} context={context} period={entry.period} />;
 
   const game = gameByTitle.get(key);
-  if (game) return <GameProjectCard {...game} context={context} />;
+  if (game) return <GameProjectCard {...game} context={context} period={entry.period} />;
 
   return null;
 }
@@ -149,14 +149,16 @@ function ProjectsPage() {
 
   const [newestFirst, setNewestFirst] = useState(true);
 
-  const sorted = useMemo(() =>
-    [...TIMELINE_DATA]
+  const sorted = useMemo(() => {
+    function endVal(e: typeof TIMELINE_DATA[0]): number {
+      return e.endDate ? dateToVal(e.endDate) : Infinity;
+    }
+    return [...TIMELINE_DATA]
       .filter(e => activeTypes.has(e.type) && activeCategories.has(e.category) && activeStatuses.has(STATUS_GROUP[e.status]))
       .sort((a, b) => newestFirst
-        ? dateToVal(b.startDate) - dateToVal(a.startDate)
-        : dateToVal(a.startDate) - dateToVal(b.startDate)),
-    [activeTypes, activeCategories, activeStatuses, newestFirst]
-  );
+        ? (endVal(b) - endVal(a)) || (dateToVal(b.startDate) - dateToVal(a.startDate))
+        : (dateToVal(a.startDate) - dateToVal(b.startDate)) || (endVal(a) - endVal(b)));
+  }, [activeTypes, activeCategories, activeStatuses, newestFirst]);
 
   const activeIds = useMemo(() => new Set(sorted.map(e => e.id)), [sorted]);
 
