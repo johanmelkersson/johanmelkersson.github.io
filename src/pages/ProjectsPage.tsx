@@ -84,8 +84,10 @@ function ProjectsPage() {
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
   const touchStartX = useRef<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const filterRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!dropdownOpen) return;
@@ -96,6 +98,16 @@ function ProjectsPage() {
     document.addEventListener('mousedown', onClickOutside);
     return () => document.removeEventListener('mousedown', onClickOutside);
   }, [dropdownOpen]);
+
+  useEffect(() => {
+    if (!filterOpen) return;
+    function onClickOutside(e: MouseEvent) {
+      if (filterRef.current && !filterRef.current.contains(e.target as Node))
+        setFilterOpen(false);
+    }
+    document.addEventListener('mousedown', onClickOutside);
+    return () => document.removeEventListener('mousedown', onClickOutside);
+  }, [filterOpen]);
 
   function handleNavEnter(e: React.PointerEvent<HTMLButtonElement>, entry: TimelineEntry) {
     if (e.pointerType === 'touch') return;
@@ -126,7 +138,7 @@ function ProjectsPage() {
   function toggleType(type: ProjectType) {
     setActiveTypes(prev => {
       const next = new Set(prev);
-      if (next.has(type) && next.size > 1) next.delete(type);
+      if (next.has(type)) next.delete(type);
       else next.add(type);
       return next;
     });
@@ -135,7 +147,7 @@ function ProjectsPage() {
   function toggleCategory(cat: ProjectCategory) {
     setActiveCategories(prev => {
       const next = new Set(prev);
-      if (next.has(cat) && next.size > 1) next.delete(cat);
+      if (next.has(cat)) next.delete(cat);
       else next.add(cat);
       return next;
     });
@@ -144,11 +156,19 @@ function ProjectsPage() {
   function toggleStatus(s: StatusGroup) {
     setActiveStatuses(prev => {
       const next = new Set(prev);
-      if (next.has(s) && next.size > 1) next.delete(s);
+      if (next.has(s)) next.delete(s);
       else next.add(s);
       return next;
     });
   }
+
+  function resetFilters() {
+    setActiveTypes(new Set(['game', 'engine', 'system']));
+    setActiveCategories(new Set(['professional', 'educational', 'hobby']));
+    setActiveStatuses(new Set(['active', 'finished', 'archived']));
+  }
+
+  const filterCount = (3 - activeTypes.size) + (3 - activeCategories.size) + (3 - activeStatuses.size);
 
   const [newestFirst, setNewestFirst] = useState(true);
 
@@ -215,48 +235,74 @@ function ProjectsPage() {
     <div className={styles.pageContainer}>
       <h2 className={styles.pageTitle}>Projects</h2>
 
-      <div className={styles.filters}>
-        <div className={styles.filterRow}>
+      <div className={styles.filterBar}>
+        <button className={styles.sortButton} onClick={() => setNewestFirst(p => !p)}>
+          {newestFirst ? '↓ Newest' : '↑ Oldest'}
+        </button>
+
+        <div className={styles.filterPopoverWrapper} ref={filterRef}>
           <button
-            className={styles.sortButton}
-            onClick={() => setNewestFirst(p => !p)}
+            className={`${styles.filterToggleBtn} ${filterCount > 0 ? styles.filterToggleBtnActive : ''}`}
+            onClick={() => setFilterOpen(p => !p)}
           >
-            {newestFirst ? '↓ Newest' : '↑ Oldest'}
+            {filterCount > 0 ? `Filter [${filterCount}]` : 'Filter'}
           </button>
-        </div>
-        <div className={styles.filterRow}>
-          {(['game', 'engine', 'system'] as ProjectType[]).map(type => (
-            <button
-              key={type}
-              className={`${styles.typeFilter} ${activeTypes.has(type) ? styles.typeFilterActive : ''}`}
-              style={{ '--type-color': TYPE_COLOR[type] } as React.CSSProperties}
-              onClick={() => toggleType(type)}
-            >
-              {TYPE_LABEL[type]}
-            </button>
-          ))}
-        </div>
-        <div className={styles.filterRow}>
-          {(['professional', 'educational', 'hobby'] as ProjectCategory[]).map(cat => (
-            <button
-              key={cat}
-              className={`${styles.typeFilter} ${activeCategories.has(cat) ? styles.typeFilterNeutralActive : ''}`}
-              onClick={() => toggleCategory(cat)}
-            >
-              {CATEGORY_LABEL[cat]}
-            </button>
-          ))}
-        </div>
-        <div className={styles.filterRow}>
-          {(['active', 'finished', 'archived'] as StatusGroup[]).map(s => (
-            <button
-              key={s}
-              className={`${styles.typeFilter} ${activeStatuses.has(s) ? styles.typeFilterNeutralActive : ''}`}
-              onClick={() => toggleStatus(s)}
-            >
-              {STATUS_GROUP_LABEL[s]}
-            </button>
-          ))}
+
+          {filterOpen && (
+            <div className={styles.filterPanel}>
+              <div className={styles.filterGroup}>
+                <span className={styles.filterGroupLabel}>Type</span>
+                <div className={styles.filterGroupRow}>
+                  {(['game', 'engine', 'system'] as ProjectType[]).map(type => (
+                    <button
+                      key={type}
+                      className={`${styles.typeFilter} ${activeTypes.has(type) ? styles.typeFilterActive : ''}`}
+                      style={{ '--type-color': TYPE_COLOR[type] } as React.CSSProperties}
+                      onClick={() => toggleType(type)}
+                    >
+                      {TYPE_LABEL[type]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className={styles.filterGroup}>
+                <span className={styles.filterGroupLabel}>Category</span>
+                <div className={styles.filterGroupRow}>
+                  {(['professional', 'educational', 'hobby'] as ProjectCategory[]).map(cat => (
+                    <button
+                      key={cat}
+                      className={`${styles.typeFilter} ${activeCategories.has(cat) ? styles.typeFilterNeutralActive : ''}`}
+                      onClick={() => toggleCategory(cat)}
+                    >
+                      {CATEGORY_LABEL[cat]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className={styles.filterGroup}>
+                <span className={styles.filterGroupLabel}>Status</span>
+                <div className={styles.filterGroupRow}>
+                  {(['active', 'finished', 'archived'] as StatusGroup[]).map(s => (
+                    <button
+                      key={s}
+                      className={`${styles.typeFilter} ${activeStatuses.has(s) ? styles.typeFilterNeutralActive : ''}`}
+                      onClick={() => toggleStatus(s)}
+                    >
+                      {STATUS_GROUP_LABEL[s]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {filterCount > 0 && (
+                <button className={styles.resetBtn} onClick={resetFilters}>
+                  Reset filters
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
