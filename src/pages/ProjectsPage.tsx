@@ -33,6 +33,20 @@ function dateToVal(yyyymm: string): number {
   return y + (m - 1) / 12;
 }
 
+const STATUS_SHORT: Record<string, string> = {
+  'in-development': 'In Dev',
+  'released':       'Released',
+  'finished':       'Finished',
+  'archived':       'Archived',
+};
+
+const STATUS_COLOR: Record<string, string> = {
+  'in-development': 'var(--status-in-dev)',
+  'released':       '#fb923c',
+  'finished':       '#94a3b8',
+  'archived':       'rgba(248, 250, 252, 0.25)',
+};
+
 const TYPE_LABEL: Record<ProjectType, string> = {
   game:   'Game Dev',
   engine: 'Engine Dev',
@@ -79,8 +93,6 @@ function ProjectsPage() {
   const TYPE_RGB   = useMemo(() => buildTypeRgb(theme.colors),   [theme]);
 
   const [hoveredProjectId, setHoveredProjectId] = useState<number | null>(null);
-  const [navHoverId, setNavHoverId] = useState<number | null>(null);
-  const navTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
   const [filterOpen, setFilterOpen] = useState(false);
@@ -102,13 +114,10 @@ function ProjectsPage() {
   function handleNavEnter(e: React.PointerEvent<HTMLButtonElement>, entry: TimelineEntry) {
     if (e.pointerType === 'touch') return;
     setHoveredProjectId(entry.id);
-    navTimerRef.current = setTimeout(() => setNavHoverId(entry.id), 500);
   }
 
   function handleNavLeave() {
-    if (navTimerRef.current) clearTimeout(navTimerRef.current);
     setHoveredProjectId(null);
-    setNavHoverId(null);
   }
 
   const handleTimelineHover = useCallback((id: number | null) => {
@@ -315,7 +324,7 @@ function ProjectsPage() {
 
       <div className={styles.timelineSection}>
         <div className={`${styles.timelineRow} ${styles.timelineRowFull}`}>
-          <GitTimeline showAxis highlightId={hoveredProjectId ?? undefined} selectedId={selectedId ?? undefined} forcedTooltipId={navHoverId ?? undefined} onHoverChange={handleTimelineHover} onSelect={id => { const e = sorted.find(x => x.id === id); if (e) selectTab(e); }} activeIds={activeIds} />
+          <GitTimeline showAxis highlightId={hoveredProjectId ?? undefined} selectedId={selectedId ?? undefined} onHoverChange={handleTimelineHover} onSelect={id => { const e = sorted.find(x => x.id === id); if (e) selectTab(e); }} activeIds={activeIds} />
         </div>
       </div>
 
@@ -344,10 +353,18 @@ function ProjectsPage() {
                       onPointerEnter={ev => handleNavEnter(ev, e)}
                       onPointerLeave={handleNavLeave}
                     >
+                      <div className={styles.stripCardTypeBar} />
                       {imageUrl && <div className={styles.stripCardBg} style={{ backgroundImage: `url(${imageUrl})` }} />}
                       <div className={styles.stripCardOverlay} />
+                      <div className={styles.stripCardTopRight}>
+                        <span className={styles.stripCardStatus} style={{ color: STATUS_COLOR[e.status], borderColor: STATUS_COLOR[e.status] }}>
+                          {STATUS_SHORT[e.status]}
+                        </span>
+                      </div>
                       <div className={styles.stripCardContent}>
                         <span className={styles.stripCardName}>{e.title}</span>
+                        <span className={styles.stripCardContext}>{getContext(e)}</span>
+                        <span className={styles.stripCardMeta}>{e.period}</span>
                       </div>
                     </button>
                   );

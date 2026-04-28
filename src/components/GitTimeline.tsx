@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import { useRef, useEffect, useMemo, useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { TIMELINE_DATA, CATEGORY_LABELS, TYPE_LABELS } from '../data/timeline';
 import type { ProjectCategory, ProjectType, TimelineEntry } from '../data/timeline';
@@ -82,25 +82,23 @@ const STATUS_LABEL: Record<ProjectStatus, string> = {
   'archived':       'Archived',
 };
 
-// ─── Component ───────────────────────────────────────────────────────────────
+const TOOLTIP_W  = 280;
+const HOVER_DELAY = 500;
 
-const TOOLTIP_W = 280;
+// ─── Component ───────────────────────────────────────────────────────────────
 
 interface GitTimelineProps {
   category?: ProjectCategory;
   showAxis?: boolean;
   highlightId?: number;
   selectedId?: number;
-  forcedTooltipId?: number;
   onHoverChange?: (id: number | null) => void;
   onSelect?: (id: number) => void;
   activeIds?: Set<number>;
   singleLane?: boolean;
 }
 
-const HOVER_DELAY = 500;
-
-function GitTimeline({ category, showAxis = false, highlightId, selectedId, forcedTooltipId, onHoverChange, onSelect, activeIds, singleLane = false }: GitTimelineProps) {
+function GitTimeline({ category, showAxis = false, highlightId, selectedId, onHoverChange, onSelect, activeIds, singleLane = false }: GitTimelineProps) {
   const { theme } = useTheme();
   const TYPE_COLOR = useMemo<TypeColorMap>(() => ({
     game:   theme.colors.typeGame,
@@ -111,9 +109,8 @@ function GitTimeline({ category, showAxis = false, highlightId, selectedId, forc
 
   const wrapperRef    = useRef<HTMLDivElement>(null);
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [svgW, setSvgW] = useState(900);
-  const [tooltip, setTooltip]       = useState<{ entry: PositionedEntry; x: number } | null>(null);
-  const [forcedTooltip, setForcedTooltip] = useState<{ entry: PositionedEntry; x: number } | null>(null);
+  const [svgW, setSvgW]     = useState(900);
+  const [tooltip, setTooltip] = useState<{ entry: PositionedEntry; x: number } | null>(null);
 
   useEffect(() => {
     const el = wrapperRef.current;
@@ -135,17 +132,6 @@ function GitTimeline({ category, showAxis = false, highlightId, selectedId, forc
   const maxLane  = useMemo(() => Math.max(...entries.map(e => e.lane)), [entries]);
   const svgH     = PAD_TOP + maxLane * LANE_H + DOT_R + (showAxis ? PAD_BOT : 8);
 
-  useEffect(() => {
-    if (forcedTooltipId == null) { setForcedTooltip(null); return; }
-    const entry = entries.find(e => e.id === forcedTooltipId);
-    if (!entry) return;
-    const midVal = entry.startVal + (Math.min(entry.endVal, TIME_MAX) - entry.startVal) / 2;
-    const x = tX(Math.min(Math.max(midVal, TIME_MIN), TIME_MAX), svgW);
-    setForcedTooltip({ entry, x });
-  }, [forcedTooltipId, entries, svgW]);
-
-  const displayTooltip = forcedTooltip ?? tooltip;
-
   const YEARS = (() => {
     const first = Math.ceil(TIME_MIN);
     const last  = Math.floor(TIME_MAX);
@@ -157,10 +143,15 @@ function GitTimeline({ category, showAxis = false, highlightId, selectedId, forc
 
   function handleEnter(e: React.PointerEvent<SVGLineElement>, entry: PositionedEntry) {
     if (e.pointerType === 'touch') return;
-    const wrapperRect = wrapperRef.current!.getBoundingClientRect();
-    const x = e.clientX - wrapperRect.left;
+    const x = e.clientX - wrapperRef.current!.getBoundingClientRect().left;
     onHoverChange?.(entry.id);
     hoverTimerRef.current = setTimeout(() => setTooltip({ entry, x }), HOVER_DELAY);
+  }
+
+  function handleMove(e: React.PointerEvent<SVGLineElement>) {
+    if (e.pointerType === 'touch' || !tooltip) return;
+    const x = e.clientX - wrapperRef.current!.getBoundingClientRect().left;
+    setTooltip(t => t ? { ...t, x } : null);
   }
 
   function handleLeave(e: React.PointerEvent<SVGLineElement>) {
@@ -168,12 +159,6 @@ function GitTimeline({ category, showAxis = false, highlightId, selectedId, forc
     if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
     setTooltip(null);
     onHoverChange?.(null);
-  }
-
-  function handleMove(e: React.PointerEvent<SVGLineElement>) {
-    if (e.pointerType === 'touch' || !tooltip) return;
-    const wrapperRect = wrapperRef.current!.getBoundingClientRect();
-    setTooltip(t => t ? { ...t, x: e.clientX - wrapperRect.left } : null);
   }
 
   function tipLeft(x: number) {
@@ -186,31 +171,30 @@ function GitTimeline({ category, showAxis = false, highlightId, selectedId, forc
 
   return (
     <div ref={wrapperRef} className={styles.wrapper}>
-      {/* Tooltip rendered outside scroll container */}
-      {displayTooltip && (
+      {tooltip && (
         <div
           className={styles.tooltip}
-          style={{ left: tipLeft(displayTooltip.x), '--tip-color': TYPE_COLOR[displayTooltip.entry.type] } as React.CSSProperties}
+          style={{ left: tipLeft(tooltip.x), '--tip-color': TYPE_COLOR[tooltip.entry.type] } as React.CSSProperties}
         >
-          <div className={styles.arrow} style={{ left: arrowLeft(displayTooltip.x) }} />
+          <div className={styles.arrow} style={{ left: arrowLeft(tooltip.x) }} />
           <div className={styles.tipHeader}>
             <div className={styles.tipLeft}>
-              <div className={styles.tipTitle}>{displayTooltip.entry.title}</div>
+              <div className={styles.tipTitle}>{tooltip.entry.title}</div>
               <div className={styles.tipContext}>
-                {displayTooltip.entry.engine ?? TYPE_LABELS[displayTooltip.entry.type]}
+                {tooltip.entry.engine ?? TYPE_LABELS[tooltip.entry.type]}
               </div>
             </div>
             <div className={styles.tipRight}>
-              <span className={`${styles.statusBadge} ${styles[`status-${displayTooltip.entry.status}`]}`}>
-                {STATUS_LABEL[displayTooltip.entry.status]}
+              <span className={`${styles.statusBadge} ${styles[`status-${tooltip.entry.status}`]}`}>
+                {STATUS_LABEL[tooltip.entry.status]}
               </span>
               <span className={styles.tipCategoryLabel}>
-                {displayTooltip.entry.categoryLabel ?? (displayTooltip.entry.category === 'hobby' ? 'InHouse' : CATEGORY_LABELS[displayTooltip.entry.category])}
+                {tooltip.entry.categoryLabel ?? (tooltip.entry.category === 'hobby' ? 'InHouse' : CATEGORY_LABELS[tooltip.entry.category])}
               </span>
-              <span className={styles.tipPeriod}>{displayTooltip.entry.period}</span>
+              <span className={styles.tipPeriod}>{tooltip.entry.period}</span>
             </div>
           </div>
-          <div className={styles.tipFooter}>{displayTooltip.entry.contribution}</div>
+          <div className={styles.tipFooter}>{tooltip.entry.contribution}</div>
         </div>
       )}
 
@@ -225,7 +209,7 @@ function GitTimeline({ category, showAxis = false, highlightId, selectedId, forc
             const visX2   = Math.max(visX1 + 2, rawX2 - SEG_GAP); // at least 2px wide
             const cy      = lY(entry.lane);
             const color    = TYPE_COLOR[entry.type];
-            const hovered  = displayTooltip?.entry.id === entry.id || highlightId === entry.id || selectedId === entry.id;
+            const hovered  = tooltip?.entry.id === entry.id || highlightId === entry.id || selectedId === entry.id;
             const isActive = !activeIds || activeIds.has(entry.id);
             return (
               <g key={`seg-${entry.id}`} style={{ transition: 'opacity 0.25s' }} opacity={isActive ? 1 : 0.22}>
