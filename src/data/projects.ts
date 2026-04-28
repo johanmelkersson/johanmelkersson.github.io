@@ -30,6 +30,7 @@ export interface FeaturedProject {
     id: number;
     title: string;
     tagline?: string;
+    imageUrl?: string;
     description: string;
     roleDescription: string;
     technologies: string[];
