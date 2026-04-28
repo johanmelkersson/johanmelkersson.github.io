@@ -83,21 +83,11 @@ function ProjectsPage() {
   const navTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [slideDir, setSlideDir] = useState<'next' | 'prev'>('next');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const touchStartX = useRef<number | null>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
   const filterRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!dropdownOpen) return;
-    function onClickOutside(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node))
-        setDropdownOpen(false);
-    }
-    document.addEventListener('mousedown', onClickOutside);
-    return () => document.removeEventListener('mousedown', onClickOutside);
-  }, [dropdownOpen]);
+  const stripRef = useRef<HTMLDivElement>(null);
+  const lastNavRef = useRef<number>(0);
 
   useEffect(() => {
     if (!filterOpen) return;
@@ -194,12 +184,18 @@ function ProjectsPage() {
 
   function goNext() {
     if (sorted.length <= 1) return;
+    const now = Date.now();
+    if (now - lastNavRef.current < 220) return;
+    lastNavRef.current = now;
     setSlideDir('next');
     const idx = selectedIndex < 0 ? 0 : (selectedIndex + 1) % sorted.length;
     setSelectedId(sorted[idx].id);
   }
   function goPrev() {
     if (sorted.length <= 1) return;
+    const now = Date.now();
+    if (now - lastNavRef.current < 220) return;
+    lastNavRef.current = now;
     setSlideDir('prev');
     const idx = selectedIndex <= 0 ? sorted.length - 1 : selectedIndex - 1;
     setSelectedId(sorted[idx].id);
@@ -212,13 +208,24 @@ function ProjectsPage() {
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'ArrowRight') goNext();
-      if (e.key === 'ArrowLeft')  goPrev();
+      if (e.key === 'ArrowRight') { e.preventDefault(); goNext(); }
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); goPrev(); }
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedIndex, sorted]);
+
+  useEffect(() => {
+    const strip = stripRef.current;
+    if (!strip || selectedId === null) return;
+    const active = strip.querySelector<HTMLElement>('[data-selected="true"]');
+    if (!active) return;
+    const stripRect = strip.getBoundingClientRect();
+    const activeRect = active.getBoundingClientRect();
+    const target = strip.scrollLeft + (activeRect.left - stripRect.left) - (stripRect.width / 2) + (activeRect.width / 2);
+    strip.scrollTo({ left: Math.max(0, target), behavior: 'smooth' });
+  }, [selectedId]);
 
   function handleTouchStart(e: React.TouchEvent) {
     touchStartX.current = e.touches[0].clientX;
@@ -312,91 +319,67 @@ function ProjectsPage() {
         </div>
       </div>
 
-      <div className={styles.tabRow}>
-        {/* Desktop: tab buttons */}
-        <nav className={styles.projectNav}>
-          {sorted.map(entry => (
-            <button
-              key={entry.id}
-              className={`${styles.projectNavLink} ${(selectedId === entry.id || hoveredProjectId === entry.id) ? styles.projectNavLinkActive : ''}`}
-              style={{ '--type-color': TYPE_COLOR[entry.type] } as React.CSSProperties}
-              onPointerEnter={e => handleNavEnter(e, entry)}
-              onPointerLeave={handleNavLeave}
-              onClick={() => selectTab(entry)}
-            >
-              {entry.title}
-            </button>
-          ))}
-        </nav>
-
-        {/* Mobile: dropdown */}
-        {(() => {
-          const selectedEntry = sorted.find(e => e.id === selectedId) ?? sorted[0] ?? null;
-          return (
-            <div ref={dropdownRef} className={styles.mobileDropdown}>
-              <button
-                className={styles.dropdownTrigger}
-                style={selectedEntry ? { '--type-color': TYPE_COLOR[selectedEntry.type] } as React.CSSProperties : undefined}
-                onClick={() => setDropdownOpen(p => !p)}
-              >
-                <span>{selectedEntry?.title ?? '—'}</span>
-                <span className={styles.dropdownArrow}>{dropdownOpen ? '▴' : '▾'}</span>
-              </button>
-              {dropdownOpen && (
-                <div className={styles.dropdownList}>
-                  {sorted.map(entry => (
-                    <button
-                      key={entry.id}
-                      className={`${styles.dropdownItem} ${entry.id === selectedId ? styles.dropdownItemActive : ''}`}
-                      style={{ '--type-color': TYPE_COLOR[entry.type] } as React.CSSProperties}
-                      onClick={() => { selectTab(entry); setDropdownOpen(false); }}
-                    >
-                      {entry.title}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          );
-        })()}
-
-        {sorted.length > 0 && (
-          <div className={styles.folderNav}>
-            <button className={styles.folderNavBtn} onClick={goPrev}>‹</button>
-            <span className={styles.folderNavCount}>
-              {selectedIndex + 1} / {sorted.length}
-            </span>
-            <button className={styles.folderNavBtn} onClick={goNext}>›</button>
-          </div>
-        )}
-      </div>
-
-      {(() => {
-        const entry = sorted.find(e => e.id === selectedId) ?? sorted[0] ?? null;
-        if (!entry) return null;
-        const card = renderCard(entry);
-        if (!card) return null;
+      {sorted.length > 0 && (() => {
+        const entry = sorted.find(e => e.id === selectedId) ?? sorted[0];
+        const card = entry ? renderCard(entry) : null;
         return (
-          <div
-            className={styles.cardWrapper}
-            style={{ '--accent-color': TYPE_COLOR[entry.type], '--accent-rgb': TYPE_RGB[entry.type] } as React.CSSProperties}
-          >
-            {sorted.length > 1 && (
-              <>
-                <button className={`${styles.sideNavBtn} ${styles.sideNavBtnLeft}`} onClick={goPrev} tabIndex={-1}>‹</button>
-                <button className={`${styles.sideNavBtn} ${styles.sideNavBtnRight}`} onClick={goNext} tabIndex={-1}>›</button>
-              </>
-            )}
-            <div
-              className={styles.folderPane}
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-            >
-              <div key={entry.id} className={slideDir === 'next' ? styles.slideNext : styles.slidePrev}>
-                {card}
+          <>
+            {/* Netflix strip */}
+            <div className={styles.netflixWrapper}>
+              <button className={`${styles.stripNavBtn} ${styles.stripNavBtnLeft}`} onClick={goPrev} tabIndex={-1}>‹</button>
+              <div className={styles.netflixStrip} ref={stripRef}>
+                {sorted.map(e => {
+                  const key = e.title.toLowerCase();
+                  const imageUrl = e.title === FEATURED_PROJECT.title
+                    ? FEATURED_PROJECT.imageUrl
+                    : systemByTitle.get(key)?.imageUrl ?? gameByTitle.get(key)?.imageUrl ?? '';
+                  const isActive = selectedId === e.id || hoveredProjectId === e.id;
+                  return (
+                    <button
+                      key={e.id}
+                      data-selected={e.id === selectedId ? 'true' : undefined}
+                      className={`${styles.stripCard} ${isActive ? styles.stripCardActive : ''}`}
+                      style={{ '--type-color': TYPE_COLOR[e.type], '--type-rgb': TYPE_RGB[e.type] } as React.CSSProperties}
+                      onClick={ev => { selectTab(e); (ev.currentTarget as HTMLElement).blur(); }}
+                      onPointerEnter={ev => handleNavEnter(ev, e)}
+                      onPointerLeave={handleNavLeave}
+                    >
+                      {imageUrl && <div className={styles.stripCardBg} style={{ backgroundImage: `url(${imageUrl})` }} />}
+                      <div className={styles.stripCardOverlay} />
+                      <div className={styles.stripCardContent}>
+                        <span className={styles.stripCardName}>{e.title}</span>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
+              <button className={`${styles.stripNavBtn} ${styles.stripNavBtnRight}`} onClick={goNext} tabIndex={-1}>›</button>
             </div>
-          </div>
+
+            {/* Full card */}
+            {card && entry && (
+              <div
+                className={styles.cardWrapper}
+                style={{ '--accent-color': TYPE_COLOR[entry.type], '--accent-rgb': TYPE_RGB[entry.type] } as React.CSSProperties}
+              >
+                {sorted.length > 1 && (
+                  <>
+                    <button className={`${styles.sideNavBtn} ${styles.sideNavBtnLeft}`} onClick={goPrev} tabIndex={-1}>‹</button>
+                    <button className={`${styles.sideNavBtn} ${styles.sideNavBtnRight}`} onClick={goNext} tabIndex={-1}>›</button>
+                  </>
+                )}
+                <div
+                  className={styles.folderPane}
+                  onTouchStart={handleTouchStart}
+                  onTouchEnd={handleTouchEnd}
+                >
+                  <div key={entry.id} className={slideDir === 'next' ? styles.slideNext : styles.slidePrev}>
+                    {card}
+                  </div>
+                </div>
+              </div>
+            )}
+          </>
         );
       })()}
     </div>

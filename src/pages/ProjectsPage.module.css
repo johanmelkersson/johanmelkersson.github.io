@@ -506,6 +506,8 @@
 .sideNavBtnLeft  { left: 0; }
 .sideNavBtnRight { right: 0; }
 
+.sideNavBtn:focus { outline: none; }
+
 @media (hover: hover) and (pointer: fine) {
   .cardWrapper:hover .sideNavBtn {
     opacity: 1;
@@ -516,3 +518,125 @@
     color: var(--accent-color);
   }
 }
+
+/* ── Netflix strip ── */
+.netflixWrapper {
+  position: relative;
+  margin-bottom: 0;
+}
+
+.stripNavBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(calc(-50% - 8px));
+  z-index: 10;
+  width: 28px;
+  height: 60px;
+  background: none;
+  border: none;
+  color: rgba(248, 250, 252, 0.35);
+  font-size: 1.8rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s, color 0.15s;
+}
+
+.stripNavBtnLeft  { left: 0; }
+.stripNavBtnRight { right: 0; }
+
+.stripNavBtn:focus { outline: none; }
+
+@media (hover: hover) and (pointer: fine) {
+  .netflixWrapper:hover .stripNavBtn {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .stripNavBtn:hover { color: rgba(248, 250, 252, 0.9); }
+}
+
+.netflixStrip {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 4px 2px 16px;
+  scroll-snap-type: x proximity;
+  mask-image: linear-gradient(to right, transparent 0, black 48px, black calc(100% - 48px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, black 48px, black calc(100% - 48px), transparent 100%);
+}
+
+.netflixStrip::-webkit-scrollbar { display: none; }
+
+.stripCard {
+  flex-shrink: 0;
+  width: 150px;
+  height: 88px;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 2px solid rgba(248, 250, 252, 0.08);
+  background: var(--bg-card);
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.2s;
+  scroll-snap-align: nearest;
+  text-align: left;
+}
+
+.stripCardBg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.3;
+  transition: opacity 0.2s;
+}
+
+.stripCardOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 65%);
+}
+
+.stripCardContent {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 8px 10px;
+}
+
+.stripCardName {
+  font-family: 'Courier New', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: rgba(248, 250, 252, 0.6);
+  line-height: 1.35;
+  transition: color 0.2s;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .stripCard:hover {
+    border-color: rgba(var(--type-rgb), 0.5);
+    transform: translateY(-2px);
+  }
+
+  .stripCard:hover .stripCardBg { opacity: 0.45; }
+  .stripCard:hover .stripCardName { color: rgba(248, 250, 252, 0.9); }
+}
+
+.stripCardActive {
+  border-color: var(--type-color);
+  transform: translateY(-3px);
+}
+
+.stripCardActive .stripCardBg { opacity: 0.5; }
+.stripCardActive .stripCardName { color: rgba(248, 250, 252, 1); }
+
+.stripCard:focus { outline: none; }
