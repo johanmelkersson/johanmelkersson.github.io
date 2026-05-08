@@ -4,12 +4,12 @@ A personal portfolio website showcasing game development projects, built with Re
 
 ## About
 
-This portfolio presents 12+ game projects spanning Unity, Unreal Engine, and custom engines developed during studies at The Game Assembly (TGA). It also includes a dedicated section on AI & Behavior specialization, covering state machines, behavior trees, and navmesh integration.
+This portfolio presents 14+ projects spanning Unity, Unreal Engine, custom C++ engines, and web development work done during studies at The Game Assembly (TGA) and Lexicon. It includes a dedicated section on AI & Behavior specialization, covering state machines, behavior trees, and navmesh integration.
 
 ## Pages
 
 - **Home** — Hero landing with intro and navigation
-- **Projects** — Tabbed view of game projects and system development work
+- **Projects** — Infinite carousel with git-style timeline, strip nav, and full-card view
 - **About** — Career background, skills, and CV download
 - **Specialization** — Deep-dive into AI & Behavior systems
 
@@ -45,18 +45,26 @@ npm run lint      # Run ESLint
 
 ```
 src/
-├── components/     # Reusable UI components (cards, icons, scroll)
+├── components/     # Reusable UI components (cards, timeline, carousel)
 ├── pages/          # Page-level components (Home, About, Projects, Specialization)
-├── data/           # Project data, stats, and constants
+├── data/           # Project data, timeline entries, and constants
 └── index.css       # Global styles and CSS custom properties
 public/
 ├── images/         # Project key art and specialization diagrams
 └── assets/badges/  # Platform badges (Steam, Itch, Google Play)
 ```
 
+## Projects Page — Carousel System
+
+The projects page is built around a three-layer interactive system:
+
+- **Git-style SVG timeline** — hand-rolled with greedy lane assignment, fork/merge curves, per-segment hover tooltips, and cross-component highlight sync
+- **Strip carousel** — three-copy infinite loop with center-based boundary detection, hold-to-scroll nav with acceleration/deceleration, screensaver auto-scroll after 3s idle, and distinct selected vs. hovered card states
+- **Large card carousel** — native overflow scroll on mobile for fluid swipe, scrollend-based nearest-card sync, ResizeObserver to keep the selected card centered on resize
+
 ## Design
 
 - Dark navy background (`#0f172a`) with cyan accent (`#38bdf8`)
 - Glassmorphic cards with transparency and blur
-- Responsive grid layouts, mobile-friendly
-- Data-driven: all projects defined in `src/data/projects.ts`
+- Responsive layouts, mobile-friendly with touch swipe support
+- Data-driven: all projects defined in `src/data/projects.ts` and `src/data/timeline.ts`
