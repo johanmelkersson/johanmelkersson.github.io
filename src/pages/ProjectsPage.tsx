@@ -218,6 +218,8 @@ function ProjectsPage() {
   const selectedIndex = sorted.findIndex(e => e.id === selectedId);
   const selectedIndexRef = useRef(selectedIndex);
   selectedIndexRef.current = selectedIndex;
+  const selectedIdRef = useRef(selectedId);
+  selectedIdRef.current = selectedId;
 
   function goNext() {
     if (sorted.length <= 1) return;
@@ -436,9 +438,11 @@ function ProjectsPage() {
       }
     }
 
-    // No wrap: smooth for short hops, instant for large jumps
+    // No wrap: skip if already at target (e.g. after touch-scroll sync),
+    // smooth for short hops, instant for large jumps
     if (active) {
       const target = getTarget(active);
+      if (Math.abs(target - carousel.scrollLeft) < 4) return;
       if (Math.abs(target - carousel.scrollLeft) <= carousel.clientWidth * 1.5) {
         carousel.scrollTo({ left: target, behavior: 'smooth' });
       } else {
@@ -482,6 +486,56 @@ function ProjectsPage() {
     ro.observe(carousel);
     return () => ro.disconnect();
   }, []);
+
+  // After a touch-scroll on the large carousel, sync selectedId to whichever
+  // real card ended up nearest to center (scrollend fires after momentum settles)
+  useEffect(() => {
+    const carousel = cardCarouselRef.current;
+    if (!carousel || sorted.length <= 1) return;
+    let touchActive = false;
+    let debounce: ReturnType<typeof setTimeout> | null = null;
+
+    function sync() {
+      if (!touchActive || wrapResetRef.current) return;
+      touchActive = false;
+      const cx = carousel!.scrollLeft + carousel!.clientWidth / 2;
+      const cards = Array.from(carousel!.querySelectorAll<HTMLElement>('[data-carousel-id]'));
+      let nearest: HTMLElement | null = null;
+      let minDist = Infinity;
+      for (const card of cards) {
+        const dist = Math.abs(card.offsetLeft + card.offsetWidth / 2 - cx);
+        if (dist < minDist) { minDist = dist; nearest = card; }
+      }
+      if (!nearest) return;
+      const id = Number(nearest.dataset.carouselId);
+      if (id !== selectedIdRef.current) {
+        wrapDirRef.current = 'none'; // already at destination, no wrap animation
+        setSelectedId(id);
+      }
+    }
+
+    function onTouchStart() { touchActive = true; }
+    function onScroll() {
+      if (!touchActive) return;
+      if (debounce !== null) clearTimeout(debounce);
+      debounce = setTimeout(sync, 150);
+    }
+    function onScrollEnd() {
+      if (!touchActive) return;
+      if (debounce !== null) { clearTimeout(debounce); debounce = null; }
+      sync();
+    }
+
+    carousel.addEventListener('touchstart', onTouchStart, { passive: true });
+    carousel.addEventListener('scroll', onScroll, { passive: true });
+    carousel.addEventListener('scrollend', onScrollEnd);
+    return () => {
+      carousel.removeEventListener('touchstart', onTouchStart);
+      carousel.removeEventListener('scroll', onScroll);
+      carousel.removeEventListener('scrollend', onScrollEnd);
+      if (debounce !== null) clearTimeout(debounce);
+    };
+  }, [sorted]);
 
   function handleTouchStart(e: React.TouchEvent) {
     touchStartX.current = e.touches[0].clientX;
@@ -667,8 +721,6 @@ function ProjectsPage() {
               <div
                 className={styles.cardCarousel}
                 ref={cardCarouselRef}
-                onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
               >
                 {sorted.length > 1 && [
                   sorted.length >= 2 ? sorted[sorted.length - 2] : null,
@@ -696,6 +748,7 @@ function ProjectsPage() {
                   return (
                     <div
                       key={e.id}
+                      data-carousel-id={e.id}
                       data-carousel-selected={isActive ? 'true' : undefined}
                       className={`${styles.cardCarouselItem} ${isActive ? styles.cardCarouselItemActive : ''}`}
                       style={{ '--accent-color': TYPE_COLOR[e.type], '--accent-rgb': TYPE_RGB[e.type] } as React.CSSProperties}
