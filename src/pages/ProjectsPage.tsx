@@ -126,6 +126,13 @@ function ProjectsPage() {
   const stripWrapDirRef = useRef<'none' | 'next' | 'prev'>('none');
   const stripWrapResetRef = useRef<(() => void) | null>(null);
   const prevStripFitsRef = useRef(false);
+  const stripNavHoldRef = useRef<{ dir: 1|-1; startTime: number; releasing: boolean; releaseTime: number; releaseVel: number; raf: number|null } | null>(null);
+  const stripNavClickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const netflixWrapperRef = useRef<HTMLDivElement>(null);
+  const screensaverRafRef = useRef<number | null>(null);
+  const screensaverActiveRef = useRef(false);
+  const screensaverHoveredIdRef = useRef<number | null>(null);
+  const screensaverIdleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!filterOpen) return;
@@ -220,6 +227,8 @@ function ProjectsPage() {
   selectedIndexRef.current = selectedIndex;
   const selectedIdRef = useRef(selectedId);
   selectedIdRef.current = selectedId;
+  const stripFitsRef = useRef(stripFits);
+  stripFitsRef.current = stripFits;
 
   function goNext() {
     if (sorted.length <= 1) return;
@@ -227,7 +236,7 @@ function ProjectsPage() {
     const now = Date.now();
     if (now - lastNavRef.current < 220) return;
     lastNavRef.current = now;
-    if (selectedIndex === sorted.length - 1) { wrapDirRef.current = 'next'; stripWrapDirRef.current = 'next'; }
+    if (selectedIndex === sorted.length - 1) { wrapDirRef.current = 'next'; }
     const idx = selectedIndex < 0 ? 0 : (selectedIndex + 1) % sorted.length;
     setSelectedId(sorted[idx].id);
   }
@@ -237,7 +246,7 @@ function ProjectsPage() {
     const now = Date.now();
     if (now - lastNavRef.current < 220) return;
     lastNavRef.current = now;
-    if (selectedIndex === 0) { wrapDirRef.current = 'prev'; stripWrapDirRef.current = 'prev'; }
+    if (selectedIndex === 0) { wrapDirRef.current = 'prev'; }
     const idx = selectedIndex <= 0 ? sorted.length - 1 : selectedIndex - 1;
     setSelectedId(sorted[idx].id);
   }
@@ -251,8 +260,8 @@ function ProjectsPage() {
     const isWrap = (next && toIdx < fromIdx) || (!next && toIdx > fromIdx);
     if (isWrap) {
       wrapDirRef.current = next ? 'next' : 'prev';
-      if (!stripFits) stripWrapDirRef.current = next ? 'next' : 'prev';
     }
+    resetScreensaverTimer();
     setSelectedId(entry.id);
   }
 
@@ -312,49 +321,6 @@ function ProjectsPage() {
     return () => { if (tid !== null) clearTimeout(tid); };
   }, [sorted, stripFits]);
 
-  // Scroll to selected card in copy1 when selection changes
-  useEffect(() => {
-    const strip = stripRef.current;
-    if (!strip || selectedId === null || stripFits) return;
-
-    function getTarget(el: HTMLElement): number {
-      const sr = strip!.getBoundingClientRect();
-      const er = el.getBoundingClientRect();
-      return strip!.scrollLeft + (er.left - sr.left) - sr.width / 2 + er.width / 2;
-    }
-
-    const active = strip.querySelector<HTMLElement>('[data-selected="true"]');
-    if (!active) return;
-
-    if (stripWrapResetRef.current) { stripWrapResetRef.current(); stripWrapResetRef.current = null; }
-
-    // Snap to copy1 zone using center position — scrollLeft alone is < third when
-    // centered on early cards (first card's center is still inside copy1 range)
-    const third = strip.scrollWidth / 3;
-    const centerPos = strip.scrollLeft + strip.clientWidth / 2;
-    if (centerPos >= third * 2) strip.scrollLeft -= third;
-    else if (centerPos < third) strip.scrollLeft += third;
-
-    const target = getTarget(active); // now always within copy1 range
-    const wrap = stripWrapDirRef.current;
-    stripWrapDirRef.current = 'none';
-
-    if (wrap === 'next') {
-      // Scroll into copy2 (+third), then teleport back to copy1
-      stripWrapResetRef.current = smoothScrollTo(strip, target + third, 200, () => {
-        strip.scrollLeft -= third;
-        stripWrapResetRef.current = null;
-      });
-    } else if (wrap === 'prev') {
-      // Scroll into copy0 (-third), then teleport forward to copy1
-      stripWrapResetRef.current = smoothScrollTo(strip, target - third, 200, () => {
-        strip.scrollLeft += third;
-        stripWrapResetRef.current = null;
-      });
-    } else {
-      strip.scrollTo({ left: target, behavior: 'smooth' });
-    }
-  }, [selectedId, stripFits]);
 
   // Re-center on resize
   useEffect(() => {
@@ -537,6 +503,174 @@ function ProjectsPage() {
     };
   }, [sorted]);
 
+  function resetScreensaverTimer() {
+    if (screensaverIdleTimerRef.current !== null) clearTimeout(screensaverIdleTimerRef.current);
+    if (screensaverActiveRef.current) stopScreensaver();
+    screensaverIdleTimerRef.current = setTimeout(() => {
+      screensaverIdleTimerRef.current = null;
+      startScreensaver();
+    }, 3000);
+  }
+
+  function updateStripHoverFromCenter() {
+    const strip = stripRef.current;
+    if (!strip) return;
+    const center = strip.scrollLeft + strip.clientWidth / 2;
+    const cards = strip.querySelectorAll<HTMLElement>('[data-strip-id]');
+    let nearest: HTMLElement | null = null;
+    let minDist = Infinity;
+    for (const card of Array.from(cards)) {
+      const dist = Math.abs(card.offsetLeft + card.offsetWidth / 2 - center);
+      if (dist < minDist) { minDist = dist; nearest = card; }
+    }
+    if (nearest) {
+      const id = Number(nearest.dataset.stripId);
+      if (id !== screensaverHoveredIdRef.current) { screensaverHoveredIdRef.current = id; setHoveredProjectId(id); }
+    }
+  }
+
+  function stopScreensaver() {
+    screensaverActiveRef.current = false;
+    if (screensaverRafRef.current !== null) { cancelAnimationFrame(screensaverRafRef.current); screensaverRafRef.current = null; }
+    if (screensaverHoveredIdRef.current !== null) { screensaverHoveredIdRef.current = null; setHoveredProjectId(null); }
+  }
+
+  function startScreensaver() {
+    if (screensaverActiveRef.current || stripFitsRef.current) return;
+    screensaverActiveRef.current = true;
+    function tick() {
+      const strip = stripRef.current;
+      if (!strip || !screensaverActiveRef.current) return;
+      strip.scrollLeft += 0.6;
+      updateStripHoverFromCenter();
+      screensaverRafRef.current = requestAnimationFrame(tick);
+    }
+    screensaverRafRef.current = requestAnimationFrame(tick);
+  }
+
+  useEffect(() => {
+    const wrapper = netflixWrapperRef.current;
+    if (!wrapper) return;
+    function onEnter() {
+      if (screensaverIdleTimerRef.current !== null) { clearTimeout(screensaverIdleTimerRef.current); screensaverIdleTimerRef.current = null; }
+      stopScreensaver();
+    }
+    function onLeave() { resetScreensaverTimer(); }
+    resetScreensaverTimer();
+    wrapper.addEventListener('pointerenter', onEnter);
+    wrapper.addEventListener('pointerleave', onLeave);
+    return () => {
+      if (screensaverIdleTimerRef.current !== null) { clearTimeout(screensaverIdleTimerRef.current); screensaverIdleTimerRef.current = null; }
+      stopScreensaver();
+      wrapper.removeEventListener('pointerenter', onEnter);
+      wrapper.removeEventListener('pointerleave', onLeave);
+    };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sorted, stripFits]);
+
+  function centerSelectedInCarousel() {
+    const carousel = cardCarouselRef.current;
+    if (!carousel || selectedId === null) return;
+    const active = carousel.querySelector<HTMLElement>('[data-carousel-selected="true"]');
+    if (!active) return;
+    const target = active.offsetLeft - (carousel.clientWidth - active.offsetWidth) / 2;
+    if (Math.abs(target - carousel.scrollLeft) < 4) return;
+    carousel.scrollTo({ left: target, behavior: 'smooth' });
+  }
+
+  function centerSelectedInStrip() {
+    const strip = stripRef.current;
+    if (!strip || stripFits) return;
+    resetScreensaverTimer();
+    const third = strip.scrollWidth / 3;
+    if (third === 0) return;
+    const active = strip.querySelector<HTMLElement>('[data-selected="true"]');
+    if (!active) return;
+    if (stripWrapResetRef.current) { stripWrapResetRef.current(); stripWrapResetRef.current = null; }
+    const target = active.offsetLeft - (strip.clientWidth - active.offsetWidth) / 2;
+    const cur = strip.scrollLeft;
+    const candidates = [target - third, target, target + third];
+    const dists = candidates.map(t => Math.abs(t - cur));
+    const bestIdx = dists.indexOf(Math.min(...dists));
+    const best = candidates[bestIdx];
+    if (Math.abs(best - cur) < 4) return;
+    const adjust = [third, 0, -third][bestIdx];
+    stripWrapResetRef.current = smoothScrollTo(strip, best, 300, () => {
+      if (adjust !== 0) strip.scrollLeft += adjust;
+      stripWrapResetRef.current = null;
+    });
+  }
+
+  function startStripNavHold(dir: 1 | -1) {
+    if (stripNavHoldRef.current) return;
+    const state = { dir, startTime: performance.now(), releasing: false, releaseTime: 0, releaseVel: 0, raf: null as number | null };
+    stripNavHoldRef.current = state;
+    const MAX_VEL = 8, ACCEL_MS = 500, DECEL_MS = 350;
+    function tick() {
+      const strip = stripRef.current;
+      const s = stripNavHoldRef.current;
+      if (!strip || !s) return;
+      const now = performance.now();
+      let vel: number;
+      if (s.releasing) {
+        const p = 1 - Math.min((now - s.releaseTime) / DECEL_MS, 1);
+        vel = s.releaseVel * p * p;
+        if (p <= 0) {
+          stripNavHoldRef.current = null;
+          screensaverHoveredIdRef.current = null;
+          setHoveredProjectId(null);
+          return;
+        }
+      } else {
+        const p = Math.min((now - s.startTime) / ACCEL_MS, 1);
+        vel = MAX_VEL * p * p;
+      }
+      strip.scrollLeft += s.dir * vel;
+      updateStripHoverFromCenter();
+      s.raf = requestAnimationFrame(tick);
+    }
+    state.raf = requestAnimationFrame(tick);
+  }
+
+  function stopStripNavHold() {
+    const s = stripNavHoldRef.current;
+    if (!s || s.releasing) return;
+    const p = Math.min((performance.now() - s.startTime) / 500, 1);
+    s.releaseVel = 8 * p * p;
+    s.releasing = true;
+    s.releaseTime = performance.now();
+  }
+
+  function handleStripNavDown(e: React.PointerEvent, dir: 1 | -1) {
+    if (e.button !== 0 && e.pointerType === 'mouse') return;
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    stripNavClickTimerRef.current = setTimeout(() => {
+      stripNavClickTimerRef.current = null;
+      startStripNavHold(dir);
+    }, 180);
+  }
+
+  function handleStripNavUp(_e: React.PointerEvent, dir: 1 | -1) {
+    if (stripNavClickTimerRef.current !== null) {
+      clearTimeout(stripNavClickTimerRef.current);
+      stripNavClickTimerRef.current = null;
+      // Quick click: start hold and immediately release with a preset burst velocity
+      startStripNavHold(dir);
+      const s = stripNavHoldRef.current;
+      if (s) { s.releaseVel = 5; s.releasing = true; s.releaseTime = performance.now(); }
+    } else {
+      stopStripNavHold();
+    }
+  }
+
+  function handleStripNavLeave() {
+    if (stripNavClickTimerRef.current !== null) {
+      clearTimeout(stripNavClickTimerRef.current);
+      stripNavClickTimerRef.current = null;
+    }
+    stopStripNavHold();
+  }
+
   function handleTouchStart(e: React.TouchEvent) {
     touchStartX.current = e.touches[0].clientX;
   }
@@ -634,8 +768,14 @@ function ProjectsPage() {
         return (
           <>
             {/* Thumbnail strip */}
-            <div className={styles.netflixWrapper}>
-              <button className={`${styles.stripNavBtn} ${styles.stripNavBtnLeft}`} onClick={goPrev} tabIndex={-1}>‹</button>
+            <div className={styles.netflixWrapper} ref={netflixWrapperRef}>
+              <button
+                className={`${styles.stripNavBtn} ${styles.stripNavBtnLeft}`}
+                onPointerDown={e => handleStripNavDown(e, -1)}
+                onPointerUp={e => handleStripNavUp(e, -1)}
+                onPointerLeave={handleStripNavLeave}
+                tabIndex={-1}
+              >‹</button>
               <div className={`${styles.netflixStrip} ${stripFits ? styles.netflixStripCentered : ''}`} ref={stripRef}>
                 {/* Three copies for seamless infinite loop */}
                 {!stripFits && sorted.length > 1
@@ -643,12 +783,14 @@ function ProjectsPage() {
                       sorted.map(e => {
                         const key = e.title.toLowerCase();
                         const imageUrl = e.title === FEATURED_PROJECT.title ? FEATURED_PROJECT.imageUrl : systemByTitle.get(key)?.imageUrl ?? gameByTitle.get(key)?.imageUrl ?? '';
-                        const isActive = selectedId === e.id || hoveredProjectId === e.id;
+                        const isSelected = e.id === selectedId;
+                        const isHovered  = !isSelected && e.id === hoveredProjectId;
                         return (
                           <button
                             key={`${e.id}-${copyIdx}`}
+                            data-strip-id={e.id}
                             data-selected={copyIdx === 1 && e.id === selectedId ? 'true' : undefined}
-                            className={`${styles.stripCard} ${isActive ? styles.stripCardActive : ''}`}
+                            className={`${styles.stripCard} ${isSelected ? styles.stripCardActive : isHovered ? styles.stripCardHovered : ''}`}
                             style={{ '--type-color': TYPE_COLOR[e.type], '--type-rgb': TYPE_RGB[e.type] } as React.CSSProperties}
                             onClick={ev => { selectTab(e); (ev.currentTarget as HTMLElement).blur(); }}
                             onPointerEnter={ev => handleNavEnter(ev, e)}
@@ -677,12 +819,14 @@ function ProjectsPage() {
                     })().map(e => {
                       const key = e.title.toLowerCase();
                       const imageUrl = e.title === FEATURED_PROJECT.title ? FEATURED_PROJECT.imageUrl : systemByTitle.get(key)?.imageUrl ?? gameByTitle.get(key)?.imageUrl ?? '';
-                      const isActive = selectedId === e.id || hoveredProjectId === e.id;
+                      const isSelected = e.id === selectedId;
+                      const isHovered  = !isSelected && e.id === hoveredProjectId;
                       return (
                         <button
                           key={e.id}
+                          data-strip-id={e.id}
                           data-selected={e.id === selectedId ? 'true' : undefined}
-                          className={`${styles.stripCard} ${isActive ? styles.stripCardActive : ''}`}
+                          className={`${styles.stripCard} ${isSelected ? styles.stripCardActive : isHovered ? styles.stripCardHovered : ''}`}
                           style={{ '--type-color': TYPE_COLOR[e.type], '--type-rgb': TYPE_RGB[e.type] } as React.CSSProperties}
                           onClick={ev => { selectTab(e); (ev.currentTarget as HTMLElement).blur(); }}
                           onPointerEnter={ev => handleNavEnter(ev, e)}
@@ -704,7 +848,13 @@ function ProjectsPage() {
                     })
                 }
               </div>
-              <button className={`${styles.stripNavBtn} ${styles.stripNavBtnRight}`} onClick={goNext} tabIndex={-1}>›</button>
+              <button
+                className={`${styles.stripNavBtn} ${styles.stripNavBtnRight}`}
+                onPointerDown={e => handleStripNavDown(e, 1)}
+                onPointerUp={e => handleStripNavUp(e, 1)}
+                onPointerLeave={handleStripNavLeave}
+                tabIndex={-1}
+              >›</button>
             </div>
 
             {/* Large card carousel */}
@@ -752,7 +902,7 @@ function ProjectsPage() {
                       data-carousel-selected={isActive ? 'true' : undefined}
                       className={`${styles.cardCarouselItem} ${isActive ? styles.cardCarouselItemActive : ''}`}
                       style={{ '--accent-color': TYPE_COLOR[e.type], '--accent-rgb': TYPE_RGB[e.type] } as React.CSSProperties}
-                      onClick={() => !isActive && selectTab(e)}
+                      onClick={() => { if (isActive) { centerSelectedInCarousel(); centerSelectedInStrip(); } else { selectTab(e); } }}
                     >
                       {card}
                     </div>

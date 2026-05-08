@@ -736,14 +736,27 @@
   .stripCard:hover .stripCardMeta { color: rgba(248, 250, 252, 0.6); }
 }
 
+/* Selected card — full prominence */
 .stripCardActive {
   border-color: var(--type-color);
   transform: translateY(-3px);
+  box-shadow: 0 4px 18px rgba(var(--type-rgb), 0.35);
 }
 
-.stripCardActive .stripCardBg { opacity: 0.5; }
+.stripCardActive .stripCardBg { opacity: 0.55; }
 .stripCardActive .stripCardTypeBar { opacity: 1; }
 .stripCardActive .stripCardName { color: rgba(248, 250, 252, 1); }
 .stripCardActive .stripCardMeta { color: rgba(248, 250, 252, 0.65); }
+
+/* Hovered card (not selected) — subtle indication */
+.stripCardHovered {
+  border-color: rgba(var(--type-rgb), 0.4);
+  transform: translateY(-1px);
+}
+
+.stripCardHovered .stripCardBg { opacity: 0.38; }
+.stripCardHovered .stripCardTypeBar { opacity: 0.7; }
+.stripCardHovered .stripCardName { color: rgba(248, 250, 252, 0.88); }
+.stripCardHovered .stripCardMeta { color: rgba(248, 250, 252, 0.5); }
 
 .stripCard:focus { outline: none; }
