@@ -114,6 +114,7 @@ function ProjectsPage() {
   const [selectedId, setSelectedId] = useState<number | null>(0);
   const [filterOpen, setFilterOpen] = useState(false);
   const [stripFits, setStripFits] = useState(false);
+  const [stripStaticOffset, setStripStaticOffset] = useState(0);
   const touchStartX = useRef<number | null>(null);
   const filterRef = useRef<HTMLDivElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
@@ -124,6 +125,7 @@ function ProjectsPage() {
   const carouselMountedRef = useRef(false);
   const stripWrapDirRef = useRef<'none' | 'next' | 'prev'>('none');
   const stripWrapResetRef = useRef<(() => void) | null>(null);
+  const prevStripFitsRef = useRef(false);
 
   useEffect(() => {
     if (!filterOpen) return;
@@ -214,6 +216,8 @@ function ProjectsPage() {
   }, [sorted]);
 
   const selectedIndex = sorted.findIndex(e => e.id === selectedId);
+  const selectedIndexRef = useRef(selectedIndex);
+  selectedIndexRef.current = selectedIndex;
 
   function goNext() {
     if (sorted.length <= 1) return;
@@ -264,8 +268,18 @@ function ProjectsPage() {
   useEffect(() => {
     const strip = stripRef.current;
     if (!strip) return;
+    prevStripFitsRef.current = false;
+    setStripStaticOffset(0);
     function check() {
-      setStripFits(sorted.length * 150 + Math.max(0, sorted.length - 1) * 10 <= strip!.clientWidth - 4);
+      const fits = sorted.length * 150 + Math.max(0, sorted.length - 1) * 10 <= strip!.clientWidth - 4;
+      if (fits && !prevStripFitsRef.current) {
+        // Rotate so selected card lands in the middle of the static strip
+        const idx = selectedIndexRef.current < 0 ? 0 : selectedIndexRef.current;
+        const n = sorted.length;
+        setStripStaticOffset(((idx - Math.floor(n / 2)) % n + n) % n);
+      }
+      prevStripFitsRef.current = fits;
+      setStripFits(fits);
     }
     check();
     const ro = new ResizeObserver(check);
@@ -431,7 +445,7 @@ function ProjectsPage() {
         carousel.scrollLeft = target;
       }
     }
-  }, [selectedId]);
+  }, [selectedId, sorted]);
 
   useEffect(() => {
     const carousel = cardCarouselRef.current;
@@ -603,7 +617,11 @@ function ProjectsPage() {
                         );
                       })
                     )
-                  : sorted.map(e => {
+                  : (() => {
+                      const off = stripStaticOffset % sorted.length;
+                      const rotated = off > 0 ? [...sorted.slice(off), ...sorted.slice(0, off)] : sorted;
+                      return rotated;
+                    })().map(e => {
                       const key = e.title.toLowerCase();
                       const imageUrl = e.title === FEATURED_PROJECT.title ? FEATURED_PROJECT.imageUrl : systemByTitle.get(key)?.imageUrl ?? gameByTitle.get(key)?.imageUrl ?? '';
                       const isActive = selectedId === e.id || hoveredProjectId === e.id;
