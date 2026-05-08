@@ -478,10 +478,52 @@
   width: 100%;
 }
 
-/* ── Card wrapper + side nav ── */
-.cardWrapper {
+/* ── Large card carousel ── */
+.cardCarouselWrapper {
   position: relative;
   margin-bottom: 4rem;
+}
+
+.cardCarousel {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 8px 3% 12px;
+  mask-image: linear-gradient(to right, transparent 0, black 2.5%, black 97.5%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, black 2.5%, black 97.5%, transparent 100%);
+}
+
+.cardCarousel::-webkit-scrollbar { display: none; }
+
+.cardCarouselItem {
+  flex-shrink: 0;
+  width: 94%;
+  border-radius: 16px;
+  overflow: hidden;
+  opacity: 0.35;
+  transition: opacity 0.3s ease;
+  cursor: pointer;
+  scroll-snap-align: center;
+}
+
+.cardCarouselItemActive {
+  opacity: 1;
+  cursor: default;
+}
+
+@media (max-width: 600px) {
+  .cardCarousel {
+    padding: 8px 0 12px;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+
+  .cardCarouselItem {
+    width: 100%;
+    opacity: 1;
+    cursor: default;
+  }
 }
 
 .sideNavBtn {
@@ -489,11 +531,11 @@
   top: 0;
   bottom: 0;
   z-index: 10;
-  width: 36px;
+  width: 48px;
   background: none;
   border: none;
-  color: rgba(var(--accent-rgb), 0.3);
-  font-size: 2.2rem;
+  color: rgba(248, 250, 252, 0.35);
+  font-size: 3rem;
   line-height: 1;
   display: flex;
   align-items: center;
@@ -510,13 +552,13 @@
 .sideNavBtn:focus { outline: none; }
 
 @media (hover: hover) and (pointer: fine) {
-  .cardWrapper:hover .sideNavBtn {
+  .cardCarouselWrapper:hover .sideNavBtn {
     opacity: 1;
     pointer-events: auto;
   }
 
   .sideNavBtn:hover {
-    color: var(--accent-color);
+    color: rgba(248, 250, 252, 0.75);
   }
 }
 
@@ -571,6 +613,13 @@
 }
 
 .netflixStrip::-webkit-scrollbar { display: none; }
+
+.netflixStripCentered {
+  justify-content: center;
+  mask-image: none;
+  -webkit-mask-image: none;
+  overflow-x: hidden;
+}
 
 .stripCard {
   flex-shrink: 0;
