@@ -115,7 +115,6 @@ function ProjectsPage() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [stripFits, setStripFits] = useState(false);
   const [stripStaticOffset, setStripStaticOffset] = useState(0);
-  const touchStartX = useRef<number | null>(null);
   const filterRef = useRef<HTMLDivElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
   const cardCarouselRef = useRef<HTMLDivElement>(null);
@@ -669,17 +668,6 @@ function ProjectsPage() {
       stripNavClickTimerRef.current = null;
     }
     stopStripNavHold();
-  }
-
-  function handleTouchStart(e: React.TouchEvent) {
-    touchStartX.current = e.touches[0].clientX;
-  }
-  function handleTouchEnd(e: React.TouchEvent) {
-    if (touchStartX.current === null) return;
-    const delta = e.changedTouches[0].clientX - touchStartX.current;
-    touchStartX.current = null;
-    if (Math.abs(delta) < 50) return;
-    if (delta < 0) goNext(); else goPrev();
   }
 
   return (
