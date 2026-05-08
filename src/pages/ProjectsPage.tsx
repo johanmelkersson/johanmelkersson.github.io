@@ -476,9 +476,8 @@ function ProjectsPage() {
       if (wrapResetRef.current) return;
       const active = carousel.querySelector<HTMLElement>('[data-carousel-selected="true"]');
       if (!active) return;
-      const cr = carousel.getBoundingClientRect();
-      const er = active.getBoundingClientRect();
-      carousel.scrollLeft = carousel.scrollLeft + (er.left - cr.left) - (cr.width / 2) + (er.width / 2);
+      // offsetLeft is always relative to the scroll container, unaffected by reflow timing
+      carousel.scrollLeft = active.offsetLeft - (carousel.clientWidth - active.offsetWidth) / 2;
     });
     ro.observe(carousel);
     return () => ro.disconnect();
