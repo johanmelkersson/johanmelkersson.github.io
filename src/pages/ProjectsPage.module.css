@@ -485,6 +485,7 @@
 }
 
 .cardCarousel {
+  position: relative; /* ensures offsetLeft of child cards is relative to scroll container */
   display: flex;
   gap: 20px;
   overflow-x: auto;
@@ -510,6 +511,11 @@
 .cardCarouselItemActive {
   opacity: 1;
   cursor: default;
+}
+
+/* Single-card layout: center via flexbox instead of scroll */
+.cardCarouselSingle {
+  justify-content: center;
 }
 
 @media (max-width: 600px) {

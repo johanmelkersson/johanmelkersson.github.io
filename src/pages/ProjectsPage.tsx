@@ -132,6 +132,8 @@ function ProjectsPage() {
   const screensaverActiveRef = useRef(false);
   const screensaverHoveredIdRef = useRef<number | null>(null);
   const screensaverIdleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const timelineHoverActiveRef = useRef(false);
+  const pendingStripCenterRef = useRef(false);
 
   useEffect(() => {
     if (!filterOpen) return;
@@ -152,8 +154,19 @@ function ProjectsPage() {
     setHoveredProjectId(null);
   }
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleTimelineHover = useCallback((id: number | null) => {
-    setHoveredProjectId(id);
+    if (id !== null) {
+      timelineHoverActiveRef.current = true;
+      setHoveredProjectId(id);
+    } else {
+      timelineHoverActiveRef.current = false;
+      if (screensaverActiveRef.current) {
+        updateStripHoverFromCenter();
+      } else {
+        setHoveredProjectId(null);
+      }
+    }
   }, []);
 
   const [activeTypes, setActiveTypes] = useState<Set<ProjectType>>(
@@ -502,6 +515,15 @@ function ProjectsPage() {
     };
   }, [sorted]);
 
+  // Center the strip on the newly selected card when triggered by an explicit navigation action
+  // (e.g. timeline click). Flag is set by the caller; effect fires after DOM commits.
+  useEffect(() => {
+    if (!pendingStripCenterRef.current) return;
+    pendingStripCenterRef.current = false;
+    centerSelectedInStrip();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedId]);
+
   function resetScreensaverTimer() {
     if (screensaverIdleTimerRef.current !== null) clearTimeout(screensaverIdleTimerRef.current);
     if (screensaverActiveRef.current) stopScreensaver();
@@ -541,7 +563,7 @@ function ProjectsPage() {
       const strip = stripRef.current;
       if (!strip || !screensaverActiveRef.current) return;
       strip.scrollLeft += 0.6;
-      updateStripHoverFromCenter();
+      if (!timelineHoverActiveRef.current) updateStripHoverFromCenter();
       screensaverRafRef.current = requestAnimationFrame(tick);
     }
     screensaverRafRef.current = requestAnimationFrame(tick);
@@ -747,7 +769,7 @@ function ProjectsPage() {
 
       <div className={styles.timelineSection}>
         <div className={`${styles.timelineRow} ${styles.timelineRowFull}`}>
-          <GitTimeline showAxis highlightId={hoveredProjectId ?? undefined} selectedId={selectedId ?? undefined} onHoverChange={handleTimelineHover} onSelect={id => { const e = sorted.find(x => x.id === id); if (e) selectTab(e); }} activeIds={activeIds} />
+          <GitTimeline showAxis highlightId={hoveredProjectId ?? undefined} selectedId={selectedId ?? undefined} onHoverChange={handleTimelineHover} onSelect={id => { const e = sorted.find(x => x.id === id); if (e) { pendingStripCenterRef.current = true; selectTab(e); } }} activeIds={activeIds} />
         </div>
       </div>
 
@@ -757,13 +779,13 @@ function ProjectsPage() {
           <>
             {/* Thumbnail strip */}
             <div className={styles.netflixWrapper} ref={netflixWrapperRef}>
-              <button
+              {!stripFits && <button
                 className={`${styles.stripNavBtn} ${styles.stripNavBtnLeft}`}
                 onPointerDown={e => handleStripNavDown(e, -1)}
                 onPointerUp={e => handleStripNavUp(e, -1)}
                 onPointerLeave={handleStripNavLeave}
                 tabIndex={-1}
-              >‹</button>
+              >‹</button>}
               <div className={`${styles.netflixStrip} ${stripFits ? styles.netflixStripCentered : ''}`} ref={stripRef}>
                 {/* Three copies for seamless infinite loop */}
                 {!stripFits && sorted.length > 1
@@ -836,13 +858,13 @@ function ProjectsPage() {
                     })
                 }
               </div>
-              <button
+              {!stripFits && <button
                 className={`${styles.stripNavBtn} ${styles.stripNavBtnRight}`}
                 onPointerDown={e => handleStripNavDown(e, 1)}
                 onPointerUp={e => handleStripNavUp(e, 1)}
                 onPointerLeave={handleStripNavLeave}
                 tabIndex={-1}
-              >›</button>
+              >›</button>}
             </div>
 
             {/* Large card carousel */}
@@ -857,7 +879,7 @@ function ProjectsPage() {
                 </>
               )}
               <div
-                className={styles.cardCarousel}
+                className={`${styles.cardCarousel} ${sorted.length === 1 ? styles.cardCarouselSingle : ''}`}
                 ref={cardCarouselRef}
               >
                 {sorted.length > 1 && [
