@@ -160,7 +160,7 @@ function Terminal({ forceOpen, onClose }: TerminalProps) {
         e.preventDefault();
         setIsOpen(true);
       }
-      if (e.key === 'Escape' && isOpen) setIsOpen(false);
+      if (e.key === 'Escape' && isOpen) { setIsOpen(false); onClose?.(); }
     }
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -251,7 +251,7 @@ function Terminal({ forceOpen, onClose }: TerminalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className={styles.overlay} onClick={() => setIsOpen(false)}>
+    <div className={styles.overlay} onClick={() => { setIsOpen(false); onClose?.(); }}>
       <div className={styles.window} onClick={e => e.stopPropagation()}>
 
         <div className={styles.titleBar}>
@@ -259,7 +259,7 @@ function Terminal({ forceOpen, onClose }: TerminalProps) {
           <div className={styles.winControls}>
             <button className={styles.winBtn}>─</button>
             <button className={styles.winBtn}>□</button>
-            <button className={`${styles.winBtn} ${styles.winClose}`} onClick={() => setIsOpen(false)}>✕</button>
+            <button className={`${styles.winBtn} ${styles.winClose}`} onClick={() => { setIsOpen(false); onClose?.(); }}>✕</button>
           </div>
         </div>
 
