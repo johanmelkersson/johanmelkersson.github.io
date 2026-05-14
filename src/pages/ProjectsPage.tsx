@@ -111,6 +111,7 @@ function ProjectsPage() {
   const TYPE_RGB   = useMemo(() => buildTypeRgb(theme.colors),   [theme]);
 
   const [hoveredProjectId, setHoveredProjectId] = useState<number | null>(null);
+  const [screensaverHoveredId, setScreensaverHoveredId] = useState<number | null>(null);
   const [selectedId, setSelectedId] = useState<number | null>(0);
   const [filterOpen, setFilterOpen] = useState(false);
   const [stripFits, setStripFits] = useState(false);
@@ -125,15 +126,25 @@ function ProjectsPage() {
   const stripWrapDirRef = useRef<'none' | 'next' | 'prev'>('none');
   const stripWrapResetRef = useRef<(() => void) | null>(null);
   const prevStripFitsRef = useRef(false);
-  const stripNavHoldRef = useRef<{ dir: 1|-1; startTime: number; releasing: boolean; releaseTime: number; releaseVel: number; raf: number|null } | null>(null);
+  const stripNavHoldRef = useRef<{ dir: 1|-1; startTime: number; releasing: boolean; releaseTime: number; releaseVel: number; decelMs: number; raf: number|null } | null>(null);
   const stripNavClickTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const netflixWrapperRef = useRef<HTMLDivElement>(null);
   const screensaverRafRef = useRef<number | null>(null);
   const screensaverActiveRef = useRef(false);
   const screensaverHoveredIdRef = useRef<number | null>(null);
   const screensaverIdleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const timelineHoverActiveRef = useRef(false);
   const pendingStripCenterRef = useRef(false);
+  const stripDragActiveRef = useRef(false);
+  const stripPointerDownRef = useRef(false);
+  const stripHoveredRef = useRef(false);
+
+  // Both pointer hover and screensaver hover independently highlight timeline segments and strip cards
+  const timelineHighlightIds = useMemo(() => {
+    const ids = new Set<number>();
+    if (hoveredProjectId !== null) ids.add(hoveredProjectId);
+    if (screensaverHoveredId !== null) ids.add(screensaverHoveredId);
+    return ids;
+  }, [hoveredProjectId, screensaverHoveredId]);
 
   useEffect(() => {
     if (!filterOpen) return;
@@ -154,19 +165,10 @@ function ProjectsPage() {
     setHoveredProjectId(null);
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Timeline hover drives the strip card hover (hoveredProjectId) so both can show simultaneously
+  // with the screensaver's own hover (screensaverHoveredId)
   const handleTimelineHover = useCallback((id: number | null) => {
-    if (id !== null) {
-      timelineHoverActiveRef.current = true;
-      setHoveredProjectId(id);
-    } else {
-      timelineHoverActiveRef.current = false;
-      if (screensaverActiveRef.current) {
-        updateStripHoverFromCenter();
-      } else {
-        setHoveredProjectId(null);
-      }
-    }
+    setHoveredProjectId(id);
   }, []);
 
   const [activeTypes, setActiveTypes] = useState<Set<ProjectType>>(
@@ -527,6 +529,8 @@ function ProjectsPage() {
   function resetScreensaverTimer() {
     if (screensaverIdleTimerRef.current !== null) clearTimeout(screensaverIdleTimerRef.current);
     if (screensaverActiveRef.current) stopScreensaver();
+    // Never schedule while the user is hovering the strip or has the pointer pressed down
+    if (stripHoveredRef.current || stripPointerDownRef.current) return;
     screensaverIdleTimerRef.current = setTimeout(() => {
       screensaverIdleTimerRef.current = null;
       startScreensaver();
@@ -546,24 +550,24 @@ function ProjectsPage() {
     }
     if (nearest) {
       const id = Number(nearest.dataset.stripId);
-      if (id !== screensaverHoveredIdRef.current) { screensaverHoveredIdRef.current = id; setHoveredProjectId(id); }
+      if (id !== screensaverHoveredIdRef.current) { screensaverHoveredIdRef.current = id; setScreensaverHoveredId(id); }
     }
   }
 
   function stopScreensaver() {
     screensaverActiveRef.current = false;
     if (screensaverRafRef.current !== null) { cancelAnimationFrame(screensaverRafRef.current); screensaverRafRef.current = null; }
-    if (screensaverHoveredIdRef.current !== null) { screensaverHoveredIdRef.current = null; setHoveredProjectId(null); }
+    if (screensaverHoveredIdRef.current !== null) { screensaverHoveredIdRef.current = null; setScreensaverHoveredId(null); }
   }
 
   function startScreensaver() {
-    if (screensaverActiveRef.current || stripFitsRef.current) return;
+    if (screensaverActiveRef.current || stripFitsRef.current || stripHoveredRef.current || stripPointerDownRef.current) return;
     screensaverActiveRef.current = true;
     function tick() {
       const strip = stripRef.current;
       if (!strip || !screensaverActiveRef.current) return;
       strip.scrollLeft += 0.6;
-      if (!timelineHoverActiveRef.current) updateStripHoverFromCenter();
+      updateStripHoverFromCenter();
       screensaverRafRef.current = requestAnimationFrame(tick);
     }
     screensaverRafRef.current = requestAnimationFrame(tick);
@@ -571,20 +575,44 @@ function ProjectsPage() {
 
   useEffect(() => {
     const wrapper = netflixWrapperRef.current;
+    const strip   = stripRef.current;
     if (!wrapper) return;
+
     function onEnter() {
+      stripHoveredRef.current = true;
       if (screensaverIdleTimerRef.current !== null) { clearTimeout(screensaverIdleTimerRef.current); screensaverIdleTimerRef.current = null; }
       stopScreensaver();
     }
-    function onLeave() { resetScreensaverTimer(); }
+    function onLeave() {
+      stripHoveredRef.current = false;
+      resetScreensaverTimer();
+    }
+
+    // Mobile: native touch-scroll on the strip — block screensaver for the duration of the gesture
+    function onTouchStart() { stripPointerDownRef.current = true; }
+    function onTouchEnd() {
+      stripPointerDownRef.current = false;
+      if (!stripHoveredRef.current) resetScreensaverTimer();
+    }
+
     resetScreensaverTimer();
     wrapper.addEventListener('pointerenter', onEnter);
     wrapper.addEventListener('pointerleave', onLeave);
+    if (strip) {
+      strip.addEventListener('touchstart',  onTouchStart, { passive: true });
+      strip.addEventListener('touchend',    onTouchEnd,   { passive: true });
+      strip.addEventListener('touchcancel', onTouchEnd,   { passive: true });
+    }
     return () => {
       if (screensaverIdleTimerRef.current !== null) { clearTimeout(screensaverIdleTimerRef.current); screensaverIdleTimerRef.current = null; }
       stopScreensaver();
       wrapper.removeEventListener('pointerenter', onEnter);
       wrapper.removeEventListener('pointerleave', onLeave);
+      if (strip) {
+        strip.removeEventListener('touchstart',  onTouchStart);
+        strip.removeEventListener('touchend',    onTouchEnd);
+        strip.removeEventListener('touchcancel', onTouchEnd);
+      }
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sorted, stripFits]);
@@ -623,10 +651,15 @@ function ProjectsPage() {
   }
 
   function startStripNavHold(dir: 1 | -1) {
-    if (stripNavHoldRef.current) return;
-    const state = { dir, startTime: performance.now(), releasing: false, releaseTime: 0, releaseVel: 0, raf: null as number | null };
-    stripNavHoldRef.current = state;
+    // Cancel inertia if running; bail if already in an active (non-releasing) hold
+    if (stripNavHoldRef.current) {
+      if (!stripNavHoldRef.current.releasing) return;
+      if (stripNavHoldRef.current.raf) cancelAnimationFrame(stripNavHoldRef.current.raf);
+      stripNavHoldRef.current = null;
+    }
     const MAX_VEL = 8, ACCEL_MS = 500, DECEL_MS = 350;
+    const state = { dir, startTime: performance.now(), releasing: false, releaseTime: 0, releaseVel: 0, decelMs: DECEL_MS, raf: null as number | null };
+    stripNavHoldRef.current = state;
     function tick() {
       const strip = stripRef.current;
       const s = stripNavHoldRef.current;
@@ -634,12 +667,12 @@ function ProjectsPage() {
       const now = performance.now();
       let vel: number;
       if (s.releasing) {
-        const p = 1 - Math.min((now - s.releaseTime) / DECEL_MS, 1);
+        const p = 1 - Math.min((now - s.releaseTime) / s.decelMs, 1);
         vel = s.releaseVel * p * p;
         if (p <= 0) {
           stripNavHoldRef.current = null;
           screensaverHoveredIdRef.current = null;
-          setHoveredProjectId(null);
+          setScreensaverHoveredId(null);
           return;
         }
       } else {
@@ -647,6 +680,27 @@ function ProjectsPage() {
         vel = MAX_VEL * p * p;
       }
       strip.scrollLeft += s.dir * vel;
+      updateStripHoverFromCenter();
+      s.raf = requestAnimationFrame(tick);
+    }
+    state.raf = requestAnimationFrame(tick);
+  }
+
+  function startStripInertia(vel: number) {
+    if (stripNavHoldRef.current?.raf) cancelAnimationFrame(stripNavHoldRef.current.raf);
+    const dir = (vel > 0 ? 1 : -1) as 1 | -1;
+    const releaseVel = Math.abs(vel);
+    // Decel time scales with velocity — faster fling → longer coast
+    const decelMs = Math.min(releaseVel * 50, 900);
+    const state = { dir, startTime: 0, releasing: true, releaseTime: performance.now(), releaseVel, decelMs, raf: null as number | null };
+    stripNavHoldRef.current = state;
+    function tick() {
+      const strip = stripRef.current;
+      const s = stripNavHoldRef.current;
+      if (!strip || !s) return;
+      const p = 1 - Math.min((performance.now() - s.releaseTime) / s.decelMs, 1);
+      if (p <= 0) { stripNavHoldRef.current = null; screensaverHoveredIdRef.current = null; setScreensaverHoveredId(null); return; }
+      strip.scrollLeft += s.dir * s.releaseVel * p * p;
       updateStripHoverFromCenter();
       s.raf = requestAnimationFrame(tick);
     }
@@ -678,7 +732,7 @@ function ProjectsPage() {
       // Quick click: start hold and immediately release with a preset burst velocity
       startStripNavHold(dir);
       const s = stripNavHoldRef.current;
-      if (s) { s.releaseVel = 5; s.releasing = true; s.releaseTime = performance.now(); }
+      if (s) { s.releaseVel = 10; s.releasing = true; s.releaseTime = performance.now(); }
     } else {
       stopStripNavHold();
     }
@@ -690,6 +744,68 @@ function ProjectsPage() {
       stripNavClickTimerRef.current = null;
     }
     stopStripNavHold();
+  }
+
+  function handleStripPointerDown(e: React.PointerEvent<HTMLDivElement>) {
+    if (e.pointerType === 'touch') return; // native scroll handles touch
+    if (e.button !== 0) return;
+    const strip = stripRef.current;
+    if (!strip || stripFits) return;
+    // Cancel any ongoing inertia
+    if (stripNavHoldRef.current?.raf) cancelAnimationFrame(stripNavHoldRef.current.raf);
+    stripNavHoldRef.current = null;
+    const startX = e.clientX;
+    const startScrollLeft = strip.scrollLeft;
+    stripDragActiveRef.current = false;
+    stripPointerDownRef.current = true;
+    resetScreensaverTimer();
+    // Velocity samples: record last ~100 ms of movement for momentum
+    const samples: Array<{ t: number; x: number }> = [];
+
+    function onMove(me: PointerEvent) {
+      const dx = me.clientX - startX;
+      if (!stripDragActiveRef.current && Math.abs(dx) > 5) stripDragActiveRef.current = true;
+      if (stripDragActiveRef.current) {
+        strip.scrollLeft = startScrollLeft - dx;
+        updateStripHoverFromCenter();
+        const now = performance.now();
+        samples.push({ t: now, x: me.clientX });
+        while (samples.length > 1 && now - samples[0].t > 100) samples.shift();
+      }
+    }
+    function onUp() {
+      stripPointerDownRef.current = false;
+      window.removeEventListener('pointermove', onMove);
+      window.removeEventListener('pointerup', onUp);
+      window.removeEventListener('pointercancel', onUp);
+      // If pointer released outside the wrapper, start the idle timer now
+      // (pointerleave fired earlier but was suppressed by stripPointerDownRef)
+      if (!stripHoveredRef.current) resetScreensaverTimer();
+      if (stripDragActiveRef.current) {
+        // Compute release velocity (positive = scrollLeft increasing, negative = decreasing)
+        let launchedInertia = false;
+        if (samples.length >= 2) {
+          const first = samples[0];
+          const last = samples[samples.length - 1];
+          const dt = last.t - first.t;
+          if (dt > 5) {
+            // first.x - last.x: positive if mouse moved left (content scrolls right)
+            const velPxPerFrame = ((first.x - last.x) / dt) * (1000 / 60);
+            if (Math.abs(velPxPerFrame) > 0.5) { startStripInertia(velPxPerFrame); launchedInertia = true; }
+          }
+        }
+        if (!launchedInertia) {
+          // No momentum — clear hover immediately (consistent with nav arrow behavior)
+          screensaverHoveredIdRef.current = null;
+          setScreensaverHoveredId(null);
+        }
+        // Let the click event consume the drag flag before clearing
+        setTimeout(() => { stripDragActiveRef.current = false; }, 0);
+      }
+    }
+    window.addEventListener('pointermove', onMove);
+    window.addEventListener('pointerup', onUp);
+    window.addEventListener('pointercancel', onUp);
   }
 
   return (
@@ -769,7 +885,7 @@ function ProjectsPage() {
 
       <div className={styles.timelineSection}>
         <div className={`${styles.timelineRow} ${styles.timelineRowFull}`}>
-          <GitTimeline showAxis highlightId={hoveredProjectId ?? undefined} selectedId={selectedId ?? undefined} onHoverChange={handleTimelineHover} onSelect={id => { const e = sorted.find(x => x.id === id); if (e) { pendingStripCenterRef.current = true; selectTab(e); } }} activeIds={activeIds} />
+          <GitTimeline showAxis highlightIds={timelineHighlightIds} selectedId={selectedId ?? undefined} onHoverChange={handleTimelineHover} onSelect={id => { const e = sorted.find(x => x.id === id); if (e) { pendingStripCenterRef.current = true; selectTab(e); } }} activeIds={activeIds} />
         </div>
       </div>
 
@@ -786,7 +902,7 @@ function ProjectsPage() {
                 onPointerLeave={handleStripNavLeave}
                 tabIndex={-1}
               >‹</button>}
-              <div className={`${styles.netflixStrip} ${stripFits ? styles.netflixStripCentered : ''}`} ref={stripRef}>
+              <div className={`${styles.netflixStrip} ${stripFits ? styles.netflixStripCentered : styles.netflixStripScrollable}`} ref={stripRef} onPointerDown={handleStripPointerDown}>
                 {/* Three copies for seamless infinite loop */}
                 {!stripFits && sorted.length > 1
                   ? [0, 1, 2].flatMap(copyIdx =>
@@ -794,7 +910,7 @@ function ProjectsPage() {
                         const key = e.title.toLowerCase();
                         const imageUrl = e.title === FEATURED_PROJECT.title ? FEATURED_PROJECT.imageUrl : systemByTitle.get(key)?.imageUrl ?? gameByTitle.get(key)?.imageUrl ?? '';
                         const isSelected = e.id === selectedId;
-                        const isHovered  = !isSelected && e.id === hoveredProjectId;
+                        const isHovered  = !isSelected && (e.id === hoveredProjectId || e.id === screensaverHoveredId);
                         return (
                           <button
                             key={`${e.id}-${copyIdx}`}
@@ -802,7 +918,7 @@ function ProjectsPage() {
                             data-selected={copyIdx === 1 && e.id === selectedId ? 'true' : undefined}
                             className={`${styles.stripCard} ${isSelected ? styles.stripCardActive : isHovered ? styles.stripCardHovered : ''}`}
                             style={{ '--type-color': TYPE_COLOR[e.type], '--type-rgb': TYPE_RGB[e.type] } as React.CSSProperties}
-                            onClick={ev => { selectTab(e); (ev.currentTarget as HTMLElement).blur(); }}
+                            onClick={ev => { if (stripDragActiveRef.current) return; selectTab(e); (ev.currentTarget as HTMLElement).blur(); }}
                             onPointerEnter={ev => handleNavEnter(ev, e)}
                             onPointerLeave={handleNavLeave}
                             tabIndex={copyIdx !== 1 ? -1 : undefined}
@@ -838,7 +954,7 @@ function ProjectsPage() {
                           data-selected={e.id === selectedId ? 'true' : undefined}
                           className={`${styles.stripCard} ${isSelected ? styles.stripCardActive : isHovered ? styles.stripCardHovered : ''}`}
                           style={{ '--type-color': TYPE_COLOR[e.type], '--type-rgb': TYPE_RGB[e.type] } as React.CSSProperties}
-                          onClick={ev => { selectTab(e); (ev.currentTarget as HTMLElement).blur(); }}
+                          onClick={ev => { if (stripDragActiveRef.current) return; selectTab(e); (ev.currentTarget as HTMLElement).blur(); }}
                           onPointerEnter={ev => handleNavEnter(ev, e)}
                           onPointerLeave={handleNavLeave}
                         >

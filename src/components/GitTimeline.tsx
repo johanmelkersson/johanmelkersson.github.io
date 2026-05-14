@@ -90,7 +90,7 @@ const HOVER_DELAY = 500;
 interface GitTimelineProps {
   category?: ProjectCategory;
   showAxis?: boolean;
-  highlightId?: number;
+  highlightIds?: Set<number>;
   selectedId?: number;
   onHoverChange?: (id: number | null) => void;
   onSelect?: (id: number) => void;
@@ -98,7 +98,7 @@ interface GitTimelineProps {
   singleLane?: boolean;
 }
 
-function GitTimeline({ category, showAxis = false, highlightId, selectedId, onHoverChange, onSelect, activeIds, singleLane = false }: GitTimelineProps) {
+function GitTimeline({ category, showAxis = false, highlightIds, selectedId, onHoverChange, onSelect, activeIds, singleLane = false }: GitTimelineProps) {
   const { theme } = useTheme();
   const TYPE_COLOR = useMemo<TypeColorMap>(() => ({
     game:   theme.colors.typeGame,
@@ -209,7 +209,7 @@ function GitTimeline({ category, showAxis = false, highlightId, selectedId, onHo
             const visX2   = Math.max(visX1 + 2, rawX2 - SEG_GAP); // at least 2px wide
             const cy      = lY(entry.lane);
             const color    = TYPE_COLOR[entry.type];
-            const hovered  = tooltip?.entry.id === entry.id || highlightId === entry.id || selectedId === entry.id;
+            const hovered  = tooltip?.entry.id === entry.id || highlightIds?.has(entry.id) || selectedId === entry.id;
             const isActive = !activeIds || activeIds.has(entry.id);
             return (
               <g key={`seg-${entry.id}`} style={{ transition: 'opacity 0.25s' }} opacity={isActive ? 1 : 0.22}>

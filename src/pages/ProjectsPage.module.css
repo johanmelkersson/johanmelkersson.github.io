@@ -625,6 +625,15 @@
   overflow-x: hidden;
 }
 
+.netflixStripScrollable {
+  cursor: grab;
+  user-select: none;
+}
+
+.netflixStripScrollable:active {
+  cursor: grabbing;
+}
+
 .stripCard {
   flex-shrink: 0;
   width: 150px;
