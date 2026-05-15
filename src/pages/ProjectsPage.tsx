@@ -763,6 +763,7 @@ function ProjectsPage() {
     const samples: Array<{ t: number; x: number }> = [];
 
     function onMove(me: PointerEvent) {
+      if (!strip) return;
       const dx = me.clientX - startX;
       if (!stripDragActiveRef.current && Math.abs(dx) > 5) stripDragActiveRef.current = true;
       if (stripDragActiveRef.current) {
