@@ -96,6 +96,11 @@ function GameProjectCard(project: GameProject & { context?: string; period?: str
                     <img src={platformBadges[link.type]} alt={link.type} className={styles.badgeImage} />
                   </a>
                 ))}
+                {project.demoUrl && (
+                  <a href={project.demoUrl} target="_blank" rel="noopener noreferrer" className={styles.demoLink}>
+                    Spela
+                  </a>
+                )}
                 {project.githubUrl && (
                   <a href={project.githubUrl} target="_blank" rel="noopener noreferrer" className={styles.githubLink}>
                     GitHub

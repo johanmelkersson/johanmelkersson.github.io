@@ -24,6 +24,7 @@ export interface GameProject {
         imageUrl: string;
     }[];
     githubUrl?: string;
+    demoUrl?: string;
 }
 
 export interface FeaturedProject {
@@ -166,8 +167,8 @@ export const PROJECTS_DATA: GameProject[] = [
         description: "A third-person bullet hell where you play as a parodic, over-the-top action hero who has to clear the ship of "
         + "the evil penguins in order to save his beloved raven.",
         roleDescription: "The seventh project at TGA and the third one using Crowsnest (our group's game engine). An extremely fun "
-        + "project to be working on. The parodic, over-the-top hero and setting inspired by ”Dog the Bounty Hunter” and ”The Fifth "
-        + "Element” really speak to me. Aside from being a part of the PhysX integration in this project, I have done a lot of small "
+        + "project to be working on. The parodic, over-the-top hero and setting inspired by 'Dog the Bounty Hunter' and 'The Fifth "
+        + "Element' really speak to me. Aside from being a part of the PhysX integration in this project, I have done a lot of small "
         + "tasks everywhere. Some of them connected to PhysX, like explosions, ground checks, raycasts for shooting, bullets, and "
         + "missiles. I have also implemented the checkpoint system, kill triggers, and a small scripted event that lets you change "
         + "music, and so on. In addition to this, I'm also responsible for the main menu, pause menu, and HUD.",
@@ -367,7 +368,7 @@ export const PROJECTS_DATA: GameProject[] = [
         description: "This is a personal project I worked on during my spare time a couple of years ago. Developed in Unity, it's far "
         + "from being a complete game, but it holds sentimental value to me as I've crafted everything myself, including the models and "
         + "animations.",
-        roleDescription: "The goal was to create a comedic game where you play as a ”park ranger” tasked with taking care of an asteroid "
+        roleDescription: "The goal was to create a comedic game where you play as a 'park ranger' tasked with taking care of an asteroid "
         + "field. In its current state, the player can move around and jump from asteroid to asteroid. I'm quite proud of the gravity "
         + "system I developed during the project, where the player is affected by multiple gravitational pulls from all the asteroids in "
         + "the vicinity, taking mass and distance into account.",
@@ -380,7 +381,27 @@ export const PROJECTS_DATA: GameProject[] = [
         imageUrl: '/images/projects/space-game.gif',
         githubUrl: 'https://github.com/johanmelkersson/OrbitalWarden',
     },
-    
+    {
+        id: 14,
+        title: "Project Mila",
+        tagline: "Tiny games for tiny hands.",
+        description: "Project Mila är en samling webbläsarspel byggda för barn som vill testa att spela spel för första gången. "
+        + "Spelen är enkla och generösa — designade för att ge omedelbar glädje utan krav på förkunskaper. "
+        + "Planen är att samlingen ska växa och fyllas med spel med olika komplexitet och svårighetsgrad över tid.",
+        roleDescription: "Soloutvecklare — designade spelkoncept, byggde spelmotor i vanilla JavaScript med Canvas API, implementerade "
+        + "procedurellt ljud via Web Audio API, responsiv skalning för mobil och dator samt ett arkitekturmönster för enkel sprite-utbytning.",
+        technologies: ['HTML5', 'CSS3', 'JavaScript', 'Canvas API', 'Web Audio API'],
+        genre: 'Casual / Kids',
+        engine: 'Vanilla JS / Canvas',
+        mainContribution: 'Designade och byggde hela spelstapeln i vanilla JS — från Canvas-renderingsloop och partikeleffektsystem till Web Audio API-ljud och mobilanpassad input.',
+        status: 'in-development',
+        releaseDate: '2026-05',
+        releaseDateLabel: 'Maj 2026',
+        imageUrl: '/images/projects/project-mila.png',
+        githubUrl: 'https://github.com/johanmelkersson/ProjectMila',
+        demoUrl: 'https://johanmelkersson.github.io/ProjectMila/PrincessRunner/',
+    },
+
 
 ];
 

@@ -227,6 +227,26 @@
   transition: transform 0.2s;
 }
 
+.demoLink {
+  display: inline-block;
+  padding: 8px 20px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  background: var(--accent-color);
+  color: #000;
+  border: 1px solid var(--accent-color);
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+@media (hover: hover) {
+  .demoLink:hover {
+    opacity: 0.85;
+  }
+}
+
 .githubLink {
   display: inline-block;
   padding: 8px 20px;
