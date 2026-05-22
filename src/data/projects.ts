@@ -399,7 +399,7 @@ export const PROJECTS_DATA: GameProject[] = [
         releaseDateLabel: 'Maj 2026',
         imageUrl: '/images/projects/project-mila.png',
         githubUrl: 'https://github.com/johanmelkersson/ProjectMila',
-        demoUrl: 'https://johanmelkersson.github.io/ProjectMila/PrincessRunner/',
+        demoUrl: 'https://johanmelkersson.github.io/ProjectMila/',
     },
 
 
