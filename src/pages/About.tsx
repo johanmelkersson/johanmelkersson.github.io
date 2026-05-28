@@ -36,6 +36,14 @@ function About() {
             bring technical depth and a genuine interest in building things well, in whatever domain
             that turns out to be.
           </p>
+          <p>
+            When I'm not studying or at work, I'm usually deep in{' '}
+            <a href="/projects">The Höör Reclamation Project</a>
+            {' '}— a personal post-apocalyptic squad game I've been building in Unreal Engine for the
+            past two years. Also check out{' '}
+            <a href="https://johanmelkersson.github.io/ProjectMila/" target="_blank" rel="noopener noreferrer">Mila's Games</a>
+            {' '}— a small collection of AI-assisted browser games I'm building for my daughter.
+          </p>
           <div className={styles.introActions}>
             <div className={styles.socialLinks}>
               {SOCIAL_LINKS.map(({ href, label, Icon }) => (

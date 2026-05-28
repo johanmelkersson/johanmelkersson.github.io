@@ -381,28 +381,6 @@ export const PROJECTS_DATA: GameProject[] = [
         imageUrl: '/images/projects/space-game.gif',
         githubUrl: 'https://github.com/johanmelkersson/OrbitalWarden',
     },
-    {
-        id: 14,
-        title: "Project Mila",
-        tagline: "Tiny games for tiny hands.",
-        description: "Project Mila är en samling webbläsarspel byggda för barn som vill testa att spela spel för första gången. "
-        + "Spelen är enkla och generösa — designade för att ge omedelbar glädje utan krav på förkunskaper. "
-        + "Planen är att samlingen ska växa och fyllas med spel med olika komplexitet och svårighetsgrad över tid.",
-        roleDescription: "Soloutvecklare — designade spelkoncept, byggde spelmotor i vanilla JavaScript med Canvas API, implementerade "
-        + "procedurellt ljud via Web Audio API, responsiv skalning för mobil och dator samt ett arkitekturmönster för enkel sprite-utbytning.",
-        technologies: ['HTML5', 'CSS3', 'JavaScript', 'Canvas API', 'Web Audio API'],
-        genre: 'Casual / Kids',
-        engine: 'Vanilla JS / Canvas',
-        mainContribution: 'Designade och byggde hela spelstapeln i vanilla JS — från Canvas-renderingsloop och partikeleffektsystem till Web Audio API-ljud och mobilanpassad input.',
-        status: 'in-development',
-        releaseDate: '2026-05',
-        releaseDateLabel: 'Maj 2026',
-        imageUrl: '/images/projects/project-mila.png',
-        githubUrl: 'https://github.com/johanmelkersson/ProjectMila',
-        demoUrl: 'https://johanmelkersson.github.io/ProjectMila/',
-    },
-
-
 ];
 
 export interface SystemProject {
