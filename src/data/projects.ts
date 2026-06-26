@@ -408,8 +408,8 @@ export const SYSTEM_PROJECTS_DATA: SystemProject[] = [
         technologies: ['React', 'TypeScript', 'Vite', 'CSS Modules'],
         type: 'Web Application',
         mainContribution: 'Everything',
-        status: 'in-development',
-        releaseDate: '2026 →',
+        status: 'finished',
+        releaseDate: 'Jun 2026',
         imageUrl: '/images/projects/portfolio.png',
         features: [
             'Custom SVG git-timeline with greedy lane assignment and fork/merge paths',
@@ -449,8 +449,8 @@ export const SYSTEM_PROJECTS_DATA: SystemProject[] = [
         technologies: ['React 19', 'TypeScript', 'Vite', 'Tailwind CSS', 'ASP.NET Core Web API', 'C#', '.NET 10', 'Entity Framework Core', 'PostgreSQL', 'JWT'],
         type: 'Full-Stack Web Application',
         mainContribution: 'Everything — architecture, backend, frontend, deployment',
-        status: 'finished',
-        releaseDate: 'Summer 2026',
+        status: 'in-development',
+        releaseDate: 'Jun 2026 →',
         imageUrl: '/images/projects/flowtrack.png',
         features: [
             'Two-layer RBAC: global role + project-specific role per member',
