@@ -110,6 +110,12 @@
   }
 }
 
+.skillsNote {
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted, #64748b);
+}
+
 .skillGroup h3 {
   font-size: 0.8rem;
   letter-spacing: 2px;

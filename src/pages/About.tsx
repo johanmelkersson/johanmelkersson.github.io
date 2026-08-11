@@ -2,10 +2,10 @@ import styles from './About.module.css';
 import { SOCIAL_LINKS } from '../data/constants';
 
 const skills = {
-  'Languages': ['C++', 'C#', 'TypeScript', 'JavaScript'],
+  'Languages': ['C++', 'C#', 'TypeScript', 'JavaScript', 'Python *'],
   'Game Development': ['Unreal Engine', 'Gameplay Ability System (GAS)', 'Unity', 'AI & State Machines', 'Physics (PhysX)'],
   'System Development': ['React', 'HTML & CSS', '.NET'],
-  'Tools': ['Git', 'Visual Studio', 'JetBrains Rider', 'Claude', 'GitHub Copilot'],
+  'Tools': ['Git', 'Visual Studio', 'JetBrains Rider', 'GitHub Copilot'],
 };
 
 function About() {
@@ -70,6 +70,7 @@ function About() {
             </div>
           ))}
         </div>
+        <p className={styles.skillsNote}>* Currently learning</p>
       </section>
 
       {/* ── Reference ── */}
