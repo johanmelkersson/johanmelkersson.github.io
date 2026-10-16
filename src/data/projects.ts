@@ -508,7 +508,6 @@ export const SYSTEM_PROJECTS_DATA: SystemProject[] = [
     {
         id: 7,
         title: "Högtrycks Hjältarna – företagswebbplats",
-        tagline: "Från statisk HTML till fullständig affärsnärvaro online – byggt för att sälja.",
         description: "Marknadsföringswebbplats för Högtrycks Hjältarna AB, ett tak- och fasadtvättsföretag i Skåne. Sajten presenterar sex tjänster med egna sidor, en prisräknare, ett kontaktformulär med robotskydd, Google-betyg hämtat live, ett Instagram-flöde och ett projektgalleri med egna bildvisare. Designad för att konvertera besökare till kunder via direkta CTA:er och transparent prisvisning.",
         roleDescription: "Jag byggde hela sajten från grunden – arkitektur, design och kod. Det innefattar Astro-sidorna och layouten, prisberäkningslogiken, en Cloudflare Worker för formulär och nattliga Instagram-byggen, integration mot Resend för transaktionsmejl, Cloudflare Turnstile som robotskydd och deployment-pipeline via Cloudflare Pages.",
         technologies: ['Astro', 'TypeScript', 'Cloudflare Workers', 'Cloudflare Pages', 'Resend', 'Cloudflare Turnstile', 'CSS'],
