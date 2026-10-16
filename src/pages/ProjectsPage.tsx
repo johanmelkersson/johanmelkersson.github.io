@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState, useCallback, useEffect, useLayoutEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useTheme } from "../context/ThemeContext";
 import type { ProjectStatus } from "../data/projects";
 import GameProjectCard from "../components/GameProjectCard";
@@ -109,10 +110,12 @@ function ProjectsPage() {
   const { theme } = useTheme();
   const TYPE_COLOR = useMemo(() => buildTypeColor(theme.colors), [theme]);
   const TYPE_RGB   = useMemo(() => buildTypeRgb(theme.colors),   [theme]);
+  const [searchParams] = useSearchParams();
 
   const [hoveredProjectId, setHoveredProjectId] = useState<number | null>(null);
   const [screensaverHoveredId, setScreensaverHoveredId] = useState<number | null>(null);
-  const [selectedId, setSelectedId] = useState<number | null>(0);
+  const initialId = Number(searchParams.get('project')) || 0;
+  const [selectedId, setSelectedId] = useState<number | null>(initialId);
   const [filterOpen, setFilterOpen] = useState(false);
   const [stripFits, setStripFits] = useState(false);
   const [stripStaticOffset, setStripStaticOffset] = useState(0);

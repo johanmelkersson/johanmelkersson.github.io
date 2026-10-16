@@ -491,8 +491,8 @@ export const SYSTEM_PROJECTS_DATA: SystemProject[] = [
         technologies: ['React 19', 'TypeScript', 'Vite', 'Tailwind CSS', 'ASP.NET Core Web API', 'C#', '.NET 10', 'Entity Framework Core', 'PostgreSQL', 'JWT'],
         type: 'Full-Stack Web Application',
         mainContribution: 'Everything — architecture, backend, frontend, deployment',
-        status: 'in-development',
-        releaseDate: 'Jun 2026 →',
+        status: 'archived',
+        releaseDate: 'Jun – Aug 2026',
         imageUrl: '/images/projects/flowtrack.png',
         features: [
             'Two-layer RBAC: global role + project-specific role per member',
